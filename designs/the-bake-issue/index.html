@@ -65,40 +65,40 @@
     .need h3 span { color: var(--tomato); }
     .need ul { list-style: none; margin: 0; padding: 0; column-count: 2; column-gap: 24px; column-rule: 1px solid var(--black); font-size: 15px; line-height: 1.4; }
     .need li { break-inside: avoid; padding: 0 0 12px; }
-    .pull { margin: 0; font-style: italic; font-weight: 700; font-size: clamp(30px, 4.4vw, 62px); line-height: 1.08; letter-spacing: -.01em; border-top: 3px solid var(--tomato); border-bottom: 3px solid var(--tomato); padding: 22px 0; }
-    .pull::before { content: "\201C"; }
-    .pull::after { content: "\201D"; }
     .method ol { list-style: none; counter-reset: s; margin: 0; padding: 0; column-count: 2; column-gap: 40px; column-rule: 1px solid var(--black); }
     .method li { counter-increment: s; break-inside: avoid; padding: 0 0 18px; }
     .method li::before { content: counter(s); display: block; font-weight: 900; font-size: 44px; line-height: 1; margin-bottom: 4px; }
     .folio { display: flex; justify-content: space-between; margin-top: 44px; padding: 8px 0 0; border-top: 1px solid var(--black); font-family: var(--sans); font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; font-weight: 500; }
     .folio b { color: var(--tomato); font-weight: 600; }
 
-    /* spread 1: sidebar left, story right */
-    .s1 .need { grid-column: 1 / 5; grid-row: 1 / 3; }
-    .s1 .need ul { column-count: 2; }
-    .s1 .lede { grid-column: 5 / 13; }
-    .s1 .pull { grid-column: 5 / 13; margin-bottom: 30px; }
+    /* every spread reads ingredients first, then the method, then the editor's note */
+    .need { grid-row: 1; }
+    .method { grid-row: 1; }
+    .lede { grid-row: 2; margin: 34px 0 0; }
+    /* spread 1: ingredients in a narrow left column, method beside them in two columns */
+    .s1 .need { grid-column: 1 / 5; }
+    .s1 .need ul { column-count: 1; }
     .s1 .method { grid-column: 5 / 13; }
-    /* spread 2: story left, sidebar right, pull quote cuts across the top */
+    .s1 .lede { grid-column: 5 / 13; }
+    /* spread 2: ingredients as a wide band on top, method stacked right below in three columns */
     .s2 .sh h2 { text-align: right; font-style: italic; font-weight: 700; }
-    .s2 .pull { grid-column: 1 / 13; text-align: center; margin: 0 0 34px; font-size: clamp(34px, 6vw, 84px); }
-    .s2 .lede { grid-column: 1 / 8; }
-    .s2 .method { grid-column: 1 / 8; }
-    .s2 .need { grid-column: 9 / 13; grid-row: 2 / 4; }
-    .s2 .need ul { column-count: 1; }
-    /* spread 3: reversed black page, ingredients run as a wide band */
+    .s2 .need { grid-column: 1 / 13; }
+    .s2 .need ul { column-count: 3; }
+    .s2 .method { grid-column: 1 / 13; grid-row: 2; margin-top: 40px; }
+    .s2 .method ol { column-count: 3; }
+    .s2 .lede { grid-column: 1 / 9; grid-row: 3; }
+    /* spread 3: reversed black page, ingredients left, method as one numbered column to the right */
     .s3 { background: var(--black); color: var(--bone); margin-top: 72px; padding: 56px 0 40px; }
     .s3 .sh { border-top-color: var(--bone); }
     .s3 .byline, .s3 .folio { border-color: var(--bone); }
-    .s3 .need { border-top-color: var(--bone); grid-column: 1 / 13; }
-    .s3 .need ul { column-count: 3; column-rule-color: var(--bone); }
-    .s3 .lede { grid-column: 1 / 6; margin-top: 12px; }
-    .s3 .pull { grid-column: 6 / 13; margin: 12px 0 30px; align-self: start; }
-    .s3 .method { grid-column: 1 / 13; }
-    .s3 .method ol { column-rule-color: var(--bone); }
+    .s3 .need { border-top-color: var(--bone); grid-column: 1 / 6; }
+    .s3 .need ul { column-count: 1; }
+    .s3 .method { grid-column: 6 / 13; }
+    .s3 .method ol { column-count: 1; column-rule: 0; }
+    .s3 .method li { display: grid; grid-template-columns: 64px 1fr; align-items: baseline; padding: 0 0 16px; border-bottom: 1px solid rgb(243 239 232 / .25); margin-bottom: 16px; }
+    .s3 .method li::before { margin: 0; }
+    .s3 .lede { grid-column: 6 / 13; }
     .s3 :focus-visible { outline-color: var(--tomato); }
-    .s3 .need { order: 1; } .s3 .lede { order: 2; } .s3 .pull { order: 3; } .s3 .method { order: 4; }
 
     footer.colophon { padding: 40px 0 70px; font-family: var(--sans); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 
@@ -110,13 +110,15 @@
       .grid > * { margin-bottom: 26px; }
       .need ul, .s1 .need ul, .s2 .need ul, .s3 .need ul { column-count: 2; }
       .s2 .sh h2 { text-align: left; }
+      .s2 .method ol { column-count: 2; }
+      .s2 .method { margin-top: 0; }
     }
     @media (max-width: 560px) {
       body { font-size: 16px; }
       .wrap, .ribbon-in { padding: 0 16px; }
       .masthead { font-size: 10.6vw; }
       .need ul, .s1 .need ul, .s2 .need ul, .s3 .need ul { column-count: 1; }
-      .method ol { column-count: 1; }
+      .method ol, .s2 .method ol { column-count: 1; }
       .ribbon .back span { display: none; }
       .ribbon .lab { display: none; }
       .lede { font-size: 17.5px; }
@@ -186,11 +188,10 @@
               '<aside class="need" aria-label="Ingredients"><h3><span>&#9632;</span> You&rsquo;ll need</h3><ul>' +
                 r.ingredients.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") +
               '</ul></aside>' +
-              '<p class="lede">' + esc(r.tagline + " " + ex.text) + '</p>' +
-              '<blockquote class="pull">' + esc(r.tagline.replace(/\.$/, "")) + '</blockquote>' +
               '<section class="method" aria-label="Method"><h3>The method</h3><ol>' +
                 r.steps.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") +
               '</ol></section>' +
+              '<p class="lede">' + esc(r.tagline + " " + ex.text) + '</p>' +
             '</div>' +
             '<div class="folio"><span><b>' + pg + '</b> &nbsp;The Bake Issue</span><span>' + esc(r.name) + ' &nbsp;<b>' + (pg + 1) + '</b></span></div>' +
           '</div>';

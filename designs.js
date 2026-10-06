@@ -1,7 +1,7 @@
 // One entry per design. To add a design:
 //   1. build it in /designs/<slug>/index.html (a standalone homepage, no subpages)
 //   2. fill in the entry below and set status to "built"
-const DESIGNS = Array.from({ length: 25 }, (_, i) => ({
+const DESIGNS = Array.from({ length: 25 },(_, i) => ({
   id: i + 1,
   slug: null,          // folder name inside /designs, e.g. "butter-and-flour"
   title: "Untitled",   // working name of the design
@@ -52,9 +52,9 @@ Object.assign(BUILT, {
     palette: ["#c9b8ff", "#ffcfb3", "#b6f2dd"],
   },
   8: {
-    slug: "recipe-box", title: "The Recipe Box", mood: "nostalgic, typewritten",
-    type: "Special Elite + Homemade Apple", layout: "index cards sliding out of a tin", emphasis: "one card at a time",
-    palette: ["#fbf4e2", "#d9534f", "#8a5a3c"],
+    slug: "letters-from-grandma", title: "Letters from Grandma", mood: "nostalgic, personal, typewritten",
+    type: "Special Elite", layout: "airmail envelopes that open into unfolding letters", emphasis: "Grandma's voice",
+    palette: ["#3b5546", "#b8332e", "#fbf6e6"],
   },
   9: {
     slug: "scrapbook-supper", title: "Scrapbook Supper", mood: "nostalgic, collage",
@@ -150,7 +150,7 @@ const TILE_LOOK = {
   1: ["Abril Fatface", "dots"],           2: ["IM Fell English", "book"],
   3: ["Cormorant Garamond", "accordion"], 4: ["Caveat Brush", "columns"],
   5: ["Archivo Black", "rows"],      6: ["Bagel Fat One", "carousel"],
-  7: ["Sniglet", "bubbles"],         8: ["Special Elite", "cards"],
+  7: ["Sniglet", "bubbles"],         8: ["Special Elite", "letter"],
   9: ["Libre Baskerville", "collage"], 10: ["Bodoni Moda", "split"],
   11: ["Cinzel", "column"],          12: ["Permanent Marker", "tags"],
   13: ["Yellowtail", "shelves"],     14: ["Work Sans", "index"],
