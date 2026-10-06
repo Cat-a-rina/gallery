@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bake Timer | Scale, tick off, time your bakes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f7fa; --card: #fff; --slate: #1b2430; --mute: #667085; --line: #e3e8ef; --mint: #2bd4a0; --mint-d: #12a37a; --mint-l: #e3faf3;
+      --shadow: 0 1px 2px rgba(27,36,48,.06), 0 4px 16px rgba(27,36,48,.06);
+      --r: 12px;
+      --font: "Manrope", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--slate); font-family: var(--font); font-size: 14px; line-height: 1.5; font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--mint-d); outline-offset: 2px; }
+    svg.i { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .app { display: grid; grid-template-columns: 296px minmax(0, 1fr); min-height: 100vh; }
+
+    /* rail */
+    .rail { background: var(--slate); color: #e6ecf3; padding: 20px 16px; display: flex; flex-direction: column; gap: 20px; position: sticky; top: 0; height: 100vh; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; }
+    .brand .logo { width: 32px; height: 32px; border-radius: 10px; background: var(--mint); color: var(--slate); display: grid; place-items: center; }
+    .brand .logo svg { width: 18px; height: 18px; }
+    .rail h2 { margin: 0 4px 8px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #8b98a9; }
+    .rail ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+    .bake { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid transparent; border-radius: var(--r); background: transparent; color: inherit; text-align: left; }
+    .bake:hover { background: rgba(255,255,255,.06); }
+    .bake[aria-current="true"] { background: rgba(43,212,160,.14); border-color: rgba(43,212,160,.5); }
+    .bake .nm { display: block; font-weight: 700; font-size: 14px; }
+    .bake .sub { display: block; font-size: 12px; color: #8b98a9; }
+    .bake:focus-visible { outline-color: var(--mint); }
+    .ring { position: relative; width: 44px; height: 44px; flex: none; }
+    .ring svg { width: 44px; height: 44px; transform: rotate(-90deg); }
+    .ring circle { fill: none; stroke-width: 4; }
+    .ring .tr { stroke: rgba(255,255,255,.14); }
+    .ring .pg { stroke: var(--mint); stroke-linecap: round; transition: stroke-dashoffset .35s ease; }
+    .ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12px; font-weight: 700; }
+    .rail .foot { margin-top: auto; }
+    .rail .back { display: inline-flex; align-items: center; gap: 8px; color: #c4cfdb; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 10px; border-radius: 10px; }
+    .rail .back:hover { background: rgba(255,255,255,.08); color: #fff; }
+    .rail .back:focus-visible { outline-color: var(--mint); }
+
+    /* main */
+    main { padding: 28px clamp(16px, 3vw, 40px) 56px; max-width: 1180px; width: 100%; }
+    .head h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -.01em; }
+    .head p { margin: 2px 0 0; color: var(--mute); font-size: 14px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 12px; font-weight: 600; }
+    .chip svg { color: var(--mint-d); }
+    .card { background: var(--card); border-radius: var(--r); box-shadow: var(--shadow); border: 1px solid var(--line); }
+    .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 32px; padding: 16px 20px; margin-top: 20px; }
+    .scale { display: flex; align-items: center; gap: 16px; flex: 1 1 340px; }
+    .scale .big { font-size: 48px; font-weight: 800; line-height: 1; letter-spacing: -.03em; min-width: 3.4ch; }
+    .scale .big small { font-size: 16px; font-weight: 600; color: var(--mute); margin-left: 2px; }
+    .scale label { display: block; font-size: 12px; font-weight: 700; color: var(--mute); letter-spacing: .04em; text-transform: uppercase; }
+    .scale .ctl { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .sq { width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); display: grid; place-items: center; }
+    .sq:hover:not(:disabled) { border-color: var(--mint); background: var(--mint-l); }
+    .sq:disabled { opacity: .4; cursor: default; }
+    input[type=range] { accent-color: var(--mint-d); width: min(220px, 40vw); height: 24px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); font-weight: 700; font-size: 14px; }
+    .btn:hover { border-color: #c9d2de; background: #f8fafc; }
+    .btn.primary { background: var(--mint); border-color: var(--mint); color: var(--slate); }
+    .btn.primary:hover { background: #3fe0ae; }
+    .grid { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 20px; margin-top: 20px; align-items: start; }
+    .card > header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--line); }
+    .card > header h2 { margin: 0; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .card > header h2 svg { color: var(--mint-d); }
+    .count { font-size: 12px; font-weight: 700; color: var(--mute); background: var(--bg); border-radius: 999px; padding: 2px 10px; }
+    .list { list-style: none; margin: 0; padding: 6px 8px 10px; }
+    .list li + li { border-top: 1px solid #eef1f5; }
+    .row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 12px; border-radius: 10px; position: relative; }
+    .row:hover { background: #f8fafc; }
+    .row input { position: absolute; opacity: 0; width: 20px; height: 20px; margin: 0; top: 11px; left: 12px; cursor: pointer; }
+    .box { width: 20px; height: 20px; border-radius: 6px; border: 1.75px solid #b8c2d0; display: grid; place-items: center; flex: none; margin-top: 1px; color: transparent; transition: .12s; background: #fff; }
+    .box svg { width: 14px; height: 14px; stroke-width: 3; }
+    .row input:checked + .box { background: var(--mint); border-color: var(--mint); color: var(--slate); }
+    .row input:focus-visible + .box { outline: 2px solid var(--mint-d); outline-offset: 2px; }
+    .row .qty { font-weight: 800; font-size: 16px; min-width: 4.4ch; }
+    .ing .row .t { display: flex; gap: 10px; align-items: baseline; flex: 1; }
+    .row .tx { flex: 1; min-width: 0; }
+    .row input:checked ~ .tx, .row input:checked ~ .t { color: #98a2b3; text-decoration: line-through; text-decoration-color: #c4ccd8; }
+    .steps .row { gap: 14px; }
+    .num { font-size: 12px; font-weight: 800; color: var(--mute); width: 22px; flex: none; margin-top: 2px; }
+    .steps .tx { font-size: 16px; line-height: 1.5; }
+    .timers { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .timer { display: inline-flex; align-items: center; gap: 2px; padding: 3px 4px 3px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); font-size: 12px; font-weight: 700; }
+    .timer .lb { color: var(--mute); font-weight: 600; margin-right: 6px; }
+    .timer .t { font-size: 14px; min-width: 5ch; text-align: center; }
+    .timer button { width: 26px; height: 26px; border-radius: 50%; border: 0; background: #fff; display: grid; place-items: center; box-shadow: 0 0 0 1px var(--line); }
+    .timer button:hover { background: var(--mint-l); }
+    .timer button svg { width: 14px; height: 14px; }
+    .timer .tg .pa { display: none; }
+    .timer.running { background: var(--mint-l); border-color: var(--mint); }
+    .timer.running .tg .pl { display: none; } .timer.running .tg .pa { display: block; }
+    .timer.done { background: var(--mint); border-color: var(--mint); color: var(--slate); animation: pulse 1.2s ease-in-out 3; }
+    .timer.done .tg { display: none; } .timer.done .lb { color: var(--slate); }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(43,212,160,.35); } }
+    .actions { display: flex; justify-content: flex-end; padding: 0 20px 4px; }
+    .link { background: none; border: 0; color: var(--mute); font-size: 12px; font-weight: 700; padding: 6px 4px; text-decoration: underline; text-underline-offset: 3px; }
+    .link:hover { color: var(--slate); }
+
+    /* cook mode */
+    .cook { position: fixed; inset: 0; z-index: 50; background: var(--slate); color: #fff; display: flex; flex-direction: column; padding: 20px clamp(16px, 5vw, 64px) 28px; }
+    .cook[hidden] { display: none; }
+    .ck-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .ck-top .nm { font-weight: 700; font-size: 16px; }
+    .ck-top .cnt { font-size: 14px; color: #9fb0c3; font-weight: 600; }
+    .cook .btn { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18); color: #fff; }
+    .cook .btn:hover:not(:disabled) { background: rgba(255,255,255,.16); }
+    .cook .btn:disabled { opacity: .35; cursor: default; }
+    .cook .btn.primary { background: var(--mint); color: var(--slate); border-color: var(--mint); }
+    .cook :focus-visible { outline-color: var(--mint); }
+    .bar { height: 6px; border-radius: 6px; background: rgba(255,255,255,.14); margin-top: 16px; overflow: hidden; }
+    .bar i { display: block; height: 100%; width: 0; background: var(--mint); border-radius: 6px; transition: width .3s ease; }
+    .ck-body { flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 960px; width: 100%; margin: 0 auto; gap: 24px; }
+    .ck-n { font-size: 48px; font-weight: 800; color: var(--mint); line-height: 1; }
+    .ck-t { font-size: clamp(24px, 4.6vw, 48px); font-weight: 700; line-height: 1.2; letter-spacing: -.01em; margin: 0; }
+    .cook .timer { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.2); color: #fff; padding: 6px 8px 6px 16px; }
+    .cook .timer .t { font-size: 24px; min-width: 5.5ch; }
+    .cook .timer .lb { color: #9fb0c3; font-size: 14px; }
+    .cook .timer button { width: 36px; height: 36px; background: rgba(255,255,255,.12); box-shadow: none; color: #fff; }
+    .cook .timer button:hover { background: rgba(255,255,255,.22); }
+    .cook .timer.running { background: rgba(43,212,160,.18); border-color: var(--mint); }
+    .cook .timer.done { background: var(--mint); color: var(--slate); }
+    .ck-nav { display: flex; gap: 12px; justify-content: space-between; max-width: 960px; width: 100%; margin: 0 auto; flex-wrap: wrap; }
+    .ck-nav .btn { height: 52px; padding: 0 24px; font-size: 16px; }
+    .ck-nav .mid { display: flex; gap: 12px; }
+    .kbd { font-size: 12px; color: #8b98a9; text-align: center; margin-top: 12px; }
+
+    /* mobile */
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .rail { position: static; height: auto; padding: 12px; gap: 12px; }
+      .rail h2, .rail .foot { display: none; }
+      .rail .brand { justify-content: space-between; }
+      .rail .brand::after { content: ""; }
+      .rail ul { grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); overflow-x: auto; padding-bottom: 4px; }
+      .rail .mb { display: inline-flex; }
+      .grid { grid-template-columns: 1fr; }
+      .scale .big { font-size: 48px; }
+    }
+    @media (min-width: 901px) { .rail .mb { display: none; } }
+    .rail .mb { align-items: center; gap: 6px; color: #c4cfdb; text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 8px; border-radius: 8px; }
+    .rail .mb:focus-visible { outline-color: var(--mint); }
+    @media (max-width: 480px) {
+      .tools { padding: 16px; }
+      .steps .tx { font-size: 16px; }
+      .ck-nav .btn { flex: 1 1 40%; padding: 0 12px; }
+      .ck-nav .mid { width: 100%; order: 3; }
+      .ck-nav .mid .btn { flex: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="rail" aria-label="Your bakes">
+      <div class="brand">
+        <span style="display:flex;align-items:center;gap:10px">
+          <span class="logo" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg></span>
+          Bake Timer
+        </span>
+        <a class="mb" href="../../index.html"><svg class="i" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Gallery</a>
+      </div>
+      <nav>
+        <h2 id="railh">Your bakes</h2>
+        <ul id="bakes" aria-labelledby="railh"></ul>
+      </nav>
+      <div class="foot"><a class="back" href="../../index.html"><svg class="i" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Back to gallery</a></div>
+    </aside>
+    <main id="main" aria-live="off"></main>
+  </div>
+
+  <div class="cook" id="cook" role="dialog" aria-modal="true" aria-labelledby="ckName" hidden>
+    <div class="ck-top">
+      <div><div class="nm" id="ckName"></div><div class="cnt" id="ckCnt"></div></div>
+      <button type="button" class="btn" id="ckClose" aria-label="Close cook mode"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Close</button>
+    </div>
+    <div class="bar" role="progressbar" aria-label="Step progress" id="ckBarWrap" aria-valuemin="0" aria-valuemax="100"><i id="ckBar"></i></div>
+    <div class="ck-body" aria-live="polite">
+      <div class="ck-n" id="ckN"></div>
+      <p class="ck-t" id="ckText"></p>
+      <div class="timers" id="ckTimers"></div>
+    </div>
+    <div class="ck-nav">
+      <button type="button" class="btn" id="ckPrev"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>Previous</button>
+      <div class="mid"><button type="button" class="btn" id="ckMark"></button></div>
+      <button type="button" class="btn primary" id="ckNext">Next<svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+    <div class="kbd">Arrow keys to move &middot; Esc to close</div>
+  </div>
+
+  <script src="../../recipes.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var R = (typeof RECIPES !== 'undefined' && Array.isArray(RECIPES)) ? RECIPES : [];
+    var STORE = 'baketimer.v1';
+    var $ = function (s, r) { return (r || document).querySelector(s); };
+    var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+    function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+    var IC = {
+      clock: '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+      users: '<svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.5a3.5 3.5 0 010 7M18 14.5c2.2.6 3.5 2.4 3.5 5.5"/></svg>',
+      gauge: '<svg class="i" viewBox="0 0 24 24"><path d="M4 18a9 9 0 1116 0"/><path d="M12 14l4-5"/></svg>',
+      list: '<svg class="i" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>',
+      steps: '<svg class="i" viewBox="0 0 24 24"><path d="M4 18h5v-5h5V8h6"/></svg>',
+      check: '<svg class="i" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+      play: '<svg class="i pl" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z"/></svg>',
+      pause: '<svg class="i pa" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg>',
+      reset: '<svg class="i" viewBox="0 0 24 24"><path d="M4 12a8 8 0 108-8H8M8 4L5 7l3 3"/></svg>',
+      expand: '<svg class="i" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
+      minus: '<svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/></svg>',
+      plus: '<svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>'
+    };
+
+    /* ---------- state ---------- */
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { saved = {}; }
+    var state = { sel: 0, scale: {}, ing: {}, steps: {} };
+    if (typeof saved.sel === 'number' && saved.sel >= 0 && saved.sel < R.length) state.sel = saved.sel;
+    R.forEach(function (r) {
+      function norm(a, n) { var o = []; for (var i = 0; i < n; i++) o.push(!!(a && a[i])); return o; }
+      state.ing[r.slug] = norm(saved.ing && saved.ing[r.slug], (r.ingredients || []).length);
+      state.steps[r.slug] = norm(saved.steps && saved.steps[r.slug], (r.steps || []).length);
+      state.scale[r.slug] = 1;
+    });
+    function save() {
+      try { localStorage.setItem(STORE, JSON.stringify({ sel: state.sel, ing: state.ing, steps: state.steps })); } catch (e) { /* storage unavailable */ }
+    }
+    function cur() { return R[state.sel]; }
+
+    /* ---------- scaling ---------- */
+    var FR = { 0: '', 0.25: '¼', 0.5: '½', 0.75: '¾' };
+    function fmtNum(v) {
+      if (v >= 100) return String(Math.round(v / 5) * 5);
+      if (v >= 10) return String(Math.round(v));
+      var q = Math.round(v * 4) / 4;
+      if (q <= 0) q = 0.25;
+      var w = Math.floor(q), f = q - w;
+      return (w ? String(w) : '') + FR[f];
+    }
+    function scaleIng(str, f) {
+      if (f === 1) return str;
+      var m = String(str).match(/^(\d+(?:\.\d+)?)(\s*)([\s\S]*)$/);
+      if (!m) return str;
+      var n = parseFloat(m[1]) * f, rest = m[3];
+      rest = rest.replace(/^egg(s?)\b/, n <= 1 ? 'egg' : 'eggs');
+      rest = rest.replace(/plus (\d+(?:\.\d+)?)( yolk)?(s?)/, function (a, b, y) {
+        var c = parseFloat(b) * f;
+        return 'plus ' + fmtNum(c) + (y ? (c <= 1 ? ' yolk' : ' yolks') : '');
+      });
+      return fmtNum(n) + m[2] + rest;
+    }
+    function scaleYield(str, f) {
+      if (f === 1) return str;
+      return String(str).replace(/(\d+(?:\.\d+)?)(\s+)(?:(loaf|pan|cookies?)\b)?/g, function (a, n, sp, w) {
+        var v = parseFloat(n) * f, out = fmtNum(v);
+        if (w) { if (w === 'loaf') w = v <= 1 ? 'loaf' : 'loaves'; else if (w === 'pan') w = v <= 1 ? 'pan' : 'pans'; else w = v <= 1 ? 'cookie' : 'cookies'; }
+        /* w is undefined for unknown nouns, which are left as-is */
+        return out + sp + (w || '');
+      });
+    }
+    function ingHTML(txt) {
+      var m = String(txt).match(/^([\d¼½¾.]+(?:\s?(?:g|kg|ml|l|tsp|tbsp)\b)?)\s+([\s\S]*)$/);
+      if (m) return '<span class="qty">' + esc(m[1]) + '</span><span>' + esc(m[2]) + '</span>';
+      return '<span class="qty"></span><span>' + esc(txt) + '</span>';
+    }
+
+    /* ---------- timers ---------- */
+    function parseDurations(text) {
+      var re = /(\d+(?:\.\d+)?)(?:\s*[–\-]\s*\d+(?:\.\d+)?)?(?:\s+more)?\s*(hours?|hrs?|minutes?|mins?|seconds?|secs?)\b/gi;
+      var out = [], m;
+      while ((m = re.exec(text)) !== null) {
+        var n = parseFloat(m[1]), u = m[2].charAt(0).toLowerCase();
+        var secs = Math.round(n * (u === 'h' ? 3600 : u === 'm' ? 60 : 1));
+        if (secs > 0) out.push({ secs: secs, label: m[0].replace(/\s+more/, '') });
+      }
+      return out;
+    }
+    var timers = {}, tickId = null;
+    function getTimer(key, secs) {
+      if (!timers[key]) timers[key] = { total: secs, remaining: secs, running: false, done: false, endAt: 0 };
+      return timers[key];
+    }
+    function fmtTime(s) {
+      s = Math.max(0, Math.round(s));
+      var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60;
+      function p(n) { return (n < 10 ? '0' : '') + n; }
+      return h > 0 ? h + ':' + p(m) + ':' + p(x) : p(m) + ':' + p(x);
+    }
+    function chipHTML(key, d) {
+      var t = getTimer(key, d.secs);
+      var cls = 'timer' + (t.running ? ' running' : '') + (t.done ? ' done' : '');
+      return '<div class="' + cls + '" data-key="' + esc(key) + '" role="group" aria-label="Timer ' + esc(d.label) + '">' +
+        '<span class="lb">' + (t.done ? 'Done' : esc(d.label)) + '</span><span class="t">' + fmtTime(t.remaining) + '</span>' +
+        '<button type="button" class="tg" data-act="toggle" aria-label="Start or pause timer">' + IC.play + IC.pause + '</button>' +
+        '<button type="button" data-act="reset" aria-label="Reset timer">' + IC.reset + '</button></div>';
+    }
+    function stepTimersHTML(slug, idx, text) {
+      var ds = parseDurations(text);
+      if (!ds.length) return '';
+      return '<div class="timers">' + ds.map(function (d, k) { return chipHTML(slug + ':' + idx + ':' + k, d); }).join('') + '</div>';
+    }
+    function paintTimer(key) {
+      var t = timers[key]; if (!t) return;
+      $$('.timer').forEach(function (el) {
+        if (el.getAttribute('data-key') !== key) return;
+        el.classList.toggle('running', t.running);
+        el.classList.toggle('done', t.done);
+        var tt = $('.t', el); if (tt) tt.textContent = fmtTime(t.remaining);
+        var lb = $('.lb', el);
+        if (lb) {
+          if (t.done) lb.textContent = 'Done';
+          else if (lb.textContent === 'Done') lb.textContent = el.getAttribute('aria-label').replace(/^Timer /, '');
+        }
+      });
+    }
+    function tick() {
+      var now = Date.now(), any = false;
+      Object.keys(timers).forEach(function (k) {
+        var t = timers[k]; if (!t.running) return;
+        t.remaining = Math.max(0, Math.ceil((t.endAt - now) / 1000));
+        if (t.remaining <= 0) { t.running = false; t.done = true; } else any = true;
+        paintTimer(k);
+      });
+      if (!any && tickId) { clearInterval(tickId); tickId = null; }
+    }
+    function timerAct(key, act) {
+      var t = timers[key]; if (!t) return;
+      if (act === 'toggle') {
+        if (t.done) return;
+        if (t.running) { t.remaining = Math.max(0, Math.ceil((t.endAt - Date.now()) / 1000)); t.running = false; }
+        else { t.running = true; t.endAt = Date.now() + t.remaining * 1000; if (!tickId) tickId = setInterval(tick, 250); }
+      } else if (act === 'reset') {
+        t.running = false; t.done = false; t.remaining = t.total;
+      }
+      paintTimer(key);
+    }
+
+    /* ---------- progress ---------- */
+    var CIRC = 2 * Math.PI * 18;
+    function progress(slug) {
+      var a = (state.ing[slug] || []).concat(state.steps[slug] || []);
+      if (!a.length) return 0;
+      return a.filter(Boolean).length / a.length;
+    }
+    function ringHTML(slug) {
+      return '<span class="ring" data-ring="' + esc(slug) + '"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="tr" cx="22" cy="22" r="18"/><circle class="pg" cx="22" cy="22" r="18" stroke-dasharray="' + CIRC.toFixed(2) + '" stroke-dashoffset="' + CIRC.toFixed(2) + '"/></svg><b></b></span>';
+    }
+    function updateRings() {
+      R.forEach(function (r) {
+        var p = progress(r.slug), pct = Math.round(p * 100);
+        var ring = $('.ring[data-ring="' + r.slug + '"]'); if (!ring) return;
+        $('.pg', ring).setAttribute('stroke-dashoffset', (CIRC * (1 - p)).toFixed(2));
+        $('b', ring).textContent = pct + '%';
+        var sub = $('.bake[data-slug="' + r.slug + '"] .sub');
+        if (sub) {
+          var done = state.ing[r.slug].concat(state.steps[r.slug]).filter(Boolean).length;
+          sub.textContent = done + ' of ' + (r.ingredients.length + r.steps.length) + ' done';
+        }
+      });
+    }
+
+    /* ---------- render ---------- */
+    function renderRail() {
+      $('#bakes').innerHTML = R.map(function (r, i) {
+        return '<li><button type="button" class="bake" data-i="' + i + '" data-slug="' + esc(r.slug) + '"' + (i === state.sel ? ' aria-current="true"' : '') + '>' +
+          ringHTML(r.slug) + '<span><span class="nm">' + esc(r.name) + '</span><span class="sub"></span></span></button></li>';
+      }).join('');
+      updateRings();
+    }
+    function renderMain() {
+      var r = cur(); if (!r) { $('#main').innerHTML = '<p>No recipes found.</p>'; return; }
+      var f = state.scale[r.slug];
+      $('#main').innerHTML =
+        '<div class="head"><h1>' + esc(r.name) + '</h1><p>' + esc(r.tagline) + '</p>' +
+        '<ul class="chips"><li class="chip">' + IC.clock + esc(r.time) + '</li>' +
+        '<li class="chip">' + IC.users + '<span id="yld">' + esc(scaleYield(r.yield, f)) + '</span></li>' +
+        '<li class="chip">' + IC.gauge + esc(r.difficulty) + '</li></ul></div>' +
+        '<section class="card tools" aria-label="Controls"><div class="scale"><div class="big" id="sc" aria-hidden="true"></div><div><label for="rng">Batch size</label><div class="ctl">' +
+        '<button type="button" class="sq" id="sm" aria-label="Decrease batch size">' + IC.minus + '</button>' +
+        '<input type="range" id="rng" min="0.5" max="4" step="0.25" aria-describedby="scv">' +
+        '<button type="button" class="sq" id="sp" aria-label="Increase batch size">' + IC.plus + '</button></div><span id="scv" class="sr" style="position:absolute;left:-9999px"></span></div></div>' +
+        '<button type="button" class="btn" id="reset">' + IC.reset + 'Clear checks</button>' +
+        '<button type="button" class="btn primary" id="cookBtn">' + IC.expand + 'Cook mode</button></section>' +
+        '<div class="grid"><section class="card ing" aria-labelledby="ih"><header><h2 id="ih">' + IC.list + 'Ingredients</h2><span class="count" id="ic"></span></header><ul class="list">' +
+        r.ingredients.map(function (t, i) {
+          return '<li><label class="row"><input type="checkbox" data-kind="ing" data-i="' + i + '"' + (state.ing[r.slug][i] ? ' checked' : '') + '><span class="box">' + IC.check + '</span><span class="t" data-ing="' + i + '"></span></label></li>';
+        }).join('') + '</ul></section>' +
+        '<section class="card steps" aria-labelledby="sh"><header><h2 id="sh">' + IC.steps + 'Steps</h2><span class="count" id="sc2"></span></header><ol class="list">' +
+        r.steps.map(function (t, i) {
+          return '<li><div class="row"><input type="checkbox" id="st' + i + '" data-kind="step" data-i="' + i + '" aria-label="Step ' + (i + 1) + ' done"' + (state.steps[r.slug][i] ? ' checked' : '') + '><span class="box">' + IC.check + '</span>' +
+            '<span class="num">' + String(i + 1).padStart(2, '0') + '</span><div class="tx">' + esc(t) + stepTimersHTML(r.slug, i, t) + '</div></div></li>';
+        }).join('') + '</ol></section></div>';
+      applyScale();
+      updateCounts();
+    }
+    function applyScale() {
+      var r = cur(), f = state.scale[r.slug];
+      $$('[data-ing]').forEach(function (el) { el.innerHTML = ingHTML(scaleIng(r.ingredients[+el.getAttribute('data-ing')], f)); });
+      var y = $('#yld'); if (y) y.textContent = scaleYield(r.yield, f);
+      $('#sc').innerHTML = fmtF(f) + '<small>×</small>';
+      $('#scv').textContent = 'Scale ' + fmtF(f) + ' times';
+      var rng = $('#rng'); if (rng) rng.value = f;
+      $('#sm').disabled = f <= 0.5; $('#sp').disabled = f >= 4;
+    }
+    function fmtF(f) { return String(parseFloat(f.toFixed(2))); }
+    function updateCounts() {
+      var r = cur();
+      var ic = $('#ic'), sc = $('#sc2');
+      if (ic) ic.textContent = state.ing[r.slug].filter(Boolean).length + '/' + r.ingredients.length;
+      if (sc) sc.textContent = state.steps[r.slug].filter(Boolean).length + '/' + r.steps.length;
+      updateRings();
+    }
+
+    /* ---------- cook mode ---------- */
+    var cook = $('#cook'), ck = { open: false, i: 0, opener: null };
+    function renderCook() {
+      var r = cur(), n = r.steps.length, i = ck.i;
+      $('#ckName').textContent = r.name;
+      $('#ckCnt').textContent = 'Step ' + (i + 1) + ' of ' + n;
+      $('#ckN').textContent = String(i + 1).padStart(2, '0');
+      $('#ckText').textContent = r.steps[i];
+      $('#ckBar').style.width = ((i + 1) / n * 100) + '%';
+      $('#ckBarWrap').setAttribute('aria-valuenow', Math.round((i + 1) / n * 100));
+      $('#ckTimers').innerHTML = parseDurations(r.steps[i]).map(function (d, k) { return chipHTML(r.slug + ':' + i + ':' + k, d); }).join('');
+      $('#ckPrev').disabled = i === 0;
+      var last = i === n - 1;
+      $('#ckNext').innerHTML = (last ? 'Finish' : 'Next') + (last ? IC.check : '<svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>');
+      var done = state.steps[r.slug][i];
+      $('#ckMark').innerHTML = IC.check + (done ? 'Marked done' : 'Mark done');
+      $('#ckMark').setAttribute('aria-pressed', done ? 'true' : 'false');
+    }
+    function openCook() {
+      var r = cur(); if (!r || !r.steps.length) return;
+      var first = state.steps[r.slug].indexOf(false);
+      ck.i = first < 0 ? 0 : first;
+      ck.open = true; ck.opener = document.activeElement;
+      cook.hidden = false; document.body.style.overflow = 'hidden';
+      renderCook(); $('#ckNext').focus();
+    }
+    function closeCook() {
+      if (!ck.open) return;
+      ck.open = false; cook.hidden = true; document.body.style.overflow = '';
+      var cb = $('#cookBtn'); (ck.opener && document.body.contains(ck.opener) ? ck.opener : cb || document.body).focus();
+    }
+    function cookGo(d) {
+      var n = cur().steps.length, j = ck.i + d;
+      if (j >= n) { closeCook(); return; }
+      if (j < 0) return;
+      ck.i = j; renderCook();
+    }
+    function setStep(slug, i, v) {
+      state.steps[slug][i] = v; save();
+      if (cur().slug === slug) {
+        var cb = $('input[data-kind="step"][data-i="' + i + '"]'); if (cb) cb.checked = v;
+        updateCounts();
+      } else updateRings();
+    }
+
+    /* ---------- events ---------- */
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t.closest) return;
+      var act = t.closest('[data-act]');
+      if (act) { var chip = act.closest('.timer'); if (chip) timerAct(chip.getAttribute('data-key'), act.getAttribute('data-act')); return; }
+      var b = t.closest('.bake');
+      if (b) { state.sel = +b.getAttribute('data-i'); save(); $$('.bake').forEach(function (x) { x.removeAttribute('aria-current'); }); b.setAttribute('aria-current', 'true'); renderMain(); return; }
+      if (t.closest('#sm')) { setScale(state.scale[cur().slug] - 0.25); return; }
+      if (t.closest('#sp')) { setScale(state.scale[cur().slug] + 0.25); return; }
+      if (t.closest('#cookBtn')) { openCook(); return; }
+      if (t.closest('#reset')) {
+        var r = cur(); state.ing[r.slug] = state.ing[r.slug].map(function () { return false; }); state.steps[r.slug] = state.steps[r.slug].map(function () { return false; });
+        save(); renderMain(); return;
+      }
+      if (t.closest('#ckClose')) { closeCook(); return; }
+      if (t.closest('#ckPrev')) { cookGo(-1); return; }
+      if (t.closest('#ckNext')) { cookGo(1); return; }
+      if (t.closest('#ckMark')) { setStep(cur().slug, ck.i, !state.steps[cur().slug][ck.i]); renderCook(); return; }
+    });
+    document.addEventListener('change', function (e) {
+      var t = e.target;
+      if (!t || !t.getAttribute) return;
+      var kind = t.getAttribute('data-kind'); if (!kind) return;
+      var r = cur(), i = +t.getAttribute('data-i');
+      if (kind === 'ing') { state.ing[r.slug][i] = t.checked; save(); updateCounts(); }
+      else setStep(r.slug, i, t.checked);
+    });
+    document.addEventListener('input', function (e) {
+      if (e.target && e.target.id === 'rng') setScale(parseFloat(e.target.value));
+    });
+    function setScale(v) {
+      if (isNaN(v)) return;
+      state.scale[cur().slug] = Math.min(4, Math.max(0.5, Math.round(v * 4) / 4));
+      applyScale();
+    }
+    document.addEventListener('keydown', function (e) {
+      if (!ck.open) return;
+      if (e.key === 'Escape') { e.preventDefault(); closeCook(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); cookGo(1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); cookGo(-1); }
+      else if (e.key === 'Tab') {
+        var f = $$('button:not([disabled])', cook); if (!f.length) return;
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+
+    renderRail();
+    renderMain();
+  })();
+  </script>
+</body>
+</html>

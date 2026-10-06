@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POW! BAKE — Issue #1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:ital,wght@0,400;0,700;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --y: #ffe600; --r: #e8202a; --c: #00a6e0; --k: #000; --w: #fff;
+    --hd: "Bangers", "Impact", "Haettenschweiler", "Arial Black", sans-serif;
+    --bd: "Comic Neue", "Comic Sans MS", "Chalkboard SE", "Marker Felt", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; font-family: var(--bd); font-weight: 700; color: var(--k); line-height: 1.3;
+    background: radial-gradient(circle, rgba(0,166,224,.2) 22%, transparent 24%) 0 0 / 16px 16px, var(--w);
+    padding-bottom: 76px; overflow-x: hidden;
+  }
+  :focus-visible { outline: 4px solid var(--k); outline-offset: 2px; box-shadow: 0 0 0 8px var(--y); }
+  a { color: inherit; }
+
+  .stroke { -webkit-text-stroke: 3px var(--k); paint-order: stroke fill; }
+
+  /* ---------- cover ---------- */
+  .cover {
+    position: relative; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 1.4rem;
+    padding: clamp(1rem, 3vw, 2rem) clamp(1rem, 4vw, 3rem) clamp(2rem, 5vw, 3.5rem); border-bottom: 10px solid var(--k);
+    background: radial-gradient(circle, var(--r) 26%, transparent 28%) 0 0 / 14px 14px, var(--y);
+    overflow: hidden;
+  }
+  .cover .back {
+    grid-column: 1 / -1; justify-self: start; text-decoration: none; background: var(--k); color: var(--y);
+    font-family: var(--hd); letter-spacing: .08em; font-size: 1.1rem; padding: .25rem .9rem; transform: rotate(-2deg);
+    border: 3px solid var(--k); box-shadow: 4px 4px 0 var(--c);
+  }
+  .cover .back:hover { background: var(--r); color: var(--w); }
+  .logo { position: relative; margin: 0; padding: 1rem 0 .5rem; font-family: var(--hd); font-weight: 400; line-height: .82; text-transform: uppercase; }
+  .logo span { display: block; }
+  .logo .p { font-size: clamp(4.6rem, 20vw, 13rem); color: var(--r); -webkit-text-stroke: 5px var(--k); paint-order: stroke fill; text-shadow: 7px 7px 0 var(--k); transform: rotate(-5deg) skewX(-6deg); letter-spacing: .02em; }
+  .logo .b { font-size: clamp(3.6rem, 15vw, 10rem); color: var(--c); -webkit-text-stroke: 5px var(--k); paint-order: stroke fill; text-shadow: 7px 7px 0 var(--k); transform: rotate(-3deg) skewX(-6deg) translateX(8%); }
+  .issue {
+    display: inline-block; font-family: var(--hd); font-size: clamp(1.1rem, 3.4vw, 1.9rem); letter-spacing: .1em;
+    background: var(--k); color: var(--w); padding: .2rem 1rem; margin-top: .6rem; transform: rotate(1.5deg); border: 3px solid var(--k); box-shadow: 5px 5px 0 var(--r);
+  }
+  .side { position: relative; display: flex; flex-direction: column; gap: 1rem; align-self: center; }
+  .price {
+    position: absolute; right: 0; top: -2.6rem; width: 5.4rem; height: 5.4rem; border-radius: 50%; background: var(--w); border: 4px solid var(--k);
+    display: grid; place-items: center; font-family: var(--hd); font-size: 2rem; transform: rotate(10deg); box-shadow: 4px 4px 0 var(--k);
+  }
+  .price small { display: block; font-family: var(--bd); font-size: .52rem; line-height: 1; text-align: center; letter-spacing: .05em; }
+  .blurbs { list-style: none; padding: 0; margin: 2.6rem 0 0; display: grid; gap: .9rem; }
+  .blurbs a {
+    display: block; text-decoration: none; background: var(--w); border: 4px solid var(--k); padding: .5rem .8rem; box-shadow: 6px 6px 0 var(--k);
+    transition: transform .15s, background .15s;
+  }
+  .blurbs li:nth-child(odd) a { transform: rotate(1.4deg); } .blurbs li:nth-child(even) a { transform: rotate(-1.6deg); background: var(--c); }
+  .blurbs a:hover { transform: rotate(0) scale(1.04); background: var(--y); }
+  .blurbs b { display: block; font-family: var(--hd); font-weight: 400; font-size: 1.5rem; letter-spacing: .04em; line-height: 1; text-transform: uppercase; }
+  .blurbs i { font-style: italic; font-size: .9rem; }
+  .blurbs .pg { float: right; font-family: var(--hd); background: var(--r); color: var(--w); padding: 0 .5rem; border: 2px solid var(--k); font-size: 1rem; letter-spacing: .06em; }
+  .cba { position: absolute; right: 1rem; bottom: .6rem; font-size: .55rem; border: 2px solid var(--k); padding: .2rem .4rem; background: var(--w); text-transform: uppercase; letter-spacing: .05em; transform: rotate(-3deg); max-width: 8rem; text-align: center; line-height: 1.1; }
+
+  /* ---------- comic pages ---------- */
+  main { max-width: 1160px; margin: 0 auto; padding: 0 clamp(.7rem, 3vw, 2rem); }
+  .page { position: relative; margin: clamp(3rem, 7vw, 5.5rem) 0; scroll-margin-top: 1rem; }
+  .grid {
+    display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: minmax(150px, auto); grid-auto-flow: dense; gap: 14px;
+    background: var(--k); padding: 14px; border: 6px solid var(--k); box-shadow: 0 0 0 10px var(--w), 14px 14px 0 10px var(--k);
+  }
+  .pno { position: absolute; right: -4px; bottom: -3.4rem; font-family: var(--hd); font-size: 1.4rem; letter-spacing: .1em; }
+
+  .panel {
+    position: relative; isolation: isolate; border: 4px solid var(--k); background: var(--pbg, var(--w)); transform: rotate(var(--rot, 0deg));
+    padding: 2.4rem 1rem 1.3rem; transition: transform .2s; --dot: var(--c); --ds: 11px;
+  }
+  .panel::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: radial-gradient(circle, var(--dot) 30%, transparent 33%) 0 0 / var(--ds) var(--ds);
+    -webkit-mask-image: linear-gradient(var(--ang, 135deg), #000 0%, transparent 78%); mask-image: linear-gradient(var(--ang, 135deg), #000 0%, transparent 78%);
+  }
+  .panel:hover { transform: rotate(0deg) scale(1.02); z-index: 5; }
+  .js .panel:not(.in) { opacity: 0; }
+  .panel.in { animation: slam .6s cubic-bezier(.2, 1.3, .4, 1) backwards; }
+  @keyframes slam {
+    0% { opacity: 0; transform: scale(2.6) rotate(calc(var(--rot, 0deg) * -7)); }
+    55% { opacity: 1; transform: scale(.93) rotate(calc(var(--rot, 0deg) * 1.8)); }
+    100% { opacity: 1; transform: scale(1) rotate(var(--rot, 0deg)); }
+  }
+
+  .tag {
+    position: absolute; top: -12px; left: -10px; z-index: 3; background: var(--y); color: var(--k); border: 3px solid var(--k);
+    font-family: var(--hd); font-size: 1.15rem; letter-spacing: .08em; padding: .05rem .7rem; transform: rotate(-4deg); box-shadow: 3px 3px 0 var(--k);
+  }
+
+  /* splash */
+  .splash { grid-column: 1 / 5; grid-row: 1 / 3; --pbg: var(--a); --dot: var(--d); --ds: 12px; display: flex; flex-direction: column; min-height: 380px; padding: 2.6rem 1rem 1rem; }
+  .splash::before { -webkit-mask-image: none; mask-image: none; opacity: .55; }
+  .stage { position: relative; flex: 1; min-height: 240px; display: grid; place-items: center; margin: .6rem .4rem; }
+  .stage::before { content: ""; position: absolute; inset: -3.5%; background: var(--k); clip-path: var(--burst1); }
+  .stage .burst { position: absolute; inset: 0; background: var(--b); clip-path: var(--burst1); }
+  .stage .burst::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle, rgba(0,0,0,.22) 24%, transparent 27%) 0 0 / 9px 9px; -webkit-mask-image: radial-gradient(circle at 80% 90%, #000, transparent 55%); mask-image: radial-gradient(circle at 80% 90%, #000, transparent 55%); }
+  .splash h2 {
+    position: relative; margin: 0; padding: 0 14%; text-align: center; font-family: var(--hd); font-weight: 400; text-transform: uppercase; line-height: .92; letter-spacing: .03em;
+    font-size: clamp(2.3rem, 7vw, 5rem); color: var(--w); -webkit-text-stroke: 3px var(--k); paint-order: stroke fill; text-shadow: 4px 4px 0 var(--k); transform: rotate(-5deg) skewX(-5deg);
+  }
+  .splash .cap { margin: .4rem 0 0; align-self: flex-start; max-width: 85%; background: var(--y); border: 3px solid var(--k); padding: .35rem .7rem; font-size: 1rem; font-style: italic; text-transform: uppercase; box-shadow: 4px 4px 0 var(--k); transform: rotate(-1deg); position: relative; }
+  .stats { display: flex; flex-wrap: wrap; gap: .5rem; margin: .8rem 0 0; padding: 0; }
+  .stats div { background: var(--w); border: 3px solid var(--k); padding: .15rem .6rem; box-shadow: 3px 3px 0 var(--k); }
+  .stats div:nth-child(2) { transform: rotate(2deg); } .stats div:nth-child(3) { transform: rotate(-2deg); }
+  .stats dt { font-family: var(--hd); font-weight: 400; letter-spacing: .1em; font-size: .85rem; color: var(--r); text-transform: uppercase; line-height: 1; }
+  .stats dd { margin: 0; font-size: .92rem; }
+
+  .sfx { position: absolute; z-index: 4; font-family: var(--hd); font-weight: 400; line-height: 1; text-transform: uppercase; pointer-events: none; -webkit-text-stroke: 3px var(--k); paint-order: stroke fill; white-space: nowrap; }
+  .sfx.big { top: -34px; right: -12px; font-size: clamp(3.2rem, 10vw, 7rem); color: var(--s); letter-spacing: .03em; transform: rotate(9deg) skewX(-8deg); text-shadow: 4px 4px 0 var(--k), 7px 7px 0 var(--w); }
+  .sfx.small { top: -18px; right: -6px; font-size: clamp(1.4rem, 3.6vw, 2rem); color: var(--w); transform: rotate(7deg); text-shadow: 3px 3px 0 var(--k); }
+
+  /* ingredients */
+  .ingr { grid-column: 5 / 7; grid-row: 1 / 4; --pbg: var(--w); --dot: var(--c); --ang: 200deg; --rot: .8deg; padding-top: 2.6rem; }
+  .ingr h3 { display: inline-block; margin: 0 0 .5rem; background: var(--r); color: var(--w); border: 3px solid var(--k); padding: .1rem .8rem; font-family: var(--hd); font-weight: 400; font-size: 1.6rem; letter-spacing: .06em; transform: rotate(2deg); box-shadow: 3px 3px 0 var(--k); text-shadow: 2px 2px 0 var(--k); }
+  .ingr ul { list-style: none; margin: 0; padding: 0; }
+  .ingr li { background: var(--y); border: 3px solid var(--k); box-shadow: 3px 3px 0 var(--k); padding: .35rem .6rem; margin: .7rem 0; font-size: .92rem; text-transform: uppercase; letter-spacing: .01em; }
+  .ingr li:nth-child(odd) { transform: rotate(-1.3deg); } .ingr li:nth-child(even) { transform: rotate(1.1deg) translateX(4px); }
+  .ingr .tag { background: var(--c); }
+
+  /* steps */
+  .step { display: flex; flex-wrap: wrap; align-items: center; gap: 1.4rem 1rem; padding: 2.6rem 1.1rem 1.5rem 1.4rem; }
+  .s0 { grid-column: span 2; --pbg: var(--w); --dot: var(--c); --rot: -1.2deg; }
+  .s1 { grid-column: span 2; --pbg: var(--y); --dot: var(--r); --ds: 8px; --rot: .9deg; --ang: 45deg; }
+  .s2 { grid-column: span 3; --pbg: var(--w); --dot: var(--r); --ds: 13px; --rot: -.7deg; --ang: 300deg; }
+  .s3 { grid-column: span 3; --pbg: var(--c); --dot: rgba(255,255,255,.7); --ds: 10px; --rot: 1.1deg; }
+  .s4 { grid-column: 1 / -1; --pbg: var(--y); --dot: var(--c); --ds: 14px; --rot: -.5deg; --ang: 90deg; }
+  .doodle { flex: none; width: 88px; filter: drop-shadow(3px 3px 0 var(--k)); }
+  .doodle svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .bubble {
+    position: relative; flex: 1 1 150px; margin: 0; background: var(--w); border: 3px solid var(--k); padding: .8rem 1rem; font-size: 1.08rem; box-shadow: 4px 4px 0 var(--k);
+  }
+  .bubble.speech { border-radius: 18px 26px 20px 28px / 24px 18px 28px 20px; }
+  .bubble.speech::before { content: ""; position: absolute; left: -28px; bottom: 12px; width: 32px; height: 26px; background: var(--k); clip-path: polygon(100% 0, 100% 100%, 0 72%); }
+  .bubble.speech::after { content: ""; position: absolute; left: -21px; bottom: 16px; width: 25px; height: 18px; background: var(--w); clip-path: polygon(100% 0, 100% 100%, 0 72%); }
+  .bubble.thought { border-radius: 46px / 36px; padding: 1rem 1.3rem; }
+  .bubble.thought::before { content: ""; position: absolute; left: -8px; bottom: -16px; width: 17px; height: 17px; border-radius: 50%; background: var(--w); border: 3px solid var(--k); }
+  .bubble.thought::after { content: ""; position: absolute; left: -22px; bottom: -28px; width: 10px; height: 10px; border-radius: 50%; background: var(--w); border: 3px solid var(--k); }
+  .end { flex: 1 0 100%; margin: .2rem 0 0; text-align: right; font-family: var(--hd); font-weight: 400; font-size: clamp(1.3rem, 3.5vw, 2rem); letter-spacing: .05em; color: var(--r); -webkit-text-stroke: 2px var(--k); paint-order: stroke fill; text-shadow: 3px 3px 0 var(--k); transform: rotate(-2deg); }
+  .s4 .end { flex: 1 0 100%; }
+
+  /* pager */
+  .pager { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: flex; justify-content: center; align-items: center; gap: .6rem; background: var(--k); border-top: 4px solid var(--y); padding: .6rem .8rem; }
+  .pager span.l { color: var(--y); font-family: var(--hd); letter-spacing: .1em; font-size: 1.1rem; margin-right: .4rem; }
+  .pager a { text-decoration: none; font-family: var(--hd); letter-spacing: .08em; font-size: 1.1rem; background: var(--w); color: var(--k); border: 3px solid var(--w); padding: .1rem .8rem; transform: rotate(-2deg); transition: transform .15s; }
+  .pager a:nth-of-type(2) { transform: rotate(1.5deg); }
+  .pager a:hover { background: var(--y); transform: rotate(0) scale(1.1); }
+  .pager a[aria-current="true"] { background: var(--r); color: var(--w); border-color: var(--y); }
+  .pager a .n { display: none; font-family: var(--bd); font-size: .78rem; margin-left: .35rem; letter-spacing: 0; text-transform: uppercase; }
+  .pager :focus-visible { outline-color: var(--y); box-shadow: none; outline-offset: 3px; }
+
+  @media (min-width: 760px) { .pager a .n { display: inline; } }
+
+  @media (max-width: 899px) {
+    .cover { grid-template-columns: minmax(0, 1fr); }
+    .side { margin-top: .5rem; }
+    .grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .splash, .ingr, .s0, .s1, .s2, .s3, .s4 { grid-column: 1 / -1; grid-row: auto; }
+    .splash { min-height: 340px; }
+    .ingr { margin-top: -6px; margin-left: 10px; }
+    .s1 { margin-right: 10px; margin-top: -6px; } .s2 { margin-left: 10px; } .s3 { margin-top: -6px; }
+  }
+  @media (max-width: 480px) {
+    .doodle { width: 64px; }
+    .splash h2 { padding: 0 10%; }
+    .pager span.l { display: none; }
+    .page { margin-bottom: 4.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .js .panel:not(.in) { opacity: 1; }
+    .panel.in { animation: none; }
+    .panel, .blurbs a, .pager a { transition: none; }
+  }
+</style>
+</head>
+<body>
+<header class="cover">
+  <a class="back" href="../../index.html">&#9668; BACK TO THE NEWSSTAND</a>
+  <div>
+    <h1 class="logo" aria-label="POW! BAKE"><span class="p" aria-hidden="true">POW!</span><span class="b" aria-hidden="true">BAKE</span></h1>
+    <span class="issue">ISSUE #1 &mdash; POW! BAKE</span>
+  </div>
+  <div class="side">
+    <div class="price" aria-hidden="true"><span>10&cent;<small>FLOUR<br>INCL.</small></span></div>
+    <ul class="blurbs" id="blurbs" aria-label="Inside this issue"></ul>
+  </div>
+  <span class="cba" aria-hidden="true">Approved by the Baking Code Authority</span>
+</header>
+
+<main id="pages"></main>
+
+<nav class="pager" id="pager" aria-label="Turn the page"><span class="l">TURN THE PAGE!</span></nav>
+
+<script src="../../recipes.js"></script>
+<script>
+(function () {
+  document.documentElement.classList.add("js");
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  /* starburst clip-paths */
+  function burst(n, ro, ri, seed) {
+    var pts = [];
+    for (var i = 0; i < n * 2; i++) {
+      var a = Math.PI * i / n - Math.PI / 2;
+      var r = (i % 2 ? ri : ro) * (1 + 0.06 * Math.sin(i * seed));
+      pts.push((50 + r * Math.cos(a)).toFixed(1) + "% " + (50 + r * Math.sin(a)).toFixed(1) + "%");
+    }
+    return "polygon(" + pts.join(",") + ")";
+  }
+  document.documentElement.style.setProperty("--burst1", burst(17, 50, 36, 1.7));
+
+  var SFX = { "sourdough": "WHOMP!", "focaccia": "SIZZLE!", "chocolate-chip-cookies": "POW!" };
+  var COLORS = {
+    "sourdough": "--a:#00a6e0;--b:#ffe600;--d:#ffffff;--s:#e8202a",
+    "focaccia": "--a:#ffe600;--b:#e8202a;--d:#e8202a;--s:#00a6e0",
+    "chocolate-chip-cookies": "--a:#e8202a;--b:#ffe600;--d:#ffe600;--s:#ffe600"
+  };
+  var COLOR_FALLBACK = ["--a:#00a6e0;--b:#ffe600;--d:#fff;--s:#e8202a", "--a:#ffe600;--b:#e8202a;--d:#e8202a;--s:#00a6e0", "--a:#e8202a;--b:#ffe600;--d:#ffe600;--s:#ffe600"];
+  var ROT = [-1.2, .9, -.7, 1.1, -.5];
+
+  var ST = 'stroke="#000" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"';
+  var DOODLES = {
+    swirl: '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path d="M10 58 Q50 104 90 58 Z" fill="#e8202a" ' + ST + '/><path d="M50 52 C50 42 62 42 62 52 C62 66 38 66 38 50 C38 30 70 30 72 54" fill="none" ' + ST + '/><path d="M20 30 l-8 -8 M80 24 l8 -8 M50 14 l0 -10" fill="none" ' + ST + '/></svg>',
+    clock: '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><circle cx="50" cy="54" r="36" fill="#fff" ' + ST + '/><path d="M50 54 L50 30 M50 54 L68 62 M50 24 l0 6 M50 84 l0 -6 M20 54 l6 0 M80 54 l-6 0" fill="none" ' + ST + '/><path d="M24 22 L12 12 M76 22 L88 12" fill="none" ' + ST + '/><circle cx="12" cy="12" r="7" fill="#ffe600" ' + ST + '/><circle cx="88" cy="12" r="7" fill="#ffe600" ' + ST + '/></svg>',
+    flame: '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><polygon points="50,2 60,24 84,12 76,38 98,50 76,62 84,88 60,76 50,98 40,76 16,88 24,62 2,50 24,38 16,12 40,24" fill="#ffe600" ' + ST + '/><path d="M50 22 C56 38 72 44 68 62 C66 78 34 78 32 62 C30 52 40 48 42 38 C46 44 48 34 50 22Z" fill="#e8202a" ' + ST + '/><path d="M50 50 C54 58 58 60 56 68 C54 74 46 74 44 68 C43 62 48 60 50 50Z" fill="#ffe600" stroke="#000" stroke-width="3"/></svg>',
+    sparkle: '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><polygon points="50,4 61,39 96,50 61,61 50,96 39,61 4,50 39,39" fill="#ffe600" ' + ST + '/><polygon points="82,6 86,18 98,22 86,26 82,38 78,26 66,22 78,18" fill="#fff" stroke="#000" stroke-width="3"/><circle cx="16" cy="84" r="6" fill="#e8202a" stroke="#000" stroke-width="3"/></svg>',
+    bolt: '<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><polygon points="58,4 22,56 46,56 38,96 78,40 54,40" fill="#ffe600" ' + ST + '/><path d="M12 20 l10 8 M88 70 l-10 -6 M86 20 l-10 8" fill="none" ' + ST + '/></svg>'
+  };
+  var FX = { swirl: "SWISH!", clock: "TICK-TOCK!", flame: "FWOOSH!", sparkle: "TA-DA!", bolt: "ZAP!" };
+
+  function kindOf(t) {
+    if (/bake|oven/i.test(t)) return "flame";
+    if (/mix|stir|whisk|fold/i.test(t)) return "swirl";
+    if (/rest|ferment|chill|proof|hours?|overnight|rise/i.test(t)) return "clock";
+    if (/dimple|finish|top |scoop|shape/i.test(t)) return "sparkle";
+    return "bolt";
+  }
+
+  var R = typeof RECIPES !== "undefined" ? RECIPES : [];
+
+  /* cover blurbs + pager */
+  document.getElementById("blurbs").innerHTML = R.map(function (r, i) {
+    return '<li><a href="#page-' + (i + 1) + '"><span class="pg">PG ' + (i + 1) + '</span><b>' + esc(r.name) + '</b><i>' + esc(r.tagline) + '</i></a></li>';
+  }).join("");
+  var pager = document.getElementById("pager");
+  pager.insertAdjacentHTML("beforeend", R.map(function (r, i) {
+    return '<a href="#page-' + (i + 1) + '" data-p="page-' + (i + 1) + '">' + (i + 1) + '<span class="n">' + esc(r.name) + '</span></a>';
+  }).join(""));
+
+  /* pages */
+  document.getElementById("pages").innerHTML = R.map(function (r, pi) {
+    var n = pi + 1;
+    var sfx = SFX[r.slug] || "BAM!";
+    var col = COLORS[r.slug] || COLOR_FALLBACK[pi % 3];
+    var steps = r.steps.map(function (s, si) {
+      var k = kindOf(s);
+      var last = si === r.steps.length - 1;
+      return '<article class="panel step s' + (si % 5) + '" style="--rot:' + ROT[si % ROT.length] + 'deg">' +
+        '<span class="tag">STEP ' + (si + 1) + '</span>' +
+        '<span class="sfx small" aria-hidden="true">' + FX[k] + '</span>' +
+        '<div class="doodle">' + DOODLES[k] + '</div>' +
+        '<p class="bubble ' + (si % 2 ? "thought" : "speech") + '">' + esc(s) + '</p>' +
+        (last ? '<p class="end" aria-hidden="true">TO BE CONTINUED&hellip; AT THE DINNER TABLE!</p>' : '') +
+        '</article>';
+    }).join("");
+    var ings = r.ingredients.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("");
+    return '<section class="page" id="page-' + n + '" aria-labelledby="t-' + n + '" style="' + col + '">' +
+      '<div class="grid">' +
+      '<header class="panel splash" style="--rot:-.6deg">' +
+        '<span class="tag">PAGE ' + n + '</span>' +
+        '<span class="sfx big" aria-hidden="true">' + esc(sfx) + '</span>' +
+        '<div class="stage"><div class="burst" aria-hidden="true"></div><h2 id="t-' + n + '">' + esc(r.name) + '</h2></div>' +
+        '<p class="cap">' + esc(r.tagline) + '</p>' +
+        '<dl class="stats"><div><dt>Time</dt><dd>' + esc(r.time) + '</dd></div><div><dt>Yield</dt><dd>' + esc(r.yield) + '</dd></div><div><dt>Difficulty</dt><dd>' + esc(r.difficulty) + '</dd></div></dl>' +
+      '</header>' +
+      '<section class="panel ingr" aria-label="Ingredients for ' + esc(r.name) + '"><span class="tag">GATHER!</span><h3>YOU WILL NEED!</h3><ul>' + ings + '</ul></section>' +
+      steps +
+      '</div><span class="pno" aria-hidden="true">&mdash; ' + n + ' &mdash;</span></section>';
+  }).join("");
+
+  /* slam-in on scroll */
+  var panels = document.querySelectorAll(".panel");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var i;
+  if ("IntersectionObserver" in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    for (i = 0; i < panels.length; i++) io.observe(panels[i]);
+  } else {
+    for (i = 0; i < panels.length; i++) panels[i].classList.add("in");
+  }
+
+  /* pager highlight */
+  var links = pager.querySelectorAll("a[data-p]");
+  function setCurrent(id) {
+    for (var j = 0; j < links.length; j++) {
+      if (links[j].getAttribute("data-p") === id) links[j].setAttribute("aria-current", "true");
+      else links[j].removeAttribute("aria-current");
+    }
+  }
+  if ("IntersectionObserver" in window) {
+    var po = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) setCurrent(e.target.id); });
+    }, { rootMargin: "-45% 0px -45% 0px" });
+    var pgs = document.querySelectorAll(".page");
+    for (i = 0; i < pgs.length; i++) po.observe(pgs[i]);
+  }
+})();
+</script>
+</body>
+</html>

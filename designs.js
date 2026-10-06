@@ -106,5 +106,59 @@ Object.assign(BUILT, {
     type: "Fraunces + Lato", layout: "garland timeline of ornaments and gift tags", emphasis: "seasonal occasions",
     palette: ["#0f3b2e", "#b3202f", "#d9a441"],
   },
+  19: {
+    slug: "still-life", title: "Still Life", mood: "quiet, warm minimalism",
+    type: "Shippori Mincho + Mulish", layout: "off-center, vertical-text titles, ensō drawings", emphasis: "space and stillness",
+    palette: ["#ece4d6", "#3a342c", "#c8623b"],
+  },
+  20: {
+    slug: "the-bake-issue", title: "The Bake Issue", mood: "editorial, confident",
+    type: "Playfair Display + Inter", layout: "magazine cover, then column article spreads", emphasis: "typographic hierarchy",
+    palette: ["#f3efe8", "#111111", "#e4492f"],
+  },
+  21: {
+    slug: "night-market", title: "Night Market", mood: "neon, electric, after dark",
+    type: "Monoton + Space Grotesk", layout: "horizontal street of lit stalls, parallax", emphasis: "glow and atmosphere",
+    palette: ["#0a0b14", "#ff2e93", "#19e6ff"],
+  },
+  22: {
+    slug: "bake-timer", title: "Bake Timer", mood: "functional, focused, app-like",
+    type: "Manrope", layout: "dashboard with progress rings and cook mode", emphasis: "working timers and scaling",
+    palette: ["#f5f7fa", "#1b2430", "#2bd4a0"],
+  },
+  23: {
+    slug: "specimen-plates", title: "Specimen Plates", mood: "scholarly, curious, naturalist",
+    type: "IM Fell DW Pica + Courier Prime", layout: "annotated plates with numbered callouts", emphasis: "diagram and key",
+    palette: ["#e9dfc4", "#4a3b2a", "#a8432a"],
+  },
+  24: {
+    slug: "pow-bake", title: "Pow! Bake", mood: "loud, funny, pop-art comic",
+    type: "Bangers + Comic Neue", layout: "comic panels with speech bubbles and bursts", emphasis: "one panel per step",
+    palette: ["#ffe600", "#e8202a", "#00a6e0"],
+  },
+  25: {
+    slug: "terrace-tiles", title: "Terrace Tiles", mood: "sunny, Mediterranean, relaxed",
+    type: "DM Serif Display + Figtree", layout: "azulejo-framed bands with arched windows", emphasis: "warmth and openness",
+    palette: ["#1d4fa3", "#f6d44c", "#d9683a"],
+  },
 });
 DESIGNS.forEach((d) => { if (BUILT[d.id]) Object.assign(d, BUILT[d.id], { status: "built" }); });
+
+// Tile customization: the display font each design uses (so the title previews its type)
+// and the kind of layout sketch drawn on its tile (see gallery.js SKETCHES).
+const TILE_LOOK = {
+  1: ["Chewy", "scroll"],            2: ["IM Fell English", "book"],
+  3: ["Cormorant Garamond", "accordion"], 4: ["Caveat Brush", "columns"],
+  5: ["Archivo Black", "rows"],      6: ["Bagel Fat One", "carousel"],
+  7: ["Sniglet", "bubbles"],         8: ["Special Elite", "cards"],
+  9: ["Libre Baskerville", "collage"], 10: ["Bodoni Moda", "split"],
+  11: ["Cinzel", "column"],          12: ["Permanent Marker", "tags"],
+  13: ["Yellowtail", "shelves"],     14: ["Work Sans", "index"],
+  15: ["Anton", "tabs"],             16: ["League Spartan", "shapes"],
+  17: ["Shrikhand", "sunburst"],     18: ["Fraunces", "garland"],
+  19: ["Shippori Mincho", "vertical"], 20: ["Playfair Display", "magazine"],
+  21: ["Monoton", "street"],         22: ["Manrope", "dashboard"],
+  23: ["IM Fell DW Pica", "plate"],  24: ["Bangers", "comic"],
+  25: ["DM Serif Display", "tiles"],
+};
+DESIGNS.forEach((d) => { const l = TILE_LOOK[d.id]; if (l) { d.font = l[0]; d.kind = l[1]; } });

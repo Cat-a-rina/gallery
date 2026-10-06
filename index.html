@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Three Bakes — 25 Homepage Explorations</title>
   <meta name="description" content="A gallery of 25 homepage designs for a three-recipe baking site.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- display fonts from each design, so tile titles preview their typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Chewy&family=IM+Fell+English&family=Cormorant+Garamond:wght@300&family=Caveat+Brush&family=Archivo+Black&family=Bagel+Fat+One&family=Sniglet&family=Special+Elite&family=Libre+Baskerville&family=Bodoni+Moda&family=Cinzel&family=Permanent+Marker&family=Yellowtail&family=Work+Sans:wght@300&family=Anton&family=League+Spartan:wght@700&family=Shrikhand&family=Fraunces&family=Shippori+Mincho&family=Playfair+Display&family=Monoton&family=Manrope:wght@700&family=IM+Fell+DW+Pica&family=Bangers&family=DM+Serif+Display&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="gallery.css">
 </head>
 <body>
@@ -19,9 +23,11 @@
     <button type="button" data-filter="all" aria-pressed="true">All</button>
     <button type="button" data-filter="built" aria-pressed="false">Built</button>
     <button type="button" data-filter="planned" aria-pressed="false">Planned</button>
+    <button type="button" data-filter="saved" aria-pressed="false">★ Saved <span id="saved-count">0</span></button>
   </nav>
 
   <main>
+    <p class="empty" id="empty" hidden>Nothing saved yet. Tap the ☆ on any tile to save it here.</p>
     <ol class="grid" id="grid"></ol>
   </main>
 

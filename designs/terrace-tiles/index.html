@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terrace Tiles | A Long Lunch of Bread and Cookies</title>
+<meta name="description" content="Three baking recipes served on a sun-drenched Mediterranean terrace of painted tiles.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cobalt: #1d4fa3;
+    --cobalt-deep: #123673;
+    --lemon: #f6d44c;
+    --terra: #d9683a;
+    --white: #fbf8f1;
+    --olive: #7a8a3c;
+    --ink: #172a4d;
+    --serif: "DM Serif Display", "Playfair Display", Georgia, "Times New Roman", serif;
+    --sans: "Figtree", "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    --nav-h: 68px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 12px); }
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--ink);
+    background: var(--white);
+    overflow-x: hidden;
+  }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.08; margin: 0; }
+  p { margin: 0; }
+  ul, ol { margin: 0; padding: 0; list-style: none; }
+  a { color: inherit; }
+  :focus-visible { outline: 4px solid var(--terra); outline-offset: 3px; border-radius: 6px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- drifting sunlight ---------- */
+  .sun { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 60; }
+  .sun::before {
+    content: "";
+    position: absolute;
+    top: -20%; bottom: -20%; left: -60%;
+    width: 220%;
+    background:
+      linear-gradient(112deg,
+        transparent 0 30%,
+        rgba(23, 42, 77, .07) 30% 41%,
+        transparent 41% 45%,
+        rgba(23, 42, 77, .045) 45% 49%,
+        transparent 49% 56%,
+        rgba(255, 236, 160, .22) 56% 66%,
+        transparent 66%);
+    animation: drift 46s ease-in-out infinite alternate;
+  }
+  @keyframes drift { from { transform: translateX(-12%); } to { transform: translateX(32%); } }
+
+  /* ---------- nav ---------- */
+  .topnav {
+    position: sticky; top: 0; z-index: 50;
+    min-height: var(--nav-h);
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 10px clamp(10px, 3vw, 32px);
+    background: var(--white);
+    border-bottom: 5px solid var(--cobalt);
+    box-shadow: 0 6px 0 var(--lemon);
+  }
+  .back {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-weight: 700; text-decoration: none; font-size: .95rem;
+    padding: 8px 14px; border-radius: 999px; border: 2px solid var(--cobalt); color: var(--cobalt);
+    transition: background .2s, color .2s;
+  }
+  .back:hover { background: var(--cobalt); color: var(--white); }
+  .brand { font-family: var(--serif); font-size: 1.35rem; color: var(--cobalt); margin-right: auto; padding-left: 6px; }
+  .tilenav { display: flex; gap: 8px; }
+  .tilelink {
+    display: inline-flex; align-items: center; gap: 8px;
+    text-decoration: none; font-weight: 700; font-size: .92rem;
+    padding: 6px 14px 6px 6px;
+    border: 2px solid var(--cobalt);
+    border-radius: 14px;
+    background: var(--white);
+    transition: background .2s, color .2s, transform .2s;
+  }
+  .tilelink .mini { perspective: 300px; width: 30px; height: 30px; display: block; }
+  .tilelink .mini > span {
+    display: grid; place-items: center; width: 100%; height: 100%;
+    background: var(--cobalt); color: var(--lemon); border-radius: 8px;
+    transition: transform .6s;
+    transform-style: preserve-3d;
+  }
+  .tilelink .mini svg { width: 20px; height: 20px; }
+  .tilelink:hover .mini > span, .tilelink:focus-visible .mini > span { transform: rotateY(360deg); }
+  .tilelink:hover { background: var(--lemon); }
+  .tilelink[aria-current="true"] { background: var(--cobalt); color: var(--white); }
+  .tilelink[aria-current="true"] .mini > span { background: var(--lemon); color: var(--cobalt); }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    background-color: var(--cobalt);
+    background-image: var(--pat-hero);
+    background-size: 88px 88px;
+    padding: clamp(28px, 6vw, 72px) clamp(14px, 4vw, 56px) clamp(48px, 7vw, 96px);
+  }
+  .hero-in {
+    max-width: 1180px; margin: 0 auto;
+    display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(20px, 4vw, 56px); align-items: center;
+  }
+  .window {
+    background: var(--white);
+    border: 8px solid var(--lemon);
+    outline: 5px solid var(--cobalt-deep);
+    border-radius: 999px 999px 28px 28px;
+    padding: clamp(80px, 14vw, 170px) clamp(20px, 5vw, 64px) clamp(28px, 4vw, 52px);
+    text-align: center;
+    box-shadow: 14px 16px 0 rgba(18, 54, 115, .45);
+  }
+  .kicker { font-weight: 700; letter-spacing: .16em; text-transform: uppercase; font-size: .8rem; color: var(--terra); }
+  .hero h1 { font-size: clamp(2.5rem, 7.2vw, 5.4rem); color: var(--cobalt); margin: 10px 0 14px; }
+  .hero h1 em { color: var(--terra); font-style: italic; }
+  .hero .lede { font-size: clamp(1.05rem, 2vw, 1.3rem); max-width: 30ch; margin: 0 auto; }
+  .hero .cta { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+  .pill {
+    display: inline-block; text-decoration: none; font-weight: 700;
+    padding: 10px 20px; border-radius: 999px; background: var(--cobalt); color: var(--white);
+    border: 2px solid var(--cobalt); transition: transform .2s, background .2s, color .2s;
+  }
+  .pill.alt { background: var(--lemon); color: var(--cobalt-deep); border-color: var(--cobalt); }
+  .pill:hover { transform: translateY(-3px) rotate(-1.5deg); }
+
+  .tilegrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 380px; margin: 0 auto; width: 100%; }
+  .tile { perspective: 700px; aspect-ratio: 1; cursor: pointer; }
+  .tile-in {
+    position: relative; width: 100%; height: 100%;
+    transform-style: preserve-3d; transition: transform .8s cubic-bezier(.3, .8, .3, 1);
+  }
+  .tile:hover .tile-in, .tile.flipped .tile-in { transform: rotateY(180deg); }
+  .face {
+    position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    display: grid; place-items: center; border-radius: 12px; border: 3px solid var(--white);
+    box-shadow: 0 4px 0 rgba(18, 54, 115, .5);
+  }
+  .face svg { width: 74%; height: 74%; }
+  .face.back { transform: rotateY(180deg); background: var(--lemon); }
+  .face.back svg { width: 64%; height: 64%; }
+  .t0 { background: var(--cobalt-deep); color: var(--white); }
+  .t1 { background: var(--lemon); color: var(--cobalt); }
+  .t2 { background: var(--terra); color: var(--white); }
+
+  /* ---------- bands ---------- */
+  .band { position: relative; --pat: var(--pat-a); }
+  .band[data-tone="sun"] { background: var(--white); }
+  .band[data-tone="lemon"] { background: #f9e27a; }
+  .band[data-tone="terra"] { background: #f2c4a9; }
+  .frame { height: 40px; background-image: var(--pat); background-size: 40px 40px; background-color: var(--cobalt); }
+  .band-in {
+    max-width: 1180px; margin: 0 auto;
+    padding: clamp(36px, 6vw, 84px) clamp(14px, 4vw, 40px);
+    display: grid; grid-template-columns: minmax(280px, 400px) 1fr; gap: clamp(24px, 5vw, 72px); align-items: start;
+  }
+  .band.flip .band-in { grid-template-columns: 1fr minmax(280px, 400px); }
+  .band.flip .arch { order: 2; }
+  .arch {
+    position: sticky; top: calc(var(--nav-h) + 24px);
+    background: var(--white);
+    border: 6px solid var(--cobalt);
+    outline: 4px solid var(--lemon);
+    outline-offset: 0;
+    border-radius: 999px 999px 24px 24px;
+    padding: clamp(70px, 10vw, 120px) 26px 30px;
+    text-align: center;
+    box-shadow: 10px 12px 0 rgba(23, 42, 77, .22);
+  }
+  .band[data-tone="lemon"] .arch { outline-color: var(--terra); }
+  .band[data-tone="terra"] .arch { outline-color: var(--olive); }
+  .arch .num { font-weight: 700; font-size: .78rem; letter-spacing: .18em; text-transform: uppercase; color: var(--terra); }
+  .arch .seal { width: 56px; height: 56px; margin: 0 auto 8px; display: block; }
+  .arch h2 { font-size: clamp(2rem, 4.2vw, 3rem); color: var(--cobalt); margin: 6px 0 10px; }
+  .arch .tag { font-style: italic; font-size: 1.1rem; margin-bottom: 20px; }
+  .meta { display: grid; gap: 8px; text-align: left; }
+  .meta div {
+    display: grid; grid-template-columns: 74px 1fr; gap: 10px; align-items: center;
+    padding: 8px 12px; border-radius: 14px; background: #eef2fa; border: 2px solid var(--cobalt);
+  }
+  .meta dt { font-weight: 700; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--cobalt); }
+  .meta dd { margin: 0; font-weight: 600; font-size: .95rem; line-height: 1.3; }
+
+  .body h3 { font-size: clamp(1.6rem, 3vw, 2.2rem); color: var(--cobalt-deep); margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+  .body h3::after { content: ""; flex: 1; height: 8px; border-radius: 4px; background: repeating-linear-gradient(90deg, var(--cobalt) 0 14px, transparent 14px 22px); opacity: .5; }
+  .basket { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin-bottom: clamp(32px, 5vw, 56px); }
+  .chip {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--white); border: 3px solid var(--cobalt); border-radius: 22px;
+    padding: 8px 16px 8px 8px; font-weight: 600; line-height: 1.35;
+    box-shadow: 0 5px 0 var(--cobalt);
+    transition: transform .25s, box-shadow .25s;
+  }
+  .chip:hover { transform: translateY(3px) rotate(-1deg); box-shadow: 0 2px 0 var(--cobalt); }
+  .chip .ico { flex: none; width: 46px; height: 46px; border-radius: 50%; background: #eef2fa; display: grid; place-items: center; border: 2px solid #c9d6ee; }
+  .chip .ico svg { width: 30px; height: 30px; }
+
+  .steps { display: grid; gap: 14px; }
+  .step {
+    display: grid; grid-template-columns: 64px 1fr; gap: 16px; align-items: center;
+    background: var(--white); border-radius: 26px; padding: 14px 20px 14px 14px; border: 3px solid var(--cobalt);
+  }
+  .badge { perspective: 400px; width: 64px; height: 64px; }
+  .badge-in { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .7s; }
+  .step:hover .badge-in { transform: rotateY(180deg); }
+  .badge .face { border-radius: 14px; border: 3px solid var(--white); box-shadow: 0 0 0 3px var(--cobalt); }
+  .badge .front { background-color: var(--cobalt); background-image: var(--pat-badge); background-size: 32px 32px; }
+  .badge .front b { font-family: var(--serif); font-weight: 400; font-size: 1.9rem; color: var(--cobalt-deep); background: var(--lemon); width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; line-height: 1; }
+  .badge .face.back { background: var(--terra); color: var(--white); }
+  .badge .face.back svg { width: 60%; height: 60%; }
+  .step p { font-size: 1.08rem; }
+
+  /* ---------- footer ---------- */
+  footer { background: var(--cobalt-deep); color: var(--white); }
+  footer .frame { background-color: var(--cobalt); }
+  .foot-in { max-width: 1180px; margin: 0 auto; padding: 36px clamp(14px, 4vw, 40px) 56px; display: flex; flex-wrap: wrap; gap: 18px; align-items: center; justify-content: space-between; }
+  .foot-in p { font-family: var(--serif); font-size: 1.5rem; color: var(--lemon); }
+  footer .back { color: var(--white); border-color: var(--lemon); }
+  footer .back:hover { background: var(--lemon); color: var(--cobalt-deep); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .hero-in { grid-template-columns: 1fr; }
+    .tilegrid { max-width: 300px; }
+    .band-in, .band.flip .band-in { grid-template-columns: 1fr; }
+    .band.flip .arch { order: 0; }
+    .arch { position: relative; top: 0; max-width: 460px; margin: 0 auto; width: 100%; }
+  }
+  @media (max-width: 520px) {
+    body { font-size: 1rem; }
+    .brand { display: none; }
+    .topnav { gap: 6px; padding: 8px; }
+    .tilenav { gap: 5px; margin-left: auto; }
+    .tilelink { padding: 6px 10px; font-size: .82rem; border-radius: 12px; }
+    .tilelink .mini { display: none; }
+    .back { padding: 7px 11px; font-size: .85rem; }
+    .window { border-width: 6px; box-shadow: 8px 10px 0 rgba(18, 54, 115, .45); }
+    .basket { grid-template-columns: 1fr; }
+    .step { grid-template-columns: 54px 1fr; gap: 12px; padding: 12px; }
+    .badge { width: 54px; height: 54px; }
+    .badge .front b { width: 32px; height: 32px; font-size: 1.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .sun::before { animation: none; display: none; }
+    *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="sun" aria-hidden="true"></div>
+
+<header class="topnav" id="top">
+  <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> Gallery</a>
+  <span class="brand" aria-hidden="true">Terrace Tiles</span>
+  <nav aria-label="Jump to a recipe"><div class="tilenav" id="tilenav"></div></nav>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-in">
+      <div class="window">
+        <p class="kicker">Mesa para todos &middot; Lunch is at two</p>
+        <h1 id="hero-title">Long lunch on the <em>terrace</em></h1>
+        <p class="lede">Warm bread, golden oil and cookies still soft, all set out on painted tiles in the afternoon sun.</p>
+        <div class="cta" id="cta"></div>
+      </div>
+      <div class="tilegrid" id="tilegrid" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <div id="bands"></div>
+</main>
+
+<footer>
+  <div class="frame" aria-hidden="true"></div>
+  <div class="foot-in">
+    <p>Pour another glass. Stay awhile.</p>
+    <a class="back" href="../../index.html"><span aria-hidden="true">&larr;</span> Back to the gallery</a>
+  </div>
+</footer>
+
+<script src="../../recipes.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ----- colors ----- */
+  var C = { cobalt: '#1d4fa3', deep: '#123673', lemon: '#f6d44c', terra: '#d9683a', white: '#fbf8f1', olive: '#7a8a3c' };
+
+  /* ----- tile patterns, generated as SVG data URIs ----- */
+  function uri(svg) { return 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")'; }
+  function starTile(bg, fg, accent) {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">' +
+      '<rect width="80" height="80" fill="' + bg + '"/>' +
+      '<g fill="' + fg + '"><rect x="18" y="18" width="44" height="44"/>' +
+      '<rect x="18" y="18" width="44" height="44" transform="rotate(45 40 40)"/></g>' +
+      '<circle cx="40" cy="40" r="9" fill="' + accent + '"/>' +
+      '<g fill="' + accent + '"><circle cx="0" cy="0" r="9"/><circle cx="80" cy="0" r="9"/>' +
+      '<circle cx="0" cy="80" r="9"/><circle cx="80" cy="80" r="9"/></g></svg>';
+  }
+  function quatTile(bg, fg, accent) {
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">' +
+      '<rect width="80" height="80" fill="' + bg + '"/>' +
+      '<g fill="' + fg + '"><circle cx="40" cy="26" r="14"/><circle cx="54" cy="40" r="14"/>' +
+      '<circle cx="40" cy="54" r="14"/><circle cx="26" cy="40" r="14"/><rect x="28" y="28" width="24" height="24"/></g>' +
+      '<circle cx="40" cy="40" r="6" fill="' + accent + '"/>' +
+      '<g fill="' + accent + '"><path d="M0 -8L8 0L0 8L-8 0Z" transform="translate(0 0)"/>' +
+      '<path d="M0 -8L8 0L0 8L-8 0Z" transform="translate(80 0)"/>' +
+      '<path d="M0 -8L8 0L0 8L-8 0Z" transform="translate(0 80)"/>' +
+      '<path d="M0 -8L8 0L0 8L-8 0Z" transform="translate(80 80)"/></g></svg>';
+  }
+  var PATS = [
+    uri(starTile(C.cobalt, C.white, C.lemon)),
+    uri(quatTile(C.cobalt, C.lemon, C.white)),
+    uri(starTile(C.terra, C.white, C.lemon))
+  ];
+  var rs = document.documentElement.style;
+  rs.setProperty('--pat-hero', PATS[0]);
+  rs.setProperty('--pat-badge', uri(starTile(C.cobalt, C.white, C.lemon)));
+
+  /* ----- icons (inline SVG, 32x32) ----- */
+  var ICONS = {
+    lemon: '<svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="18" rx="11" ry="8" fill="#f6d44c" stroke="#c19a12" stroke-width="1.6"/><circle cx="4.6" cy="18" r="1.8" fill="#f6d44c" stroke="#c19a12" stroke-width="1.2"/><circle cx="27.4" cy="18" r="1.8" fill="#f6d44c" stroke="#c19a12" stroke-width="1.2"/><path d="M16 10c1-4 4-6 8-6-1 4-4 6-8 6z" fill="#7a8a3c"/></svg>',
+    olive: '<svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="19" rx="8" ry="10" fill="#7a8a3c" stroke="#4e5a22" stroke-width="1.6" transform="rotate(-18 16 19)"/><ellipse cx="13" cy="16" rx="2" ry="3.4" fill="#a7b866" transform="rotate(-18 13 16)"/><path d="M18 9c1-3 3-5 6-6" stroke="#4e5a22" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+    wheat: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29V8" stroke="#b8861f" stroke-width="2" stroke-linecap="round"/><g fill="#e3a93a" stroke="#b8861f" stroke-width="1"><ellipse cx="16" cy="6" rx="2.6" ry="4"/><ellipse cx="11.4" cy="12" rx="2.4" ry="4" transform="rotate(-35 11.4 12)"/><ellipse cx="20.6" cy="12" rx="2.4" ry="4" transform="rotate(35 20.6 12)"/><ellipse cx="11.4" cy="19" rx="2.4" ry="4" transform="rotate(-35 11.4 19)"/><ellipse cx="20.6" cy="19" rx="2.4" ry="4" transform="rotate(35 20.6 19)"/></g></svg>',
+    salt: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M10 12h12l2 15a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2z" fill="#fbf8f1" stroke="#1d4fa3" stroke-width="2" stroke-linejoin="round"/><path d="M10 12c0-5 2-8 6-8s6 3 6 8z" fill="#1d4fa3"/><g fill="#1d4fa3"><circle cx="14" cy="9" r="1" fill="#f6d44c"/><circle cx="18" cy="8" r="1" fill="#f6d44c"/><circle cx="16" cy="19" r="1.3"/><circle cx="13" cy="23" r="1.1"/><circle cx="19" cy="23" r="1.1"/></g></svg>',
+    egg: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3c-6 0-10 10-10 16a10 10 0 0 0 20 0C26 13 22 3 16 3z" fill="#fbf8f1" stroke="#c9873b" stroke-width="2"/><ellipse cx="12.5" cy="12" rx="2" ry="3.6" fill="#fff" transform="rotate(20 12.5 12)"/></svg>',
+    butter: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 14l6-6h20l-6 6z" fill="#fff0a0" stroke="#c19a12" stroke-width="1.6" stroke-linejoin="round"/><rect x="3" y="14" width="20" height="11" rx="1.5" fill="#f6d44c" stroke="#c19a12" stroke-width="1.6"/><path d="M23 14l6-6v11l-6 6z" fill="#e8bd2e" stroke="#c19a12" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+    chocolate: '<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="4" width="22" height="24" rx="3" fill="#6b3b24" stroke="#42210f" stroke-width="1.6"/><path d="M5 12h22M5 20h22M13 4v24M21 4v24" stroke="#42210f" stroke-width="1.4"/><path d="M7 6l4 0" stroke="#a36a48" stroke-width="2" stroke-linecap="round"/></svg>',
+    rosemary: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 28C12 20 18 12 25 4" stroke="#4e5a22" stroke-width="2" fill="none" stroke-linecap="round"/><g fill="#7a8a3c"><ellipse cx="11" cy="20" rx="1.4" ry="4" transform="rotate(-70 11 20)"/><ellipse cx="15" cy="23" rx="1.4" ry="4" transform="rotate(30 15 23)"/><ellipse cx="14" cy="15" rx="1.4" ry="4" transform="rotate(-70 14 15)"/><ellipse cx="18" cy="18" rx="1.4" ry="4" transform="rotate(30 18 18)"/><ellipse cx="18" cy="10" rx="1.4" ry="4" transform="rotate(-70 18 10)"/><ellipse cx="22" cy="13" rx="1.4" ry="4" transform="rotate(30 22 13)"/></g></svg>',
+    drop: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 15 7 20a9 9 0 0 0 18 0c0-5-4-9-9-17z" fill="#5da0e6" stroke="#1d4fa3" stroke-width="2" stroke-linejoin="round"/><path d="M11.5 20a4.5 4.5 0 0 0 3 4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+    oil: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M13 3h6v5l3 4v14a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V12l3-4z" fill="#b9c24a" stroke="#6b7326" stroke-width="1.8" stroke-linejoin="round"/><rect x="12.5" y="2" width="7" height="3" rx="1" fill="#6b7326"/><path d="M13 17h6" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".7"/></svg>',
+    star: '<svg viewBox="0 0 32 32" aria-hidden="true"><g fill="#d9683a"><rect x="6" y="6" width="20" height="20"/><rect x="6" y="6" width="20" height="20" transform="rotate(45 16 16)"/></g><circle cx="16" cy="16" r="4" fill="#f6d44c"/></svg>'
+  };
+  function iconFor(text) {
+    var t = text.toLowerCase();
+    if (/chocolate|cocoa/.test(t)) return 'chocolate';
+    if (/\begg|yolk/.test(t)) return 'egg';
+    if (/butter/.test(t)) return 'butter';
+    if (/olive/.test(t)) return 'olive';
+    if (/\boil\b/.test(t)) return 'oil';
+    if (/rosemary|herb|thyme/.test(t)) return 'rosemary';
+    if (/salt/.test(t)) return 'salt';
+    if (/lemon/.test(t)) return 'lemon';
+    if (/water|milk/.test(t)) return 'drop';
+    if (/flour|wheat|starter|yeast|grain/.test(t)) return 'wheat';
+    return 'star';
+  }
+  var STAR_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="currentColor"><rect x="18" y="18" width="64" height="64" rx="3"/><rect x="18" y="18" width="64" height="64" rx="3" transform="rotate(45 50 50)"/></g><circle cx="50" cy="50" r="12" fill="#f6d44c"/></svg>';
+  var QUAT_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="currentColor"><circle cx="50" cy="30" r="20"/><circle cx="70" cy="50" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="30" cy="50" r="20"/><rect x="34" y="34" width="32" height="32"/></g><circle cx="50" cy="50" r="8" fill="#f6d44c"/></svg>';
+
+  /* ----- per-slug extras ----- */
+  var EXTRAS = {
+    'sourdough': { short: 'Sourdough', tone: 'sun', pat: 0, icon: 'wheat', num: 'Primero' },
+    'focaccia': { short: 'Focaccia', tone: 'lemon', pat: 1, icon: 'oil', num: 'Segundo' },
+    'chocolate-chip-cookies': { short: 'Cookies', tone: 'terra', pat: 2, icon: 'chocolate', num: 'Postre' }
+  };
+  var FALLBACK = { short: '', tone: 'sun', pat: 0, icon: 'star', num: 'Plato' };
+
+  function h(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function ex(r) { return EXTRAS[r.slug] || FALLBACK; }
+
+  /* ----- nav + cta ----- */
+  var nav = document.getElementById('tilenav');
+  var cta = document.getElementById('cta');
+  RECIPES.forEach(function (r, i) {
+    var x = ex(r);
+    var a = h('a', 'tilelink');
+    a.href = '#' + r.slug;
+    var mini = h('span', 'mini');
+    var inner = h('span');
+    inner.innerHTML = i % 2 ? QUAT_SVG : STAR_SVG;
+    mini.appendChild(inner);
+    a.appendChild(mini);
+    a.appendChild(h('span', null, x.short || r.name));
+    nav.appendChild(a);
+
+    var p = h('a', 'pill' + (i === 1 ? ' alt' : ''), r.name);
+    p.href = '#' + r.slug;
+    cta.appendChild(p);
+  });
+
+  /* ----- hero flip tiles ----- */
+  var grid = document.getElementById('tilegrid');
+  var order = ['lemon', 'olive', 'wheat', 'salt', 'egg', 'butter', 'chocolate', 'rosemary', 'drop'];
+  order.forEach(function (name, i) {
+    var tile = h('div', 'tile');
+    var inn = h('div', 'tile-in');
+    var front = h('div', 'face front t' + ((i + (i > 4 ? 1 : 0)) % 3));
+    front.innerHTML = (i % 2) ? QUAT_SVG : STAR_SVG;
+    var back = h('div', 'face back');
+    back.innerHTML = ICONS[name];
+    inn.appendChild(front);
+    inn.appendChild(back);
+    tile.appendChild(inn);
+    tile.addEventListener('click', function () { tile.classList.toggle('flipped'); });
+    grid.appendChild(tile);
+  });
+
+  /* ----- recipe bands ----- */
+  var bands = document.getElementById('bands');
+  RECIPES.forEach(function (r, i) {
+    var x = ex(r);
+    var sec = h('section', 'band' + (i % 2 ? ' flip' : ''));
+    sec.id = r.slug;
+    sec.setAttribute('data-tone', x.tone);
+    sec.setAttribute('aria-labelledby', 'h-' + r.slug);
+    sec.style.setProperty('--pat', PATS[x.pat % PATS.length]);
+
+    var top = h('div', 'frame');
+    top.setAttribute('aria-hidden', 'true');
+    var bot = h('div', 'frame');
+    bot.setAttribute('aria-hidden', 'true');
+
+    var inner = h('div', 'band-in');
+
+    /* arched window panel */
+    var arch = h('header', 'arch');
+    var seal = h('span', 'seal');
+    seal.style.display = 'block';
+    seal.innerHTML = ICONS[x.icon] || ICONS.star;
+    seal.firstChild.setAttribute('class', 'seal');
+    arch.appendChild(seal);
+    arch.appendChild(h('p', 'num', x.num + ' · ' + (i + 1) + ' of ' + RECIPES.length));
+    var h2 = h('h2', null, r.name);
+    h2.id = 'h-' + r.slug;
+    arch.appendChild(h2);
+    arch.appendChild(h('p', 'tag', r.tagline));
+    var dl = h('dl', 'meta');
+    [['Time', r.time], ['Yield', r.yield], ['Level', r.difficulty]].forEach(function (m) {
+      var d = h('div');
+      d.appendChild(h('dt', null, m[0]));
+      d.appendChild(h('dd', null, m[1]));
+      dl.appendChild(d);
+    });
+    arch.appendChild(dl);
+
+    /* basket + steps */
+    var body = h('div', 'body');
+    body.appendChild(h('h3', null, 'Market basket'));
+    var ul = h('ul', 'basket');
+    r.ingredients.forEach(function (t) {
+      var li = h('li', 'chip');
+      var ico = h('span', 'ico');
+      ico.innerHTML = ICONS[iconFor(t)];
+      li.appendChild(ico);
+      li.appendChild(h('span', null, t));
+      ul.appendChild(li);
+    });
+    body.appendChild(ul);
+
+    body.appendChild(h('h3', null, 'At the table'));
+    var ol = h('ol', 'steps');
+    r.steps.forEach(function (t, n) {
+      var li = h('li', 'step');
+      var badge = h('div', 'badge');
+      badge.setAttribute('aria-hidden', 'true');
+      var bin = h('div', 'badge-in');
+      var f = h('div', 'face front');
+      f.appendChild(h('b', null, String(n + 1)));
+      var b = h('div', 'face back');
+      b.innerHTML = STAR_SVG;
+      bin.appendChild(f);
+      bin.appendChild(b);
+      badge.appendChild(bin);
+      li.appendChild(badge);
+      var p = h('p', null, t);
+      var sr = h('span', 'sr-only', 'Step ' + (n + 1) + ': ');
+      p.insertBefore(sr, p.firstChild);
+      li.appendChild(p);
+      ol.appendChild(li);
+    });
+    body.appendChild(ol);
+
+    inner.appendChild(arch);
+    inner.appendChild(body);
+    sec.appendChild(top);
+    sec.appendChild(inner);
+    sec.appendChild(bot);
+    bands.appendChild(sec);
+  });
+
+  /* ----- active nav link on scroll ----- */
+  var links = nav.querySelectorAll('.tilelink');
+  function setActive(id) {
+    for (var i = 0; i < links.length; i++) {
+      if (links[i].getAttribute('href') === '#' + id) links[i].setAttribute('aria-current', 'true');
+      else links[i].removeAttribute('aria-current');
+    }
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) setActive(en.target.id); });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    bands.querySelectorAll('section').forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Night Market | Three stalls, open late</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --asphalt: #0a0b14; --magenta: #ff2e93; --cyan: #19e6ff; --amber: #ffb020;
+      --ink: #dfe6ff; --dim: #8d95b8;
+      --neon: "Monoton", "Tilt Neon", Impact, "Arial Black", sans-serif;
+      --body: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+      --barh: 56px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body { background: radial-gradient(120% 80% at 50% 100%, #1a1030 0%, var(--asphalt) 60%); color: var(--ink); font-family: var(--body); font-size: 14px; line-height: 1.45; overflow: hidden; }
+    :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; box-shadow: 0 0 12px var(--cyan); }
+    button { font: inherit; color: inherit; cursor: pointer; }
+
+    /* ---------- sky / parallax ---------- */
+    .sky { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .sky .layer { position: absolute; left: 0; right: 0; bottom: 0; background-repeat: repeat-x; background-position: 0 100%; background-size: auto 100%; }
+    .sky .far { height: 62%; opacity: .55; }
+    .sky .mid { height: 44%; opacity: .9; }
+    .sky .glow { position: absolute; inset: 0; background: radial-gradient(40% 30% at 20% 70%, rgba(255,46,147,.14), transparent 70%), radial-gradient(40% 30% at 80% 60%, rgba(25,230,255,.12), transparent 70%); }
+    .sky .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 70px; background: linear-gradient(to bottom, rgba(10,11,20,0), #07070e 70%), repeating-linear-gradient(90deg, rgba(255,46,147,.22) 0 120px, rgba(25,230,255,.18) 120px 240px); mix-blend-mode: normal; border-top: 1px solid rgba(255,255,255,.06); }
+
+    .rain { position: fixed; inset: 0; z-index: 20; pointer-events: none; opacity: .7;
+      background:
+        repeating-linear-gradient(100deg, transparent 0 11px, rgba(170,225,255,.10) 11px 12px, transparent 12px 37px),
+        repeating-linear-gradient(104deg, transparent 0 23px, rgba(255,255,255,.07) 23px 24px, transparent 24px 61px);
+      background-size: 220px 220px, 340px 340px;
+      animation: rain .55s linear infinite; }
+    @keyframes rain { to { background-position: -40px 220px, -70px 340px; } }
+
+    /* ---------- top bar ---------- */
+    .bar { position: relative; z-index: 10; height: var(--barh); display: flex; align-items: center; gap: 1rem; padding: 0 1rem; background: rgba(10,11,20,.78); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(25,230,255,.25); }
+    .back { color: var(--cyan); text-decoration: none; font-weight: 700; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; text-shadow: 0 0 8px rgba(25,230,255,.7); white-space: nowrap; padding: .3rem .1rem; }
+    .back:hover { color: #fff; text-shadow: 0 0 6px #fff, 0 0 16px var(--cyan); }
+    .meter { flex: 1; height: 4px; border-radius: 4px; background: rgba(255,255,255,.08); overflow: hidden; }
+    .meter i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--magenta), var(--cyan)); box-shadow: 0 0 10px var(--magenta), 0 0 18px var(--cyan); }
+    .pager { display: flex; gap: .5rem; }
+    .pager button { width: 40px; height: 36px; border-radius: 10px; border: 1.5px solid var(--magenta); background: rgba(255,46,147,.08); color: var(--magenta); display: grid; place-items: center; box-shadow: 0 0 10px rgba(255,46,147,.5), inset 0 0 8px rgba(255,46,147,.3); transition: .15s; }
+    .pager button:hover:not(:disabled) { color: #fff; box-shadow: 0 0 18px var(--magenta), 0 0 34px var(--magenta), inset 0 0 12px rgba(255,46,147,.6); }
+    .pager button:disabled { opacity: .25; cursor: default; }
+    .pager svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 4px currentColor); }
+
+    /* ---------- the street ---------- */
+    .street { position: relative; z-index: 5; height: calc(100% - var(--barh)); display: flex; align-items: stretch; gap: 2.5rem; padding: 1.2rem 3rem 1.6rem 3rem; overflow-x: auto; overflow-y: hidden; scrollbar-color: var(--magenta) rgba(255,255,255,.06); scrollbar-width: auto; overscroll-behavior-x: contain; }
+    .street::-webkit-scrollbar { height: 14px; }
+    .street::-webkit-scrollbar-track { background: rgba(255,255,255,.05); }
+    .street::-webkit-scrollbar-thumb { background: var(--magenta); border-radius: 10px; box-shadow: 0 0 10px var(--magenta); border: 3px solid #0a0b14; }
+    .street > * { flex: 0 0 auto; }
+
+    /* gate */
+    .gate { width: min(560px, 80vw); display: flex; flex-direction: column; justify-content: center; gap: 1.1rem; position: relative; }
+    .gate h1 { margin: 0; font-family: var(--neon); font-weight: 400; font-size: clamp(3rem, 8.2vw, 6.4rem); line-height: .95; color: #ffe3f1; text-shadow: 0 0 4px #fff, 0 0 12px var(--magenta), 0 0 28px var(--magenta), 0 0 60px var(--magenta); }
+    .gate h1 span { display: block; color: #dffbff; text-shadow: 0 0 4px #fff, 0 0 12px var(--cyan), 0 0 28px var(--cyan), 0 0 60px var(--cyan); }
+    .gate p { margin: 0; max-width: 34ch; color: var(--dim); }
+    .gate .hint { color: var(--amber); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; font-size: 12px; text-shadow: 0 0 8px rgba(255,176,32,.7); }
+    .open { align-self: flex-start; position: relative; padding: .7rem 1.6rem .55rem; margin-top: .4rem; }
+    .open svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; fill: none; stroke: var(--amber); stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 0 3px var(--amber)) drop-shadow(0 0 12px var(--amber)); }
+    .open b { position: relative; font-family: var(--neon); font-weight: 400; font-size: 2.2rem; letter-spacing: .12em; color: #fff0cf; text-shadow: 0 0 4px #fff, 0 0 12px var(--amber), 0 0 30px var(--amber); animation: buzz 3.4s infinite; }
+    .open::before, .open::after { content: ""; position: absolute; top: -26px; width: 2px; height: 26px; background: #556; }
+    .open::before { left: 22%; } .open::after { right: 22%; }
+
+    /* stall */
+    .stall { width: min(540px, 86vw); display: flex; flex-direction: column; position: relative; --c: var(--magenta); }
+    .stall:nth-of-type(2) { --c: var(--cyan); }
+    .stall:nth-of-type(3) { --c: var(--amber); }
+    .sign { position: relative; padding: 1.1rem 1.4rem 1rem; text-align: center; margin: 0 .6rem; }
+    .sign::before, .sign::after { content: ""; position: absolute; top: -14px; width: 2px; height: 16px; background: #556; }
+    .sign::before { left: 14%; } .sign::after { right: 14%; }
+    .tube { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; fill: none; stroke: var(--c); stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 0 3px var(--c)) drop-shadow(0 0 10px var(--c)) drop-shadow(0 0 22px var(--c)); transition: filter .2s; }
+    .tube .t2 { stroke-width: 1.5; opacity: .7; stroke-dasharray: 2 7; }
+    .sign .no { position: relative; margin: 0; font-size: 11px; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: var(--c); text-shadow: 0 0 8px var(--c); }
+    .sign h2 { position: relative; margin: .2rem 0 .15rem; font-family: var(--neon); font-weight: 400; font-size: clamp(1.7rem, 3.4vw, 2.5rem); line-height: 1.05; color: #fff; text-shadow: 0 0 3px #fff, 0 0 10px var(--c), 0 0 24px var(--c), 0 0 48px var(--c); transition: text-shadow .2s; }
+    .sign h2 em { font-style: normal; animation: buzz 4.1s infinite; display: inline-block; }
+    .sign .tag { position: relative; margin: 0; font-size: 13px; color: #ffe; text-shadow: 0 0 6px var(--c); }
+    .stall:hover .tube, .stall:focus-within .tube { filter: drop-shadow(0 0 4px #fff) drop-shadow(0 0 14px var(--c)) drop-shadow(0 0 34px var(--c)) drop-shadow(0 0 60px var(--c)); }
+    .stall:hover .sign h2, .stall:focus-within .sign h2 { text-shadow: 0 0 4px #fff, 0 0 14px var(--c), 0 0 34px var(--c), 0 0 70px var(--c), 0 0 100px var(--c); }
+
+    .arrow { position: absolute; right: -6px; top: 4.3rem; z-index: 3; transform: rotate(8deg); display: flex; flex-direction: column; align-items: center; font-weight: 700; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); text-shadow: 0 0 8px var(--amber); pointer-events: none; }
+    .arrow svg { width: 26px; height: 40px; fill: none; stroke: var(--amber); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 5px var(--amber)); }
+    .arrow svg polyline { animation: chev 1.2s infinite; opacity: .25; }
+    .arrow svg polyline:nth-child(2) { animation-delay: .2s; }
+    .arrow svg polyline:nth-child(3) { animation-delay: .4s; }
+    @keyframes chev { 0%, 100% { opacity: .2; } 40% { opacity: 1; } }
+
+    .awning { position: relative; height: 40px; margin-top: .6rem; background: repeating-linear-gradient(90deg, var(--c) 0 36px, #20193c 36px 72px); border-radius: 6px 6px 0 0; box-shadow: 0 6px 30px -6px var(--c); opacity: .92; }
+    .awning::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 18px; background: radial-gradient(circle at 18px 0, var(--c) 17px, transparent 18px), radial-gradient(circle at 54px 0, #20193c 17px, transparent 18px); background-size: 72px 18px; background-repeat: repeat-x; }
+    .awning::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,0) 60%); }
+
+    .glass { position: relative; flex: 1; min-height: 0; margin-top: 18px; border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); border-radius: 4px 4px 14px 14px; background: linear-gradient(160deg, rgba(40,48,92,.55), rgba(14,16,34,.7)); backdrop-filter: blur(5px); box-shadow: inset 0 0 40px rgba(0,0,0,.45), 0 0 26px -8px var(--c); overflow: hidden; display: flex; }
+    .glass::before { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background:
+        linear-gradient(115deg, rgba(255,255,255,.07) 0 9%, transparent 9% 100%),
+        repeating-linear-gradient(174deg, transparent 0 17px, rgba(255,255,255,.045) 17px 18px, transparent 18px 41px, rgba(25,230,255,.06) 41px 42px, transparent 42px 73px); }
+    .glass::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 40%; z-index: 2; pointer-events: none; background: radial-gradient(3px 14px at 12% 20%, rgba(255,255,255,.22), transparent), radial-gradient(2px 22px at 38% 40%, rgba(255,255,255,.18), transparent), radial-gradient(3px 18px at 71% 15%, rgba(255,255,255,.2), transparent), radial-gradient(2px 26px at 90% 45%, rgba(255,255,255,.16), transparent); }
+    .glass-in { position: relative; z-index: 1; flex: 1; overflow-y: auto; padding: 1.1rem 1.3rem 1.4rem; scrollbar-width: thin; scrollbar-color: var(--c) transparent; }
+    .meta { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1.1rem; padding: 0; list-style: none; }
+    .meta li { border: 1px solid var(--c); border-radius: 999px; padding: .15rem .7rem; font-size: 12px; color: #fff; box-shadow: 0 0 8px -2px var(--c), inset 0 0 8px -4px var(--c); }
+    .meta li span { color: var(--c); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-size: 10px; margin-right: .4rem; }
+    .glass h3 { margin: 0 0 .5rem; font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: var(--c); text-shadow: 0 0 8px var(--c); }
+    .ing { margin: 0 0 1.3rem; padding: 0; list-style: none; columns: 1; }
+    .ing li { position: relative; padding: .22rem 0 .22rem 1.2rem; border-bottom: 1px dashed rgba(255,255,255,.1); }
+    .ing li::before { content: ""; position: absolute; left: 0; top: .72rem; width: 7px; height: 7px; border-radius: 50%; background: var(--c); box-shadow: 0 0 6px var(--c), 0 0 12px var(--c); }
+    .steps { margin: 0; padding: 0; list-style: none; counter-reset: s; }
+    .steps li { counter-increment: s; position: relative; padding: .5rem 0 .5rem 2.5rem; }
+    .steps li::before { content: counter(s); position: absolute; left: 0; top: .4rem; width: 1.8rem; height: 1.8rem; display: grid; place-items: center; border: 1.5px solid var(--c); border-radius: 50%; font-weight: 700; font-size: 12px; color: #fff; text-shadow: 0 0 6px var(--c); box-shadow: 0 0 8px var(--c), inset 0 0 6px -2px var(--c); }
+    .steps li:hover::before { background: var(--c); color: #0a0b14; text-shadow: none; }
+
+    .end { width: min(380px, 70vw); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: .8rem; padding-right: 2rem; }
+    .end b { font-family: var(--neon); font-weight: 400; font-size: clamp(2rem, 4vw, 3rem); line-height: 1; color: #ffe3f1; text-shadow: 0 0 4px #fff, 0 0 14px var(--magenta), 0 0 36px var(--magenta); }
+    .end p { margin: 0; color: var(--dim); }
+    .end a { color: var(--cyan); font-weight: 700; text-shadow: 0 0 8px var(--cyan); }
+    .end button { border: 1.5px solid var(--cyan); background: transparent; color: var(--cyan); border-radius: 999px; padding: .4rem 1rem; font-weight: 700; box-shadow: 0 0 10px rgba(25,230,255,.5); }
+    .end button:hover { background: var(--cyan); color: #0a0b14; }
+
+    /* flicker */
+    @keyframes buzz { 0%, 18%, 22%, 62%, 64%, 100% { opacity: 1; } 20% { opacity: .55; } 63% { opacity: .7; } }
+    @keyframes boot { 0% { opacity: .08; } 8% { opacity: 1; } 12% { opacity: .1; } 20% { opacity: .9; } 24% { opacity: .15; } 34% { opacity: 1; } 40% { opacity: .35; } 100% { opacity: 1; } }
+    body.boot .sign, body.boot .gate h1, body.boot .open { animation: boot 1.8s both; animation-delay: var(--d, 0s); }
+
+    /* ---------- narrow: vertical stack ---------- */
+    @media (max-width: 800px) {
+      body { overflow: auto; height: auto; }
+      html, body { height: auto; }
+      .bar { position: sticky; top: 0; }
+      .pager { display: none; }
+      .street { height: auto; flex-direction: column; align-items: stretch; overflow: visible; gap: 3rem; padding: 1.6rem 1rem 6rem; }
+      .street > * { width: 100% !important; }
+      .stall { max-width: 540px; margin: 0 auto; }
+      .glass { min-height: 0; }
+      .glass-in { overflow: visible; }
+      .gate { padding-top: 1rem; }
+      .arrow { right: 0; top: 4.6rem; }
+      .sky .far { height: 50%; } .sky .mid { height: 34%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rain { animation: none; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body class="boot">
+  <div class="sky" aria-hidden="true">
+    <div class="glow"></div>
+    <div class="layer far" id="far"></div>
+    <div class="layer mid" id="mid"></div>
+    <div class="ground"></div>
+  </div>
+
+  <header class="bar">
+    <a class="back" href="../../index.html">&larr; Leave the market</a>
+    <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+    <div class="pager" role="group" aria-label="Walk along the street">
+      <button type="button" id="prev" aria-label="Previous stall"><svg viewBox="0 0 24 24"><polyline points="14,5 7,12 14,19"/><line x1="7" y1="12" x2="20" y2="12"/></svg></button>
+      <button type="button" id="next" aria-label="Next stall"><svg viewBox="0 0 24 24"><polyline points="10,5 17,12 10,19"/><line x1="4" y1="12" x2="17" y2="12"/></svg></button>
+    </div>
+  </header>
+
+  <main class="street" id="street" tabindex="0" aria-label="The night market street. Scroll sideways to walk past the stalls.">
+    <section class="gate" id="gate" aria-label="Welcome">
+      <h1>Night <span>Market</span></h1>
+      <p>Three stalls glow down the alley, all baking after midnight. Walk along, peek through the wet glass, take what you like.</p>
+      <div class="open" role="img" aria-label="Open sign">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><rect x="2" y="2" width="96" height="96" rx="22" vector-effect="non-scaling-stroke"/></svg>
+        <b>OPEN</b>
+      </div>
+      <span class="hint">Scroll, swipe or use the arrows &rarr;</span>
+    </section>
+    <!-- stalls rendered from RECIPES -->
+    <section class="end" id="end" aria-label="End of the street">
+      <b>Dead end. Go home.</b>
+      <p>The alley stops here, the rain doesn't. Hungry again?</p>
+      <button type="button" id="again">Back to the gate</button>
+      <p><a href="../../index.html">Return to the gallery</a></p>
+    </section>
+  </main>
+  <div class="rain" aria-hidden="true"></div>
+
+  <script src="../../recipes.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var RECS = (typeof RECIPES !== 'undefined' && Array.isArray(RECIPES)) ? RECIPES : [];
+    var EXTRAS = {
+      'sourdough': { no: 'Stall 01', sign: 'Slow bread' },
+      'focaccia': { no: 'Stall 02', sign: 'Oil slick' },
+      'chocolate-chip-cookies': { no: 'Stall 03', sign: 'Midnight snack' }
+    };
+    var street = document.getElementById('street');
+    var endEl = document.getElementById('end');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+    /* ---- skyline (generated SVG, two depths) ---- */
+    function skyline(seed, minH, maxH, colA, colB, win) {
+      var s = seed, W = 1400, H = 400, x = 0, out = '';
+      function rnd() { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }
+      while (x < W) {
+        var w = 40 + Math.floor(rnd() * 80), h = minH + Math.floor(rnd() * (maxH - minH));
+        if (x + w > W) w = W - x;
+        out += '<rect x="' + x + '" y="' + (H - h) + '" width="' + w + '" height="' + h + '" fill="' + (rnd() > .5 ? colA : colB) + '"/>';
+        if (rnd() > .6) out += '<rect x="' + (x + w / 2 - 1) + '" y="' + (H - h - 30) + '" width="2" height="30" fill="' + colA + '"/>';
+        for (var wy = H - h + 12; wy < H - 10; wy += 16) {
+          for (var wx = x + 8; wx < x + w - 8; wx += 12) {
+            if (rnd() > .86) out += '<rect x="' + wx + '" y="' + wy + '" width="4" height="6" fill="' + win[Math.floor(rnd() * win.length)] + '" opacity=".8"/>';
+          }
+        }
+        x += w;
+      }
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' + out + '</svg>';
+      return 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")';
+    }
+    var far = document.getElementById('far'), mid = document.getElementById('mid');
+    far.style.backgroundImage = skyline(7, 120, 330, '#15122b', '#1a1636', ['#ff2e93', '#19e6ff']);
+    mid.style.backgroundImage = skyline(31, 70, 210, '#0d0c1c', '#110f24', ['#ffb020', '#ff2e93', '#19e6ff']);
+
+    /* ---- stalls ---- */
+    var html = '';
+    RECS.forEach(function (r, i) {
+      var ex = EXTRAS[r.slug] || { no: 'Stall ' + (i + 1), sign: 'Fresh tonight' };
+      var words = String(r.name).split(' ');
+      var first = words.shift();
+      var title = '<em>' + esc(first) + '</em>' + (words.length ? ' ' + esc(words.join(' ')) : '');
+      html += '<article class="stall" aria-labelledby="h-' + esc(r.slug) + '">' +
+        '<div class="sign" style="--d:' + (0.3 + i * 0.35).toFixed(2) + 's">' +
+        '<svg class="tube" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
+        '<rect x="1" y="1" width="98" height="98" rx="12" vector-effect="non-scaling-stroke"/>' +
+        '<rect class="t2" x="4" y="5" width="92" height="90" rx="10" vector-effect="non-scaling-stroke"/></svg>' +
+        '<p class="no">' + esc(ex.no) + ' / ' + esc(ex.sign) + '</p>' +
+        '<h2 id="h-' + esc(r.slug) + '">' + title + '</h2>' +
+        '<p class="tag">' + esc(r.tagline) + '</p></div>' +
+        '<div class="arrow" aria-hidden="true"><svg viewBox="0 0 26 40"><polyline points="4,4 13,12 22,4"/><polyline points="4,15 13,23 22,15"/><polyline points="4,26 13,34 22,26"/></svg>Eat here</div>' +
+        '<div class="awning" aria-hidden="true"></div>' +
+        '<div class="glass"><div class="glass-in" tabindex="0" aria-label="' + esc(r.name) + ' details">' +
+        '<ul class="meta"><li><span>Time</span>' + esc(r.time) + '</li><li><span>Yield</span>' + esc(r.yield) + '</li><li><span>Level</span>' + esc(r.difficulty) + '</li></ul>' +
+        '<h3>Ingredients</h3><ul class="ing">' + (r.ingredients || []).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' +
+        '<h3>Method</h3><ol class="steps">' + (r.steps || []).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ol>' +
+        '</div></div></article>';
+    });
+    endEl.insertAdjacentHTML('beforebegin', html);
+
+    setTimeout(function () { document.body.classList.remove('boot'); }, 2800);
+
+    /* ---- horizontal scrolling ---- */
+    function wide() { return window.innerWidth > 800; }
+    street.addEventListener('wheel', function (e) {
+      if (!wide() || e.ctrlKey) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      var gl = e.target.closest ? e.target.closest('.glass-in') : null;
+      if (gl && gl.scrollHeight > gl.clientHeight + 1) {
+        var atTop = gl.scrollTop <= 0, atBot = gl.scrollTop + gl.clientHeight >= gl.scrollHeight - 1;
+        if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBot)) return;
+      }
+      e.preventDefault();
+      street.scrollLeft += e.deltaY * (e.deltaMode === 1 ? 16 : 1);
+    }, { passive: false });
+
+    var prev = document.getElementById('prev'), next = document.getElementById('next');
+    function stops() { return Array.prototype.slice.call(street.children); }
+    function goTo(el) { street.scrollTo({ left: Math.max(0, el.offsetLeft - 32), behavior: reduce ? 'auto' : 'smooth' }); }
+    next.addEventListener('click', function () {
+      var cur = street.scrollLeft, t = stops().filter(function (el) { return el.offsetLeft - 32 > cur + 12; })[0];
+      if (t) goTo(t); else street.scrollTo({ left: street.scrollWidth, behavior: reduce ? 'auto' : 'smooth' });
+    });
+    prev.addEventListener('click', function () {
+      var cur = street.scrollLeft, t = stops().filter(function (el) { return el.offsetLeft - 32 < cur - 12; }).pop();
+      if (t) goTo(t); else street.scrollTo({ left: 0, behavior: reduce ? 'auto' : 'smooth' });
+    });
+    document.getElementById('again').addEventListener('click', function () { street.scrollTo({ left: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+
+    /* ---- parallax + progress ---- */
+    var meter = document.getElementById('meter'), ticking = false;
+    function update() {
+      ticking = false;
+      var sl = street.scrollLeft, max = Math.max(1, street.scrollWidth - street.clientWidth);
+      if (wide()) {
+        far.style.backgroundPositionX = (-sl * 0.06) + 'px';
+        mid.style.backgroundPositionX = (-sl * 0.16) + 'px';
+      } else {
+        far.style.backgroundPositionX = '0'; mid.style.backgroundPositionX = '0';
+      }
+      meter.style.width = (wide() ? (sl / max * 100) : 0) + '%';
+      prev.disabled = sl < 4;
+      next.disabled = sl > max - 4;
+    }
+    function queue() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+    street.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    update();
+  })();
+  </script>
+</body>
+</html>
