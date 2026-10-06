@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Three Bakes — 25 Homepage Explorations</title>
+  <meta name="description" content="A gallery of 25 homepage designs for a three-recipe baking site.">
+  <link rel="stylesheet" href="gallery.css">
+</head>
+<body>
+  <header class="masthead">
+    <p class="eyebrow">Design / Build / Ship</p>
+    <h1>Three Bakes,<br>twenty-five ways.</h1>
+    <p class="lede">One set of three baking recipes, presented as 25 different homepages. Each explores its own mood, typography, layout and emphasis.</p>
+    <p class="progress" aria-live="polite"><span id="built-count">0</span> of <span id="total-count">25</span> built</p>
+  </header>
+
+  <nav class="filters" aria-label="Filter designs">
+    <button type="button" data-filter="all" aria-pressed="true">All</button>
+    <button type="button" data-filter="built" aria-pressed="false">Built</button>
+    <button type="button" data-filter="planned" aria-pressed="false">Planned</button>
+  </nav>
+
+  <main>
+    <ol class="grid" id="grid"></ol>
+  </main>
+
+  <footer class="colophon">
+    <p>Plain HTML, CSS and JS. No frameworks.</p>
+  </footer>
+
+  <script src="designs.js"></script>
+  <script src="gallery.js"></script>
+</body>
+</html>
