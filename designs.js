@@ -107,9 +107,9 @@ Object.assign(BUILT, {
     palette: ["#0f3b2e", "#b3202f", "#d9a441"],
   },
   19: {
-    slug: "still-life", title: "Still Life", mood: "quiet, warm minimalism",
-    type: "Shippori Mincho + Mulish", layout: "off-center, vertical-text titles, ensō drawings", emphasis: "space and stillness",
-    palette: ["#ece4d6", "#3a342c", "#c8623b"],
+    slug: "still-life", title: "Still Life", mood: "quiet, natural minimalism",
+    type: "Shippori Mincho + Mulish", layout: "centered column, vertical-text titles, botanical line art", emphasis: "space and stillness",
+    palette: ["#f2f1ea", "#2f342c", "#4f6b4a"],
   },
   20: {
     slug: "the-bake-issue", title: "The Bake Issue", mood: "editorial, confident",
