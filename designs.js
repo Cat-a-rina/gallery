@@ -15,9 +15,9 @@ const DESIGNS = Array.from({ length: 25 }, (_, i) => ({
 
 const BUILT = {
   1: {
-    slug: "polka-pantry", title: "Polka Pantry", mood: "whimsical, silly",
-    type: "Chewy + Nunito", layout: "full-screen scroll, giant icon per bake", emphasis: "the baked good as a character",
-    palette: ["#ffc2d4", "#b8f0d8", "#ffe27a"],
+    slug: "polka-pantry", title: "Polka Pantry", mood: "noir, black and white polka dot",
+    type: "Abril Fatface + Josefin Sans", layout: "alternating dark and light dotted sections", emphasis: "contrast and numerals",
+    palette: ["#0a0a0a", "#f7f5f0", "#8c8a85"],
   },
   2: {
     slug: "kitchen-shelf-cookbook", title: "The Kitchen Shelf Cookbook", mood: "nostalgic, homey",
@@ -147,7 +147,7 @@ DESIGNS.forEach((d) => { if (BUILT[d.id]) Object.assign(d, BUILT[d.id], { status
 // Tile customization: the display font each design uses (so the title previews its type)
 // and the kind of layout sketch drawn on its tile (see gallery.js SKETCHES).
 const TILE_LOOK = {
-  1: ["Chewy", "scroll"],            2: ["IM Fell English", "book"],
+  1: ["Abril Fatface", "dots"],           2: ["IM Fell English", "book"],
   3: ["Cormorant Garamond", "accordion"], 4: ["Caveat Brush", "columns"],
   5: ["Archivo Black", "rows"],      6: ["Bagel Fat One", "carousel"],
   7: ["Sniglet", "bubbles"],         8: ["Special Elite", "cards"],
