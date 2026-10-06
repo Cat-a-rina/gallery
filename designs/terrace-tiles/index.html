@@ -158,13 +158,14 @@
   .band[data-tone="sun"] { background: var(--white); }
   .band[data-tone="lemon"] { background: #f9e27a; }
   .band[data-tone="terra"] { background: #f2c4a9; }
-  .frame { height: 40px; background-image: var(--pat); background-size: 40px 40px; background-color: var(--cobalt); }
+  .frame { height: clamp(18px, 2.6vh, 28px); background-image: var(--pat); background-size: 40px 40px; background-color: var(--cobalt); }
+  /* spacing scales with the window height so a recipe's basket and steps share one screen */
   .band-in {
     max-width: 1180px; margin: 0 auto;
-    padding: clamp(36px, 6vw, 84px) clamp(14px, 4vw, 40px);
-    display: grid; grid-template-columns: minmax(280px, 400px) 1fr; gap: clamp(24px, 5vw, 72px); align-items: start;
+    padding: clamp(12px, 2.6vh, 36px) clamp(14px, 4vw, 40px);
+    display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: clamp(24px, 4.5vw, 64px); align-items: start;
   }
-  .band.flip .band-in { grid-template-columns: 1fr minmax(280px, 400px); }
+  .band.flip .band-in { grid-template-columns: 1fr minmax(280px, 380px); }
   .band.flip .arch { order: 2; }
   .arch {
     position: sticky; top: calc(var(--nav-h) + 24px);
@@ -173,7 +174,7 @@
     outline: 4px solid var(--lemon);
     outline-offset: 0;
     border-radius: 999px 999px 24px 24px;
-    padding: clamp(70px, 10vw, 120px) 26px 30px;
+    padding: clamp(44px, 7.5vh, 90px) 24px 22px;
     text-align: center;
     box-shadow: 10px 12px 0 rgba(23, 42, 77, .22);
   }
@@ -191,34 +192,46 @@
   .meta dt { font-weight: 700; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--cobalt); }
   .meta dd { margin: 0; font-weight: 600; font-size: .95rem; line-height: 1.3; }
 
-  .body h3 { font-size: clamp(1.6rem, 3vw, 2.2rem); color: var(--cobalt-deep); margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
-  .body h3::after { content: ""; flex: 1; height: 8px; border-radius: 4px; background: repeating-linear-gradient(90deg, var(--cobalt) 0 14px, transparent 14px 22px); opacity: .5; }
-  .basket { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin-bottom: clamp(32px, 5vw, 56px); }
+  .body h3 { font-size: clamp(1.25rem, 2.3vw, 1.7rem); color: var(--cobalt-deep); margin-bottom: clamp(6px, 1.2vh, 12px); display: flex; align-items: center; gap: 12px; }
+  .body h3::after { content: ""; flex: 1; height: 8px; border-radius: 4px; background: repeating-linear-gradient(90deg, var(--cobalt) 0 14px, transparent 14px 22px); opacity: .5; order: 2; }
+  .body h3 .count { order: 3; font-family: var(--sans); font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--olive); white-space: nowrap; }
+  .basket { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 7px 9px; margin-bottom: clamp(10px, 2vh, 24px); }
   .chip {
-    display: flex; align-items: center; gap: 12px;
-    background: var(--white); border: 3px solid var(--cobalt); border-radius: 22px;
-    padding: 8px 16px 8px 8px; font-weight: 600; line-height: 1.35;
-    box-shadow: 0 5px 0 var(--cobalt);
-    transition: transform .25s, box-shadow .25s;
+    --ico: clamp(30px, 4.2vh, 40px);
+    width: 100%; display: flex; align-items: center; gap: 10px; text-align: left; font: inherit; color: inherit; cursor: pointer;
+    background: var(--white); border: 3px solid var(--cobalt); border-radius: 18px;
+    padding: 3px 10px 3px 3px; font-weight: 600; font-size: clamp(.82rem, 1.8vh, .95rem); line-height: 1.22;
+    box-shadow: 0 4px 0 var(--cobalt);
+    transition: transform .25s, box-shadow .25s, background .3s, border-color .3s;
   }
-  .chip:hover { transform: translateY(3px) rotate(-1deg); box-shadow: 0 2px 0 var(--cobalt); }
-  .chip .ico { flex: none; width: 46px; height: 46px; border-radius: 50%; background: #eef2fa; display: grid; place-items: center; border: 2px solid #c9d6ee; }
-  .chip .ico svg { width: 30px; height: 30px; }
+  .chip:hover { transform: translateY(2px) rotate(-.8deg); box-shadow: 0 2px 0 var(--cobalt); }
+  .chip .ico { flex: none; width: var(--ico); height: var(--ico); perspective: 300px; display: block; }
+  .chip .ico-in { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.3, .8, .3, 1); }
+  .chip .ico-in > span { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 50%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .chip .ico-f { background: #eef2fa; border: 2px solid #c9d6ee; }
+  .chip .ico-f svg { width: 66%; height: 66%; }
+  .chip .ico-b { transform: rotateY(180deg); background: var(--olive); border: 2px solid #4e5a22; color: var(--white); }
+  .chip .ico-b svg { width: 58%; height: 58%; }
+  /* ticked off: the little tile flips to a check, the text is struck through, the chip settles into the table */
+  .chip[aria-pressed="true"] { background: #f1f6df; border-color: var(--olive); box-shadow: 0 1px 0 var(--olive); transform: translateY(3px); }
+  .chip[aria-pressed="true"] .ico-in { transform: rotateY(180deg); }
+  .chip[aria-pressed="true"] .t { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: var(--terra); color: #5b6a87; }
 
-  .steps { display: grid; gap: 14px; }
+  .steps { display: grid; gap: clamp(5px, .8vh, 8px); }
   .step {
-    display: grid; grid-template-columns: 64px 1fr; gap: 16px; align-items: center;
-    background: var(--white); border-radius: 26px; padding: 14px 20px 14px 14px; border: 3px solid var(--cobalt);
+    --badge: clamp(36px, 5vh, 48px);
+    display: grid; grid-template-columns: var(--badge) 1fr; gap: clamp(10px, 1.4vw, 14px); align-items: center;
+    background: var(--white); border-radius: 18px; padding: clamp(4px, .7vh, 7px) 14px clamp(4px, .7vh, 7px) clamp(4px, .7vh, 7px); border: 3px solid var(--cobalt);
   }
-  .badge { perspective: 400px; width: 64px; height: 64px; }
+  .badge { perspective: 400px; width: var(--badge); height: var(--badge); }
   .badge-in { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .7s; }
   .step:hover .badge-in { transform: rotateY(180deg); }
   .badge .face { border-radius: 14px; border: 3px solid var(--white); box-shadow: 0 0 0 3px var(--cobalt); }
   .badge .front { background-color: var(--cobalt); background-image: var(--pat-badge); background-size: 32px 32px; }
-  .badge .front b { font-family: var(--serif); font-weight: 400; font-size: 1.9rem; color: var(--cobalt-deep); background: var(--lemon); width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; line-height: 1; }
+  .badge .front b { font-family: var(--serif); font-weight: 400; font-size: calc(var(--badge) * .46); color: var(--cobalt-deep); background: var(--lemon); width: calc(var(--badge) * .62); height: calc(var(--badge) * .62); border-radius: 50%; display: grid; place-items: center; line-height: 1; }
   .badge .face.back { background: var(--terra); color: var(--white); }
   .badge .face.back svg { width: 60%; height: 60%; }
-  .step p { font-size: 1.08rem; }
+  .step p { font-size: clamp(.86rem, 1.9vh, 1rem); line-height: 1.38; }
 
   /* ---------- footer ---------- */
   footer { background: var(--cobalt-deep); color: var(--white); }
@@ -246,9 +259,7 @@
     .back { padding: 7px 11px; font-size: .85rem; }
     .window { border-width: 6px; box-shadow: 8px 10px 0 rgba(18, 54, 115, .45); }
     .basket { grid-template-columns: 1fr; }
-    .step { grid-template-columns: 54px 1fr; gap: 12px; padding: 12px; }
-    .badge { width: 54px; height: 54px; }
-    .badge .front b { width: 32px; height: 32px; font-size: 1.5rem; }
+    .step { --badge: 46px; gap: 12px; padding: 8px; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -357,7 +368,8 @@
     if (/flour|wheat|starter|yeast|grain/.test(t)) return 'wheat';
     return 'star';
   }
-  var STAR_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="currentColor"><rect x="18" y="18" width="64" height="64" rx="3"/><rect x="18" y="18" width="64" height="64" rx="3" transform="rotate(45 50 50)"/></g><circle cx="50" cy="50" r="12" fill="#f6d44c"/></svg>';
+  var CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+  var STAR_SVG ='<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="currentColor"><rect x="18" y="18" width="64" height="64" rx="3"/><rect x="18" y="18" width="64" height="64" rx="3" transform="rotate(45 50 50)"/></g><circle cx="50" cy="50" r="12" fill="#f6d44c"/></svg>';
   var QUAT_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="currentColor"><circle cx="50" cy="30" r="20"/><circle cx="70" cy="50" r="20"/><circle cx="50" cy="70" r="20"/><circle cx="30" cy="50" r="20"/><rect x="34" y="34" width="32" height="32"/></g><circle cx="50" cy="50" r="8" fill="#f6d44c"/></svg>';
 
   /* ----- per-slug extras ----- */
@@ -453,14 +465,37 @@
 
     /* basket + steps */
     var body = h('div', 'body');
-    body.appendChild(h('h3', null, 'Market basket'));
+    var bh = h('h3', null, 'Market basket ');
+    var count = h('span', 'count', '0 of ' + r.ingredients.length + ' in the basket');
+    count.setAttribute('aria-live', 'polite');
+    bh.appendChild(count);
+    body.appendChild(bh);
     var ul = h('ul', 'basket');
+    var have = 0;
     r.ingredients.forEach(function (t) {
-      var li = h('li', 'chip');
+      var li = h('li');
+      var chip = h('button', 'chip');
+      chip.type = 'button';
+      chip.setAttribute('aria-pressed', 'false');
       var ico = h('span', 'ico');
-      ico.innerHTML = ICONS[iconFor(t)];
-      li.appendChild(ico);
-      li.appendChild(h('span', null, t));
+      ico.setAttribute('aria-hidden', 'true');
+      var inn = h('span', 'ico-in');
+      var f = h('span', 'ico-f');
+      f.innerHTML = ICONS[iconFor(t)];
+      var b = h('span', 'ico-b');
+      b.innerHTML = CHECK_SVG;
+      inn.appendChild(f);
+      inn.appendChild(b);
+      ico.appendChild(inn);
+      chip.appendChild(ico);
+      chip.appendChild(h('span', 't', t));
+      chip.addEventListener('click', function () {
+        var on = chip.getAttribute('aria-pressed') !== 'true';
+        chip.setAttribute('aria-pressed', on ? 'true' : 'false');
+        have += on ? 1 : -1;
+        count.textContent = have === r.ingredients.length ? 'All in the basket ✓' : have + ' of ' + r.ingredients.length + ' in the basket';
+      });
+      li.appendChild(chip);
       ul.appendChild(li);
     });
     body.appendChild(ul);
