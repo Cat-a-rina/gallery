@@ -1,7 +1,7 @@
 // One entry per design. To add a design:
 //   1. build it in /designs/<slug>/index.html (a standalone homepage, no subpages)
 //   2. fill in the entry below and set status to "built"
-const DESIGNS = Array.from({ length: 25 },(_, i) => ({
+const DESIGNS = Array.from({ length: 25 }, (_, i) => ({
   id: i + 1,
   slug: null,          // folder name inside /designs, e.g. "butter-and-flour"
   title: "Untitled",   // working name of the design
@@ -36,7 +36,7 @@ const BUILT = {
   },
   5: {
     slug: "bake-poster", title: "BAKE.", mood: "bold, brutalist, minimal",
-    type: "Archivo Black + Space Mono", layout: "rigid rows with giant numerals", emphasis: "typography and structure",
+    type: "Archivo Black + Space Mono", layout: "three overlapping circles; the chosen one comes forward", emphasis: "typography and structure",
     palette: ["#f1efe8", "#ff3b1f", "#0d0d0d"],
   },
 };
@@ -63,7 +63,7 @@ Object.assign(BUILT, {
   },
   10: {
     slug: "velvet-hour", title: "Velvet Hour", mood: "luxurious, deco, dark",
-    type: "Bodoni Moda + Raleway", layout: "sticky split screen, scroll-driven", emphasis: "editorial drama",
+    type: "Bodoni Moda + Raleway", layout: "title across the top, centered box with arrows to toggle recipes", emphasis: "one recipe at a time",
     palette: ["#1c0a14", "#e8d3a8", "#c98b7b"],
   },
   11: {
@@ -149,9 +149,9 @@ DESIGNS.forEach((d) => { if (BUILT[d.id]) Object.assign(d, BUILT[d.id], { status
 const TILE_LOOK = {
   1: ["Abril Fatface", "dots"],           2: ["IM Fell English", "book"],
   3: ["Cormorant Garamond", "accordion"], 4: ["Caveat Brush", "columns"],
-  5: ["Archivo Black", "rows"],      6: ["Bagel Fat One", "carousel"],
+  5: ["Archivo Black", "venn"],      6: ["Bagel Fat One", "carousel"],
   7: ["Sniglet", "bubbles"],         8: ["Special Elite", "letter"],
-  9: ["Libre Baskerville", "collage"], 10: ["Bodoni Moda", "split"],
+  9: ["Libre Baskerville", "collage"], 10: ["Bodoni Moda", "deck"],
   11: ["Cinzel", "column"],          12: ["Permanent Marker", "tags"],
   13: ["Yellowtail", "shelves"],     14: ["Work Sans", "index"],
   15: ["Anton", "tabs"],             16: ["League Spartan", "shapes"],

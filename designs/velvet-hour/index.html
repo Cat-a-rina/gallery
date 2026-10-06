@@ -13,123 +13,137 @@
       --dim: rgba(245, 236, 224, .68); --line: rgba(232, 211, 168, .28);
       --display: "Bodoni Moda", "Didot", "Bodoni 72", "Playfair Display", Georgia, serif;
       --sans: "Raleway", "Helvetica Neue", Arial, sans-serif;
-      --bar: 4.5rem;
     }
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
     body { margin: 0; background: var(--bg); color: var(--ivory); font-family: var(--sans); font-weight: 300; line-height: 1.75; }
     a { color: inherit; }
+    button { font: inherit; color: inherit; }
     :focus-visible { outline: 1px solid var(--champagne); outline-offset: 4px; }
     .smallcaps { font-variant: small-caps; letter-spacing: .28em; text-transform: lowercase; font-weight: 400; }
 
-    .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 100vh; }
+    .page {
+      position: relative; min-height: 100vh; overflow: hidden; display: flex; flex-direction: column; align-items: center;
+      padding: 0 clamp(1rem, 4vw, 3rem) 3rem;
+      background: radial-gradient(ellipse at 20% 100%, #3a1528 0, transparent 60%), radial-gradient(ellipse at 85% 0, #2a1020 0, transparent 50%), var(--bg);
+    }
+    .corner { position: absolute; width: clamp(120px, 16vw, 220px); height: auto; color: var(--champagne); pointer-events: none; }
+    .corner.tl { top: 0; left: 0; opacity: .5; }
+    .corner.tr { top: 0; right: 0; transform: scaleX(-1); opacity: .5; }
+    .corner.bl { bottom: 0; left: 0; transform: scaleY(-1); opacity: .28; }
+    .corner.br { bottom: 0; right: 0; transform: scale(-1, -1); opacity: .28; }
 
-    /* LEFT */
-    .stage {
-      position: sticky; top: 0; height: 100vh; overflow: hidden; padding: 2.5rem clamp(1.5rem, 4vw, 4rem);
-      display: flex; flex-direction: column; justify-content: space-between;
-      background: radial-gradient(ellipse at 20% 100%, #3a1528 0, transparent 60%), var(--bg);
-      border-right: 1px solid var(--line);
-    }
-    .back { align-self: flex-start; text-decoration: none; font-size: .78rem; color: var(--champagne); transition: color .3s, letter-spacing .4s; }
+    .back { position: absolute; top: 2rem; left: clamp(1rem, 4vw, 3rem); z-index: 2; text-decoration: none; font-size: .78rem; color: var(--champagne); transition: color .3s, letter-spacing .4s; }
     .back:hover { color: var(--rose); letter-spacing: .34em; }
-    .titles { position: relative; flex: 1; display: flex; align-items: center; }
-    .big {
-      position: absolute; left: 0; right: 0; margin: 0; font-family: var(--display); font-style: italic; font-weight: 400;
-      font-size: clamp(3.4rem, 7.2vw, 7.5rem); line-height: .98; letter-spacing: -.01em; color: var(--ivory);
-      opacity: 0; transform: translateY(24px); filter: blur(6px);
-      transition: opacity .9s ease, transform .9s ease, filter .9s ease;
+
+    /* the title, across the top of the page */
+    .head { position: relative; z-index: 1; width: min(1100px, 100%); text-align: center; padding: clamp(5rem, 13vh, 8rem) 0 clamp(1.8rem, 5vh, 3rem); }
+    .kicker { color: var(--rose); font-size: .8rem; margin: 0 0 1.1rem; }
+    .title { margin: 0; font-family: var(--display); font-style: italic; font-weight: 400; font-size: clamp(2.8rem, 7vw, 6.2rem); line-height: 1; letter-spacing: -.01em; color: var(--ivory); min-height: 1.05em; }
+    .title span { color: var(--champagne); }
+    .rule { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.4rem; color: var(--champagne); }
+    .rule::before, .rule::after { content: ""; width: clamp(40px, 12vw, 140px); height: 1px; background: linear-gradient(90deg, transparent, var(--line)); }
+    .rule::after { transform: scaleX(-1); }
+    .rule i { width: 7px; height: 7px; border: 1px solid var(--champagne); transform: rotate(45deg); }
+
+    /* the box, centered below it, flanked by arrows */
+    .deck { position: relative; z-index: 1; width: min(1060px, 100%); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(.6rem, 2vw, 1.75rem); }
+    .arrow {
+      width: 3.2rem; height: 3.2rem; border-radius: 50%; border: 1px solid var(--line); background: rgba(38, 16, 28, .6); color: var(--champagne);
+      display: grid; place-items: center; cursor: pointer; transition: border-color .3s, background .3s, transform .3s;
     }
-    .big.on { opacity: 1; transform: none; filter: none; }
-    .big span { display: block; color: var(--champagne); }
-    .stage-foot { display: flex; align-items: center; justify-content: space-between; font-size: .72rem; color: var(--rose); }
+    .arrow svg { width: 1.1rem; height: 1.1rem; }
+    .arrow:hover { border-color: var(--champagne); background: rgba(232, 211, 168, .1); }
+    .arrow.prev:hover { transform: translateX(-3px); } .arrow.next:hover { transform: translateX(3px); }
+
+    .box {
+      position: relative; padding: clamp(1.6rem, 4vw, 3.2rem) clamp(1.4rem, 4vw, 3.4rem); overflow: hidden;
+      border: 1px solid var(--line); background: linear-gradient(180deg, rgba(38, 16, 28, .72), rgba(28, 10, 20, .86));
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .45), inset 0 0 0 6px rgba(28, 10, 20, .6), inset 0 0 0 7px var(--line);
+    }
+    .box .fan { position: absolute; width: 90px; color: var(--rose); opacity: .45; pointer-events: none; }
+    .box .fan.a { top: 0; left: 0; } .box .fan.b { bottom: 0; right: 0; transform: scale(-1, -1); }
+    .numeral { position: absolute; right: .1em; bottom: -.2em; font-family: var(--display); font-style: italic; font-size: clamp(9rem, 22vw, 18rem); line-height: 1; color: var(--champagne); opacity: .05; pointer-events: none; user-select: none; }
+    .box > :not(.fan):not(.numeral) { position: relative; }
+
+    .tagline { font-family: var(--display); font-style: italic; font-size: clamp(1.1rem, 2.2vw, 1.5rem); text-align: center; color: var(--ivory); margin: 0 auto 1.6rem; max-width: 34rem; line-height: 1.5; }
+    .meta { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem 3rem; margin: 0 0 2.2rem; padding: 1rem 0; border-block: 1px solid var(--line); }
+    .meta div { text-align: center; }
+    .meta dt { font-size: .7rem; color: var(--rose); }
+    .meta dd { margin: 0; font-size: .92rem; }
+    .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(1.5rem, 5vw, 4rem); }
+    h3 { font-size: .8rem; color: var(--champagne); margin: 0 0 1.1rem; display: flex; align-items: center; gap: 1rem; }
+    h3::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line), transparent); }
+    ul, ol { list-style: none; margin: 0; padding: 0; }
+    .ingr li { padding: .5rem 0 .5rem 1.6rem; position: relative; border-bottom: 1px solid rgba(232, 211, 168, .1); font-size: .95rem; }
+    .ingr li::before { content: ""; position: absolute; left: .2rem; top: 1.1rem; width: 6px; height: 6px; border: 1px solid var(--rose); transform: rotate(45deg); }
+    .steps { counter-reset: s; }
+    .steps li { counter-increment: s; position: relative; padding: .5rem 0 .9rem 3rem; font-size: .95rem; }
+    .steps li::before { content: counter(s, upper-roman); position: absolute; left: 0; top: .35rem; font-family: var(--display); font-style: italic; font-size: 1.25rem; color: var(--rose); }
+
+    .enter { animation: enter .8s cubic-bezier(.2, .7, .2, 1) both; }
+    @keyframes enter { from { opacity: 0; transform: translateX(var(--dx, 0px)); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+
+    /* count and dots below the box */
+    .foot { position: relative; z-index: 1; margin-top: 1.75rem; display: flex; flex-direction: column; align-items: center; gap: .9rem; font-size: .72rem; color: var(--rose); }
     .dots { display: flex; gap: .6rem; }
     .dots button { width: 2.2rem; height: 1px; padding: 1rem 0; background: var(--line) content-box; border: 0; cursor: pointer; transition: background .4s; }
     .dots button.on, .dots button:hover { background: var(--champagne) content-box; }
-    .stage .corner { position: absolute; width: clamp(120px, 16vw, 220px); height: auto; color: var(--champagne); opacity: .55; pointer-events: none; }
-    .stage .tr { top: 0; right: 0; transform: scaleX(-1); }
-    .stage .bl { bottom: 0; left: 0; transform: scaleY(-1); opacity: .3; }
+    .hint { margin: 0; color: var(--dim); font-size: .78rem; letter-spacing: .06em; }
+    footer { padding: 3rem 1.5rem; text-align: center; font-size: .75rem; color: var(--rose); border-top: 1px solid var(--line); background: var(--bg); }
 
-    /* RIGHT */
-    .scroll { min-width: 0; }
-    .intro { padding: clamp(5rem, 14vh, 9rem) clamp(1.5rem, 5vw, 5rem) 2rem; }
-    .intro p { margin: 0; max-width: 26rem; font-size: .95rem; color: var(--dim); }
-    .intro .kicker { color: var(--rose); font-size: .8rem; margin-bottom: 1rem; }
-    .recipe { position: relative; min-height: 100vh; padding: clamp(5rem, 14vh, 9rem) clamp(1.5rem, 5vw, 5rem); border-top: 1px solid var(--line); overflow: hidden; }
-    .recipe .corner { position: absolute; top: 0; right: 0; width: 130px; color: var(--rose); opacity: .5; }
-    .numeral {
-      position: absolute; right: -.05em; bottom: -.18em; font-family: var(--display); font-style: italic; font-size: clamp(14rem, 30vw, 28rem);
-      line-height: 1; color: var(--champagne); opacity: .05; pointer-events: none; user-select: none;
-    }
-    .recipe > :not(.corner):not(.numeral) { position: relative; }
-    .recipe h2 { font-family: var(--display); font-style: italic; font-weight: 400; font-size: clamp(1.8rem, 3vw, 2.6rem); margin: 0 0 .75rem; color: var(--champagne); }
-    .tagline { font-family: var(--display); font-style: italic; font-size: 1.15rem; color: var(--ivory); margin: 0 0 2.5rem; max-width: 28rem; }
-    .meta { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 2rem; margin: 0 0 3rem; padding: 1.1rem 0; border-block: 1px solid var(--line); }
-    .meta dt { font-size: .7rem; color: var(--rose); }
-    .meta dd { margin: 0; font-size: .92rem; }
-    .recipe h3 { font-size: .8rem; color: var(--champagne); margin: 0 0 1.25rem; display: flex; align-items: center; gap: 1rem; }
-    .recipe h3::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line), transparent); }
-    ul, ol { list-style: none; margin: 0; padding: 0; }
-    .ingr { margin-bottom: 3rem; columns: 1; }
-    .ingr li { padding: .5rem 0 .5rem 1.6rem; position: relative; border-bottom: 1px solid rgba(232,211,168,.1); }
-    .ingr li::before { content: ""; position: absolute; left: .2rem; top: 1.1rem; width: 6px; height: 6px; border: 1px solid var(--rose); transform: rotate(45deg); }
-    .steps { counter-reset: s; }
-    .steps li { counter-increment: s; position: relative; padding: .6rem 0 1rem 3.2rem; }
-    .steps li::before { content: counter(s, upper-roman); position: absolute; left: 0; top: .45rem; font-family: var(--display); font-style: italic; font-size: 1.3rem; color: var(--rose); }
-    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .9s ease, transform .9s ease; }
-    .reveal.in { opacity: 1; transform: none; }
-    footer { padding: 4rem 1.5rem; text-align: center; font-size: .75rem; color: var(--rose); border-top: 1px solid var(--line); }
-
-    /* MOBILE */
-    .mbar { display: none; }
-    @media (max-width: 860px) {
-      .split { display: block; }
-      .stage { position: sticky; top: 0; z-index: 10; height: var(--bar); padding: 0 1rem; flex-direction: row; align-items: center; gap: 1rem; border-right: 0; border-bottom: 1px solid var(--line); background: rgba(28, 10, 20, .94); backdrop-filter: blur(8px); }
-      .stage .corner, .stage-foot { display: none; }
-      .back { font-size: .68rem; letter-spacing: .15em; flex: none; }
-      .titles { height: 100%; flex: 1; min-width: 0; }
-      .big { font-size: clamp(1.3rem, 6vw, 1.8rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: right; top: 50%; transform: translateY(calc(-50% + 12px)); }
-      .big.on { transform: translateY(-50%); }
-      .big span { display: inline; }
-      .recipe { min-height: 0; scroll-margin-top: var(--bar); }
-      .intro { padding-top: 3rem; }
-      .meta { grid-template-columns: 1fr 1fr; gap: 1rem 2rem; }
+    @media (max-width: 760px) {
+      .deck { grid-template-columns: 1fr 1fr; grid-template-areas: "box box" "prev next"; }
+      .box { grid-area: box; }
+      .arrow.prev { grid-area: prev; justify-self: start; } .arrow.next { grid-area: next; justify-self: end; }
+      .cols { grid-template-columns: 1fr; }
+      .title { min-height: 2.1em; }
+      .corner { width: 100px; }
     }
     @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      .big, .reveal, .back, .dots button { transition: none !important; filter: none !important; }
-      .reveal { opacity: 1; transform: none; }
+      .enter { animation: none; }
+      .back, .arrow, .dots button { transition: none; }
     }
   </style>
 </head>
 <body>
-  <div class="split">
-    <aside class="stage" aria-label="Current recipe">
-      <svg class="corner tr" viewBox="0 0 100 100" aria-hidden="true"></svg>
-      <svg class="corner bl" viewBox="0 0 100 100" aria-hidden="true"></svg>
-      <a class="back smallcaps" href="../../index.html">&larr; the gallery</a>
-      <div class="titles" id="titles" aria-hidden="true"></div>
-      <div class="stage-foot">
-        <span class="smallcaps" id="count">no. i of iii</span>
-        <nav class="dots" id="dots" aria-label="Jump to recipe"></nav>
-      </div>
-    </aside>
+  <div class="page">
+    <svg class="corner tl" viewBox="0 0 100 100" aria-hidden="true"></svg>
+    <svg class="corner tr" viewBox="0 0 100 100" aria-hidden="true"></svg>
+    <svg class="corner bl" viewBox="0 0 100 100" aria-hidden="true"></svg>
+    <svg class="corner br" viewBox="0 0 100 100" aria-hidden="true"></svg>
+    <a class="back smallcaps" href="../../index.html">&larr; the gallery</a>
 
-    <main class="scroll" id="scroll">
-      <header class="intro">
-        <p class="kicker smallcaps">after dusk &middot; before midnight</p>
-        <p>Three recipes, made unhurriedly. Scroll slowly; the evening will meet you halfway.</p>
-      </header>
-    </main>
+    <header class="head">
+      <p class="kicker smallcaps">after dusk &middot; before midnight</p>
+      <h1 class="title" id="title" aria-live="polite"></h1>
+      <div class="rule" aria-hidden="true"><i></i></div>
+    </header>
+
+    <section class="deck" aria-roledescription="carousel" aria-label="Recipes">
+      <button class="arrow prev" id="prev" type="button" aria-label="Previous recipe">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M12.5 3.5 6 10l6.5 6.5"/></svg>
+      </button>
+      <article class="box" id="box" aria-roledescription="slide"></article>
+      <button class="arrow next" id="next" type="button" aria-label="Next recipe">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M7.5 3.5 14 10l-6.5 6.5"/></svg>
+      </button>
+    </section>
+
+    <div class="foot">
+      <span class="smallcaps" id="count">no. i of iii</span>
+      <nav class="dots" id="dots" aria-label="Choose a recipe"></nav>
+      <p class="hint">Use the arrows, the &larr; &rarr; keys, or swipe.</p>
+    </div>
   </div>
   <footer class="smallcaps">Made with patience &middot; served by candlelight</footer>
 
   <script src="../../recipes.js"></script>
   <script>
     (function () {
-      var romans = ["I", "II", "III", "IV", "V"];
       var lower = ["i", "ii", "iii", "iv", "v"];
       var NS = "http://www.w3.org/2000/svg";
+      var N = RECIPES.length;
+      var current = 0;
 
       // Art Deco fan: radiating lines + concentric arcs from the top-left corner.
       function fanMarkup() {
@@ -145,116 +159,114 @@
       }
       document.querySelectorAll("svg.corner").forEach(function (el) { el.innerHTML = fanMarkup(); });
 
-      var titles = document.getElementById("titles");
+      var titleEl = document.getElementById("title");
+      var box = document.getElementById("box");
       var dots = document.getElementById("dots");
-      var scroll = document.getElementById("scroll");
       var count = document.getElementById("count");
 
-      RECIPES.forEach(function (r, i) {
-        var words = r.name.split(" ");
-        var last = words.pop();
-        var h = document.createElement("p");
-        h.className = "big";
-        h.dataset.i = i;
-        h.innerHTML = "";
-        h.append(words.join(" ") + " ");
-        var sp = document.createElement("span");
-        sp.textContent = last;
-        h.append(sp);
-        titles.append(h);
+      function el(tag, cls, text) {
+        var e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (text != null) e.textContent = text;
+        return e;
+      }
+      function fan(cls) {
+        var f = document.createElementNS(NS, "svg");
+        f.setAttribute("class", "fan " + cls);
+        f.setAttribute("viewBox", "0 0 100 100");
+        f.setAttribute("aria-hidden", "true");
+        f.innerHTML = fanMarkup();
+        return f;
+      }
 
-        var b = document.createElement("button");
+      var dotBtns = RECIPES.map(function (r, i) {
+        var b = el("button");
         b.type = "button";
         b.setAttribute("aria-label", "Go to " + r.name);
-        b.addEventListener("click", function () {
-          document.getElementById("r-" + r.slug).scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-        });
+        b.addEventListener("click", function () { show(i, i > current ? 1 : -1); });
         dots.append(b);
-
-        var sec = document.createElement("section");
-        sec.className = "recipe";
-        sec.id = "r-" + r.slug;
-        sec.dataset.i = i;
-        sec.setAttribute("aria-labelledby", "h-" + r.slug);
-
-        var fan = document.createElementNS(NS, "svg");
-        fan.setAttribute("class", "corner");
-        fan.setAttribute("viewBox", "0 0 100 100");
-        fan.setAttribute("aria-hidden", "true");
-        fan.innerHTML = fanMarkup();
-        sec.append(fan);
-
-        var num = document.createElement("div");
-        num.className = "numeral";
-        num.setAttribute("aria-hidden", "true");
-        num.textContent = lower[i];
-        sec.append(num);
-
-        var h2 = document.createElement("h2");
-        h2.id = "h-" + r.slug;
-        h2.textContent = r.name;
-        h2.className = "reveal";
-        sec.append(h2);
-
-        var tg = document.createElement("p");
-        tg.className = "tagline reveal";
-        tg.textContent = r.tagline;
-        sec.append(tg);
-
-        var dl = document.createElement("dl");
-        dl.className = "meta reveal";
-        [["Time", r.time], ["Yield", r.yield], ["Difficulty", r.difficulty]].forEach(function (m) {
-          var d = document.createElement("div");
-          var dt = document.createElement("dt");
-          dt.className = "smallcaps"; dt.textContent = m[0];
-          var dd = document.createElement("dd");
-          dd.textContent = m[1];
-          d.append(dt, dd);
-          dl.append(d);
-        });
-        sec.append(dl);
-
-        var ih = document.createElement("h3");
-        ih.className = "smallcaps reveal"; ih.textContent = "Ingredients";
-        var ul = document.createElement("ul");
-        ul.className = "ingr reveal";
-        r.ingredients.forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ul.append(li); });
-        var mh = document.createElement("h3");
-        mh.className = "smallcaps reveal"; mh.textContent = "Method";
-        var ol = document.createElement("ol");
-        ol.className = "steps reveal";
-        r.steps.forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ol.append(li); });
-        sec.append(ih, ul, mh, ol);
-        scroll.append(sec);
+        return b;
       });
 
-      var bigs = titles.querySelectorAll(".big");
-      var dotBtns = dots.querySelectorAll("button");
-      function activate(i) {
-        bigs.forEach(function (b, k) { b.classList.toggle("on", k === i); });
-        dotBtns.forEach(function (b, k) {
-          b.classList.toggle("on", k === i);
-          if (k === i) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current");
-        });
-        count.textContent = "no. " + lower[i] + " of " + lower[RECIPES.length - 1];
+      function retrigger(node, dir) {
+        node.style.setProperty("--dx", (dir * 36) + "px");
+        node.classList.remove("enter");
+        void node.offsetWidth;
+        node.classList.add("enter");
       }
-      activate(0);
 
-      if ("IntersectionObserver" in window) {
-        var active = new IntersectionObserver(function (es) {
-          es.forEach(function (e) { if (e.isIntersecting) activate(+e.target.dataset.i); });
-        }, { rootMargin: "-45% 0px -45% 0px" });
-        var reveal = new IntersectionObserver(function (es) {
-          es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); reveal.unobserve(e.target); } });
-        }, { rootMargin: "0px 0px -8% 0px" });
-        document.querySelectorAll(".recipe").forEach(function (s) { active.observe(s); });
-        document.querySelectorAll(".reveal").forEach(function (el, k) {
-          el.style.transitionDelay = (k % 5) * 70 + "ms";
-          reveal.observe(el);
+      function show(i, dir) {
+        current = (i + N) % N;
+        var r = RECIPES[current];
+
+        // title: last word in champagne, as before
+        var words = r.name.split(" ");
+        var last = words.pop();
+        titleEl.textContent = words.join(" ") + " ";
+        titleEl.append(el("span", "", last));
+
+        // box
+        box.textContent = "";
+        box.setAttribute("aria-label", r.name + " (" + (current + 1) + " of " + N + ")");
+        box.append(fan("a"), fan("b"));
+        var num = el("div", "numeral", lower[current]);
+        num.setAttribute("aria-hidden", "true");
+        box.append(num);
+        box.append(el("p", "tagline", r.tagline));
+
+        var dl = el("dl", "meta");
+        [["Time", r.time], ["Yield", r.yield], ["Difficulty", r.difficulty]].forEach(function (m) {
+          var d = el("div");
+          d.append(el("dt", "smallcaps", m[0]), el("dd", "", m[1]));
+          dl.append(d);
         });
-      } else {
-        document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
+        box.append(dl);
+
+        var cols = el("div", "cols");
+        var left = el("div");
+        left.append(el("h3", "smallcaps", "Ingredients"));
+        var ul = el("ul", "ingr");
+        r.ingredients.forEach(function (t) { ul.append(el("li", "", t)); });
+        left.append(ul);
+        var right = el("div");
+        right.append(el("h3", "smallcaps", "Method"));
+        var ol = el("ol", "steps");
+        r.steps.forEach(function (t) { ol.append(el("li", "", t)); });
+        right.append(ol);
+        cols.append(left, right);
+        box.append(cols);
+
+        dotBtns.forEach(function (b, k) {
+          b.classList.toggle("on", k === current);
+          if (k === current) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current");
+        });
+        count.textContent = "no. " + lower[current] + " of " + lower[N - 1];
+
+        if (dir) { retrigger(titleEl, dir); retrigger(box, dir); }
+        history.replaceState(null, "", "#" + r.slug);
       }
+
+      document.getElementById("prev").addEventListener("click", function () { show(current - 1, -1); });
+      document.getElementById("next").addEventListener("click", function () { show(current + 1, 1); });
+      document.addEventListener("keydown", function (e) {
+        if (e.altKey || e.ctrlKey || e.metaKey) return;
+        if (e.key === "ArrowLeft") show(current - 1, -1);
+        else if (e.key === "ArrowRight") show(current + 1, 1);
+      });
+
+      // swipe on touch screens
+      var x0 = null;
+      box.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+      box.addEventListener("touchend", function (e) {
+        if (x0 == null) return;
+        var dx = e.changedTouches[0].clientX - x0;
+        x0 = null;
+        if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
+      }, { passive: true });
+
+      var start = 0, h = location.hash.slice(1);
+      RECIPES.forEach(function (r, i) { if (r.slug === h) start = i; });
+      show(start, 0);
     })();
   </script>
 </body>
