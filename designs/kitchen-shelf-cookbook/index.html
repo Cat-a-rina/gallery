@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Kitchen Shelf Cookbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f6ecd6; --paper-dark: #e8d9b5; --ink: #3b2a1c; --ribbon: #9c2f2f; --pencil: #3d5a80;
+      --serif: "IM Fell English", Georgia, serif; --body: "Lora", Georgia, serif; --hand: "Caveat", "Segoe Script", cursive;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--ink); font-family: var(--body);
+      display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem 3rem;
+      /* wooden table */
+      background: repeating-linear-gradient(92deg, #6b4a2f 0 38px, #644328 38px 41px, #70502f 41px 90px, #5d3f26 90px 93px);
+    }
+    .back { align-self: flex-start; color: #f6ecd6; font-family: var(--hand); font-size: 1.4rem; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    h1.shelf { font-family: var(--hand); font-weight: 700; color: #f6ecd6; font-size: clamp(1.6rem, 4vw, 2.4rem); margin: .5rem 0 1.25rem; text-shadow: 2px 2px 0 rgb(0 0 0 / .4); }
+
+    .book-wrap { position: relative; width: min(1100px, 100%); }
+    .book {
+      display: grid; grid-template-columns: 1fr 1fr; min-height: 640px; position: relative;
+      background: #7a2e22; padding: 14px; border-radius: 10px 14px 14px 10px;
+      box-shadow: 0 30px 50px rgb(0 0 0 / .5), inset 0 0 0 2px #5a1f16;
+    }
+    .page {
+      background: linear-gradient(90deg, var(--paper-dark) 0, var(--paper) 8%, var(--paper) 100%);
+      padding: clamp(1.25rem, 4vw, 3rem); position: relative;
+      background-image: repeating-linear-gradient(transparent 0 31px, rgb(120 90 50 / .12) 31px 32px);
+      background-color: var(--paper);
+    }
+    .page.left { border-radius: 6px 0 0 6px; box-shadow: inset -30px 0 40px -20px rgb(80 50 20 / .35); }
+    .page.right { border-radius: 0 6px 6px 0; box-shadow: inset 30px 0 40px -20px rgb(80 50 20 / .35); transform-origin: left center; }
+    .page.right.turn { animation: turn .55s ease; }
+    @keyframes turn { from { transform: perspective(1400px) rotateY(-70deg); opacity: .3; } to { transform: perspective(1400px) rotateY(0); opacity: 1; } }
+
+    .chapter { font-family: var(--hand); color: var(--ribbon); font-size: 1.5rem; margin: 0; }
+    h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(2rem, 4.5vw, 3rem); line-height: 1.05; margin: .25rem 0 .75rem; }
+    .tagline { font-style: italic; margin: 0 0 1.25rem; }
+    .facts { display: grid; grid-template-columns: auto 1fr; gap: .1rem 1rem; margin: 0 0 1.5rem; font-size: .95rem; }
+    .facts dt { font-family: var(--hand); font-size: 1.35rem; color: var(--pencil); line-height: 1.4; }
+    .facts dd { margin: 0; line-height: 2; }
+    h3 { font-family: var(--serif); font-weight: 400; font-size: 1.5rem; border-bottom: 2px double var(--ink); padding-bottom: .15rem; margin: 0 0 .75rem; }
+
+    ul.ingr { list-style: none; padding: 0; margin: 0; }
+    ul.ingr li { line-height: 2; cursor: pointer; display: flex; gap: .6rem; align-items: baseline; }
+    ul.ingr li::before { content: ""; width: .9rem; height: .9rem; flex: none; border: 2px solid var(--ink); border-radius: 2px; transform: translateY(.1rem); }
+    ul.ingr li.done { font-family: var(--hand); font-size: 1.35rem; color: var(--pencil); text-decoration: line-through; }
+    ul.ingr li.done::before { background: var(--pencil); border-color: var(--pencil); }
+
+    ol.steps { padding-left: 0; list-style: none; counter-reset: n; margin: 0; }
+    ol.steps li { counter-increment: n; display: grid; grid-template-columns: 2.2rem 1fr; margin-bottom: .9rem; line-height: 1.55; }
+    ol.steps li::before { content: counter(n) "."; font-family: var(--serif); font-size: 1.6rem; color: var(--ribbon); line-height: 1; }
+    .note { font-family: var(--hand); color: var(--pencil); font-size: 1.5rem; transform: rotate(-2deg); margin-top: 1.5rem; border-top: 1px dashed var(--pencil); padding-top: .5rem; }
+    .pageno { position: absolute; bottom: .8rem; font-family: var(--serif); font-size: .9rem; color: #8a7757; }
+    .left .pageno { left: 1.5rem; } .right .pageno { right: 1.5rem; }
+
+    /* ribbon bookmarks on the right edge */
+    .tabs { position: absolute; right: -34px; top: 70px; display: flex; flex-direction: column; gap: 10px; }
+    .tab {
+      writing-mode: vertical-rl; background: var(--paper-dark); border: 0; cursor: pointer; padding: .9rem .5rem;
+      font-family: var(--hand); font-size: 1.3rem; color: var(--ink); border-radius: 0 8px 8px 0; box-shadow: 3px 3px 6px rgb(0 0 0 / .4);
+      transition: transform .2s;
+    }
+    .tab:hover { transform: translateX(4px); }
+    .tab[aria-selected="true"] { background: var(--ribbon); color: #f6ecd6; transform: translateX(6px); }
+
+    @media (max-width: 860px) {
+      .book { grid-template-columns: 1fr; }
+      .page.left { border-radius: 6px 6px 0 0; box-shadow: none; }
+      .page.right { border-radius: 0 0 6px 6px; box-shadow: none; padding-bottom: 3rem; }
+      .tabs { position: static; flex-direction: row; justify-content: center; margin-top: 1rem; }
+      .tab { writing-mode: horizontal-tb; border-radius: 8px; padding: .4rem .8rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { .page.right.turn { animation: none; } }
+  </style>
+</head>
+<body>
+  <a class="back" href="../../index.html">&larr; Back to gallery</a>
+  <h1 class="shelf">From the kitchen shelf</h1>
+
+  <div class="book-wrap">
+    <div class="book" id="book">
+      <section class="page left" id="left"></section>
+      <section class="page right" id="right"></section>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Recipes" id="tabs"></div>
+  </div>
+
+  <script src="../../recipes.js"></script>
+  <script>
+    const NOTES = {
+      "sourdough": "Don't rush the fold. Patience is the whole recipe.",
+      "focaccia": "More oil than you think. Then a little more.",
+      "chocolate-chip-cookies": "Chill the dough! Yes, really. Trust me.",
+    };
+    const left = document.getElementById("left");
+    const right = document.getElementById("right");
+    const tabs = document.getElementById("tabs");
+
+    function show(i, animate) {
+      const r = RECIPES[i];
+      left.innerHTML = `
+        <p class="chapter">Recipe no. ${i + 1}</p>
+        <h2>${r.name}</h2>
+        <p class="tagline">${r.tagline}</p>
+        <dl class="facts"><dt>Time</dt><dd>${r.time}</dd><dt>Makes</dt><dd>${r.yield}</dd><dt>Skill</dt><dd>${r.difficulty}</dd></dl>
+        <h3>You will need</h3>
+        <ul class="ingr">${r.ingredients.map((x) => `<li>${x}</li>`).join("")}</ul>
+        <span class="pageno">${i * 2 + 2}</span>`;
+      right.innerHTML = `
+        <h3>Method</h3>
+        <ol class="steps">${r.steps.map((x) => `<li>${x}</li>`).join("")}</ol>
+        <p class="note">${NOTES[r.slug]}</p>
+        <span class="pageno">${i * 2 + 3}</span>`;
+      if (animate) { right.classList.remove("turn"); void right.offsetWidth; right.classList.add("turn"); }
+      tabs.querySelectorAll(".tab").forEach((t, j) => t.setAttribute("aria-selected", j === i));
+    }
+
+    RECIPES.forEach((r, i) => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.role = "tab"; b.textContent = r.name.split(" ").slice(-1)[0];
+      b.addEventListener("click", () => show(i, true));
+      tabs.appendChild(b);
+    });
+    left.addEventListener("click", (e) => { const li = e.target.closest(".ingr li"); if (li) li.classList.toggle("done"); });
+    show(0, false);
+  </script>
+</body>
+</html>

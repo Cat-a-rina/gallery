@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shape Shop — baking, built from primitives</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=League+Spartan:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #e63329; --blue: #1f4eb4; --yellow: #f7c614; --black: #111; --paper: #f4efe4;
+      --display: "League Spartan", "Futura", "Century Gothic", "Arial Black", sans-serif;
+      --body: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+      --navw: 76px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--black); font-family: var(--body); font-size: 1.05rem; line-height: 1.5; padding-left: var(--navw); overflow-x: hidden; }
+    :focus-visible { outline: 4px solid var(--blue); outline-offset: 3px; }
+
+    /* vertical shape nav */
+    .snav { position: fixed; left: 0; top: 0; bottom: 0; width: var(--navw); background: var(--black); z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem; }
+    .snav a.back { position: absolute; top: 0; left: 0; width: 100%; padding: .8rem 0; text-align: center; color: var(--paper); text-decoration: none; font-family: var(--display); font-weight: 900; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; border-bottom: 3px solid var(--yellow); }
+    .snav a.back:hover { background: var(--yellow); color: var(--black); }
+    .sbtn { width: 46px; height: 46px; display: grid; place-items: center; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: none; position: relative; transition: transform .25s; }
+    .sbtn i { display: block; width: 100%; height: 100%; background: var(--paper); transition: background .2s, transform .3s; }
+    .sbtn:nth-of-type(1) i { border-radius: 50%; }
+    .sbtn:nth-of-type(2) i { }
+    .sbtn:nth-of-type(3) i { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+    .sbtn:hover i { transform: rotate(90deg) scale(1.1); }
+    .sbtn[aria-current="true"] i { background: var(--red); }
+    .sbtn[aria-current="true"]::after { content: ""; position: absolute; right: -15px; top: 50%; width: 8px; height: 8px; background: var(--yellow); transform: translateY(-50%) rotate(45deg); }
+    .sbtn:focus-visible { outline-color: var(--yellow); }
+
+    /* hero with strong diagonal */
+    .hero { position: relative; min-height: 94vh; overflow: hidden; background: var(--yellow); isolation: isolate; }
+    .hero::before { content: ""; position: absolute; inset: 0; background: var(--blue); clip-path: polygon(0 0, 62% 0, 22% 100%, 0 100%); z-index: -2; }
+    .hero::after { content: ""; position: absolute; inset: 0; background: var(--red); clip-path: polygon(62% 0, 70% 0, 30% 100%, 22% 100%); z-index: -1; }
+    .hero .circle { position: absolute; width: min(38vw, 360px); aspect-ratio: 1; border-radius: 50%; background: var(--black); right: 6%; top: 8%; z-index: -1; }
+    .hero .half { position: absolute; width: min(30vw, 280px); height: min(15vw, 140px); background: var(--paper); border-radius: 280px 280px 0 0; right: 22%; bottom: 0; z-index: -1; }
+    .hero .tri { position: absolute; width: min(22vw, 200px); aspect-ratio: 1; background: var(--blue); clip-path: polygon(50% 0, 100% 100%, 0 100%); right: 4%; bottom: 8%; z-index: -1; }
+    .hero .quarter { position: absolute; width: min(20vw, 170px); aspect-ratio: 1; background: var(--red); border-radius: 100% 0 0 0; left: 50%; top: 0; z-index: -1; }
+    .hero h1 { position: absolute; left: clamp(1rem, 4vw, 3.5rem); bottom: clamp(1.5rem, 6vw, 4rem); margin: 0; font-family: var(--display); font-weight: 900; font-size: clamp(3.6rem, 15vw, 12rem); line-height: .82; text-transform: uppercase; color: var(--paper); letter-spacing: -.03em; transform-origin: left bottom; transform: rotate(-9deg); }
+    .hero h1 span { display: block; }
+    .hero h1 span:last-child { color: var(--yellow); margin-left: .5em; -webkit-text-stroke: 0; }
+    .hero p { position: absolute; top: clamp(1rem, 4vw, 2.5rem); left: clamp(1rem, 4vw, 3.5rem); margin: 0; max-width: 17rem; font-weight: 700; color: var(--paper); font-size: 1.05rem; border-left: 8px solid var(--yellow); padding-left: .8rem; }
+
+    /* recipe blocks */
+    .block { display: grid; grid-template-columns: repeat(12, 1fr); min-height: 100vh; position: relative; scroll-margin-top: 0; border-top: 10px solid var(--black); }
+    .emblem { grid-column: 1 / span 5; grid-row: 1; display: grid; place-items: center; position: relative; overflow: hidden; padding: 2rem; }
+    .info { grid-column: 6 / span 7; grid-row: 1; padding: clamp(1.5rem, 4vw, 4rem); position: relative; }
+    .block.flip .emblem { grid-column: 8 / span 5; }
+    .block.flip .info { grid-column: 1 / span 7; }
+    .block:nth-of-type(1) .emblem { background: var(--blue); }
+    .block:nth-of-type(2) .emblem { background: var(--red); }
+    .block:nth-of-type(3) .emblem { background: var(--yellow); }
+    .emblem svg { width: min(100%, 430px); height: auto; transition: transform .6s cubic-bezier(.3, 1.4, .5, 1); }
+    .emblem svg .spin { transform-box: fill-box; transform-origin: center; transition: transform .7s cubic-bezier(.3, 1.4, .5, 1); }
+    .block:hover .emblem svg .spin { transform: rotate(90deg); }
+    .block:hover .emblem svg .shift { transform: translate(14px, -14px); }
+    .emblem svg .shift { transition: transform .5s cubic-bezier(.3, 1.4, .5, 1); }
+    .block:hover .emblem svg .drift { transform: translate(-12px, 10px) rotate(-12deg); }
+    .emblem svg .drift { transform-box: fill-box; transform-origin: center; transition: transform .6s cubic-bezier(.3, 1.4, .5, 1); }
+    .idx { position: absolute; top: 1rem; left: 1rem; font-family: var(--display); font-weight: 900; font-size: 1.2rem; color: var(--paper); background: var(--black); padding: .1rem .8rem; }
+
+    .info h2 { font-family: var(--display); font-weight: 900; font-size: clamp(2.4rem, 6vw, 5rem); line-height: .92; text-transform: uppercase; margin: 0 0 .8rem; letter-spacing: -.02em; }
+    .info .tag { font-size: 1.3rem; font-weight: 500; max-width: 30rem; margin: 0 0 1.5rem; padding-left: 1rem; border-left: 8px solid var(--red); }
+    .specs { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 0; margin: 0 0 2rem; border: 4px solid var(--black); width: max-content; max-width: 100%; }
+    .specs div { padding: .5rem 1rem; border-right: 4px solid var(--black); }
+    .specs div:last-child { border-right: 0; }
+    .specs dt { font-family: var(--display); font-weight: 700; font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; color: var(--blue); }
+    .specs dd { margin: 0; font-weight: 700; font-size: .95rem; }
+    .lists { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 2rem; }
+    .info h3 { font-family: var(--display); font-weight: 900; text-transform: uppercase; font-size: 1.1rem; letter-spacing: .1em; margin: 0 0 .8rem; background: var(--black); color: var(--paper); display: inline-block; padding: .15rem .7rem; }
+    ul.ing { list-style: none; margin: 0; padding: 0; }
+    ul.ing li { display: flex; gap: .7rem; align-items: baseline; padding: .4rem 0; border-bottom: 2px solid var(--black); }
+    ul.ing li::before { content: ""; flex: none; width: .7rem; height: .7rem; background: var(--red); }
+    ul.ing li:nth-child(3n+2)::before { border-radius: 50%; background: var(--blue); }
+    ul.ing li:nth-child(3n+3)::before { background: var(--yellow); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+    ol.steps { list-style: none; counter-reset: s; margin: 0; padding: 0; }
+    ol.steps li { counter-increment: s; display: grid; grid-template-columns: 3rem 1fr; gap: 1rem; align-items: start; padding: .6rem 0; }
+    ol.steps li::before { content: counter(s); width: 2.8rem; height: 2.8rem; display: grid; place-items: center; font-family: var(--display); font-weight: 900; font-size: 1.3rem; color: var(--paper); background: var(--black); transition: transform .3s; }
+    ol.steps li:nth-child(3n+1)::before { border-radius: 50%; background: var(--red); }
+    ol.steps li:nth-child(3n+2)::before { background: var(--blue); }
+    ol.steps li:nth-child(3n+3)::before { background: var(--black); border-radius: 100% 0 0 0; }
+    ol.steps li:hover::before { transform: rotate(90deg); }
+
+    footer { background: var(--black); color: var(--paper); padding: 2rem; font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    footer i { width: 1.4rem; height: 1.4rem; background: var(--red); display: inline-block; }
+    footer i:nth-child(2) { background: var(--blue); border-radius: 50%; } footer i:nth-child(3) { background: var(--yellow); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; } }
+    @media (max-width: 860px) {
+      :root { --navw: 0px; }
+      body { padding-bottom: 64px; }
+      .snav { top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: 60px; flex-direction: row; justify-content: center; gap: 2rem; }
+      .snav a.back { position: static; width: auto; border: 0; padding: 0 .5rem; font-size: .65rem; order: -1; }
+      .sbtn { width: 38px; height: 38px; }
+      .sbtn[aria-current="true"]::after { right: auto; top: -10px; left: 50%; transform: translateX(-50%) rotate(45deg); }
+      .hero { min-height: 88vh; }
+      .hero p { max-width: 12rem; font-size: .9rem; }
+      .block, .block.flip { display: block; min-height: 0; }
+      .emblem { min-height: 280px; padding: 3rem 1.5rem 1.5rem; }
+      .emblem svg { width: min(70%, 300px); }
+      .lists { grid-template-columns: 1fr; }
+      .specs { grid-template-columns: 1fr; width: 100%; }
+      .specs div { border-right: 0; border-bottom: 4px solid var(--black); } .specs div:last-child { border-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="snav" aria-label="Jump to recipe">
+    <a class="back" href="../../index.html">&larr; Gallery</a>
+    <span id="navbtns" style="display:contents"></span>
+  </nav>
+
+  <header class="hero">
+    <div class="quarter"></div><div class="circle"></div><div class="half"></div><div class="tri"></div>
+    <p>Three recipes. Three shapes. Everything else is just flour.</p>
+    <h1><span>Shape</span><span>Shop</span></h1>
+  </header>
+
+  <main id="blocks"></main>
+  <footer><i></i><i></i><i></i> Circle. Square. Triangle. Bake.</footer>
+
+  <script src="../../recipes.js"></script>
+  <script>
+    (function () {
+      var R = "#e63329", B = "#1f4eb4", Y = "#f7c614", K = "#111", P = "#f4efe4";
+      var emblems = {
+        sourdough: function () { // circle
+          return '<svg viewBox="0 0 400 400" role="img" aria-label="Emblem: concentric circles with a half circle and a quarter circle">' +
+            '<circle cx="200" cy="200" r="190" fill="' + P + '"/><circle class="spin" cx="200" cy="200" r="140" fill="' + Y + '"/>' +
+            '<circle cx="200" cy="200" r="80" fill="' + K + '"/>' +
+            '<path class="spin" d="M120 200a80 80 0 0 1 160 0z" fill="' + R + '"/>' +
+            '<path class="drift" d="M200 200h190a190 190 0 0 1-190 190z" fill="' + B + '" opacity=".0"/>' +
+            '<path class="shift" d="M390 200A190 190 0 0 0 200 10v190z" fill="' + R + '"/></svg>';
+        },
+        focaccia: function () { // rectangle with dimple grid
+          var dots = "";
+          for (var r = 0; r < 3; r++) for (var c = 0; c < 4; c++) {
+            var cls = (r + c) % 2 ? "spin" : "";
+            dots += '<circle class="' + cls + '" cx="' + (80 + c * 80) + '" cy="' + (140 + r * 70) + '" r="22" fill="' + ((r + c) % 3 === 0 ? Y : (r + c) % 3 === 1 ? B : P) + '"/>';
+          }
+          return '<svg viewBox="0 0 400 400" role="img" aria-label="Emblem: a rectangle holding a grid of circles">' +
+            '<rect x="20" y="90" width="360" height="240" fill="' + P + '"/><rect class="shift" x="40" y="110" width="320" height="200" fill="' + K + '"/>' + dots +
+            '<path class="drift" d="M20 90h110L20 200z" fill="' + Y + '"/></svg>';
+        },
+        "chocolate-chip-cookies": function () { // circle with triangles + squares chips
+          return '<svg viewBox="0 0 400 400" role="img" aria-label="Emblem: a circle studded with small triangles and squares">' +
+            '<circle cx="200" cy="200" r="190" fill="' + R + '"/><circle cx="200" cy="200" r="190" fill="none" stroke="' + K + '" stroke-width="12"/>' +
+            '<polygon class="spin" points="120,150 160,150 140,115" fill="' + K + '"/>' +
+            '<rect class="spin" x="240" y="110" width="40" height="40" fill="' + K + '"/>' +
+            '<polygon class="drift" points="260,260 305,260 282,222" fill="' + P + '"/>' +
+            '<rect class="drift" x="105" y="245" width="38" height="38" fill="' + P + '"/>' +
+            '<polygon class="spin" points="180,310 220,310 200,275" fill="' + B + '"/>' +
+            '<rect class="spin" x="185" y="190" width="32" height="32" fill="' + B + '"/>' +
+            '<polygon class="drift" points="310,170 340,170 325,145" fill="' + K + '"/></svg>';
+        }
+      };
+      function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+      var main = document.getElementById("blocks"), nav = document.getElementById("navbtns");
+      var shapeName = ["Circle", "Rectangle", "Triangle"];
+      main.innerHTML = RECIPES.map(function (r, i) {
+        return '<section class="block' + (i % 2 ? " flip" : "") + '" id="r-' + esc(r.slug) + '" aria-labelledby="h-' + i + '">' +
+          '<div class="emblem" aria-hidden="false"><span class="idx">0' + (i + 1) + " / 0" + RECIPES.length + "</span>" + (emblems[r.slug] || emblems.sourdough)() + "</div>" +
+          '<div class="info"><h2 id="h-' + i + '">' + esc(r.name) + '</h2><p class="tag">' + esc(r.tagline) + "</p>" +
+          '<dl class="specs"><div><dt>Time</dt><dd>' + esc(r.time) + "</dd></div><div><dt>Yield</dt><dd>" + esc(r.yield) + "</dd></div><div><dt>Level</dt><dd>" + esc(r.difficulty) + "</dd></div></dl>" +
+          '<div class="lists"><div><h3>Parts</h3><ul class="ing">' + r.ingredients.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>" +
+          '<div><h3>Assembly</h3><ol class="steps">' + r.steps.map(function (x) { return "<li><span>" + esc(x) + "</span></li>"; }).join("") + "</ol></div></div></div></section>";
+      }).join("");
+
+      nav.innerHTML = RECIPES.map(function (r, i) {
+        return '<a class="sbtn" href="#r-' + esc(r.slug) + '" aria-label="Jump to ' + esc(r.name) + " (" + shapeName[i % 3] + ')"><i></i></a>';
+      }).join("");
+
+      var links = Array.prototype.slice.call(nav.children);
+      var secs = Array.prototype.slice.call(main.children);
+      function mark(i) { links.forEach(function (a, n) { if (n === i) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); }); }
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) mark(secs.indexOf(e.target)); });
+        }, { rootMargin: "-45% 0px -45% 0px" });
+        secs.forEach(function (s) { io.observe(s); });
+      }
+    })();
+  </script>
+</body>
+</html>

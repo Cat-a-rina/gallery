@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Supper Scrapbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --kraft: #c9a27a; --red: #c8342c; --mustard: #e1b84f; --olive: #6b7a3a; --ink: #2b2118;
+      --serif: "Libre Baskerville", Baskerville, Georgia, serif;
+      --hand: "Gaegu", "Comic Sans MS", "Segoe Print", cursive;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; color: var(--ink); font-family: var(--hand); font-size: 1.25rem; line-height: 1.35;
+      background-color: #fff;
+      background-image:
+        repeating-linear-gradient(0deg, rgb(200 52 44 / .35) 0 28px, transparent 28px 56px),
+        repeating-linear-gradient(90deg, rgb(200 52 44 / .35) 0 28px, transparent 28px 56px);
+      overflow-x: hidden;
+    }
+    :focus-visible { outline: 3px dashed var(--ink); outline-offset: 3px; background: var(--mustard); }
+    .back {
+      position: fixed; top: .8rem; left: .8rem; z-index: 50; background: var(--mustard); color: var(--ink); text-decoration: none;
+      padding: .25rem 1rem .25rem .8rem; font-weight: 700; font-size: 1.3rem; transform: rotate(-3deg);
+      clip-path: polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%, 4% 50%); transition: transform .2s;
+    }
+    .back:hover { transform: rotate(0) scale(1.05); }
+
+    header.cover { padding: 5rem 1rem 1rem; display: flex; justify-content: center; }
+    .cover-card {
+      background: var(--kraft); padding: 1.5rem 2.5rem 1.8rem; transform: rotate(-1.5deg); text-align: center; position: relative;
+      box-shadow: 3px 6px 14px rgb(0 0 0 / .35); border: 3px dashed rgb(255 255 255 / .6); outline: 6px solid var(--kraft);
+      background-image: repeating-linear-gradient(45deg, rgb(255 255 255 / .05) 0 3px, transparent 3px 7px);
+    }
+    .cover-card h1 { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: clamp(2rem, 7vw, 4rem); margin: 0; line-height: 1.05; }
+    .cover-card p { margin: .3rem 0 0; font-size: 1.5rem; }
+    .jump { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem 1rem; padding: 1rem; }
+    .jump a { color: var(--red); background: #fff; padding: .1rem .8rem; text-decoration: none; font-weight: 700; border: 2px solid var(--red); transform: rotate(var(--r, 1deg)); }
+    .jump a:hover { background: var(--red); color: #fff; transform: rotate(0); }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 1rem 1rem 4rem; }
+    .spread { display: grid; grid-template-columns: repeat(12, 1fr); gap: 0 1rem; margin: 3.5rem 0 6rem; position: relative; align-items: start; }
+    .piece { position: relative; transform: rotate(var(--r, 0deg)); transition: transform .35s cubic-bezier(.3, 1.4, .5, 1), box-shadow .3s; z-index: var(--z, 1); }
+    .piece:hover, .piece:focus-within { transform: rotate(0) scale(1.02); z-index: 20; }
+
+    figure.piece { margin: 0; }
+    /* washi tape */
+    .tape { position: absolute; width: 110px; height: 30px; opacity: .88; z-index: 3; pointer-events: none;
+      background: repeating-linear-gradient(90deg, var(--tc, var(--mustard)) 0 10px, rgb(255 255 255 / .35) 10px 14px);
+      clip-path: polygon(0 10%, 4% 0, 8% 12%, 12% 0, 100% 0, 96% 50%, 100% 100%, 8% 100%, 4% 88%, 0 100%, 3% 50%); transform: rotate(var(--tr, -8deg)); }
+    .tape.t1 { top: -14px; left: 12%; } .tape.t2 { top: -14px; right: 8%; --tr: 9deg; --tc: var(--olive); }
+    .tape.t3 { bottom: -12px; left: 30%; --tc: var(--red); --tr: 4deg; }
+
+    /* torn clipping */
+    .clipping {
+      --torn: polygon(0 3%, 6% 0, 12% 2.5%, 19% .5%, 27% 3%, 35% 0, 44% 2%, 53% 0, 61% 3%, 70% .5%, 79% 2.5%, 88% 0, 95% 2%, 100% 0, 99% 30%, 100% 55%, 98.5% 80%, 100% 100%, 92% 98%, 84% 100%, 76% 97.5%, 66% 100%, 57% 98%, 47% 100%, 38% 97%, 29% 100%, 20% 98%, 11% 100%, 5% 97.5%, 0 100%, 1.5% 70%, 0 45%, 1.2% 20%);
+      clip-path: var(--torn); background: #f5ecd7; padding: 2.6rem 2rem 2.2rem;
+      background-image: radial-gradient(rgb(120 90 40 / .08) 1px, transparent 1.5px); background-size: 6px 6px;
+    }
+    .piece-wrap { filter: drop-shadow(3px 5px 5px rgb(0 0 0 / .35)); }
+    .kick { font-size: 1.35rem; color: var(--red); font-weight: 700; margin: 0; }
+    .clipping h2 { font-family: var(--serif); font-style: italic; font-weight: 700; font-size: clamp(1.8rem, 5vw, 3.1rem); line-height: 1.05; margin: .1rem 0 .5rem; }
+    .clipping .tag { font-size: 1.5rem; margin: 0 0 .8rem; }
+    .facts { display: flex; flex-wrap: wrap; gap: .4rem .6rem; margin: 0; padding: 0; list-style: none; }
+    .facts li { background: var(--mustard); padding: .05rem .7rem; font-weight: 700; transform: rotate(var(--fr, -1deg)); }
+    .facts li:nth-child(2) { --fr: 1.5deg; background: #fff; border: 2px solid var(--olive); }
+    .facts li:nth-child(3) { --fr: -2deg; background: var(--olive); color: #fff; }
+
+    /* polaroid */
+    .polaroid { background: #fffdf8; padding: 12px 12px 8px; box-shadow: 3px 6px 12px rgb(0 0 0 / .4); }
+    .polaroid svg { display: block; width: 100%; height: auto; background: #f1e3c4; }
+    .polaroid figcaption { font-size: 1.55rem; text-align: center; padding-top: .3rem; font-weight: 700; }
+
+    /* notepad scrap */
+    .notepad {
+      background: #fffef6 repeating-linear-gradient(transparent 0 29px, #9fc3d9 29px 30px); background-position: 0 2.4rem; padding: 0 1.2rem 1rem 2.6rem;
+      box-shadow: 2px 4px 9px rgb(0 0 0 / .35); border-top: 22px solid var(--red); position: relative;
+    }
+    .notepad::before { content: ""; position: absolute; left: 1.9rem; top: -22px; bottom: 0; width: 2px; background: rgb(200 52 44 / .5); }
+    .notepad::after { content: "• • • • • •"; position: absolute; top: -20px; left: 0; right: 0; text-align: center; color: #fff; letter-spacing: .8rem; font-size: .8rem; line-height: 18px; }
+    h3 { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.35rem; margin: .5rem 0 .2rem; }
+    .notepad ul { list-style: none; margin: 0; padding: 0; }
+    .notepad li { line-height: 30px; font-size: 1.3rem; }
+    .notepad li::before { content: "✓ "; color: var(--olive); font-weight: 700; }
+
+    /* torn page steps */
+    .page {
+      background: #fbf3dc; padding: 2rem 1.8rem 2.2rem;
+      clip-path: polygon(0 0, 100% 0, 99% 12%, 100% 26%, 98.5% 40%, 100% 55%, 99% 70%, 100% 85%, 98.5% 100%, 90% 98.5%, 80% 100%, 68% 98%, 55% 100%, 42% 98.5%, 30% 100%, 18% 98%, 8% 100%, 0 99%, 1.2% 85%, 0 70%, 1.3% 50%, 0 32%, 1% 15%);
+    }
+    .page ol { list-style: none; counter-reset: n; margin: 0; padding: 0; }
+    .page li { counter-increment: n; position: relative; padding-left: 2.6rem; margin-bottom: .7rem; font-size: 1.35rem; }
+    .page li::before { content: counter(n); position: absolute; left: 0; top: -.15rem; width: 2rem; height: 2rem; display: grid; place-items: center; border: 2px solid var(--red); border-radius: 50%; color: var(--red); font-weight: 700; transform: rotate(-6deg); }
+    .page.alt li::before { border-color: var(--olive); color: var(--olive); border-radius: 4px; }
+    .scribble { font-weight: 700; color: var(--red); font-size: 1.5rem; transform: rotate(-4deg); margin: .5rem 0 0; }
+
+    /* three different compositions */
+    .v-a .clipping-w { grid-column: 1 / 8; grid-row: 1; --r: -1.2deg; --z: 2; }
+    .v-a .polaroid-w { grid-column: 8 / 13; grid-row: 1 / 3; margin-top: 2.5rem; margin-left: -1rem; --r: 5deg; --z: 3; }
+    .v-a .notepad-w { grid-column: 1 / 6; grid-row: 2; margin-top: -1rem; margin-left: 1.5rem; --r: 2deg; --z: 4; }
+    .v-a .page-w { grid-column: 6 / 13; grid-row: 2 / 4; margin-top: 2rem; margin-right: 4rem; --r: -1.5deg; --z: 1; }
+
+    .v-b .polaroid-w { grid-column: 1 / 6; grid-row: 1 / 3; --r: -4deg; --z: 3; margin-top: 1rem; }
+    .v-b .clipping-w { grid-column: 5 / 13; grid-row: 1; margin-top: 0; margin-left: 2rem; --r: 1.6deg; --z: 2; }
+    .v-b .page-w { grid-column: 6 / 13; grid-row: 2; margin-top: 1.5rem; --r: -1deg; }
+    .v-b .notepad-w { grid-column: 1 / 6; grid-row: 3; margin-top: -2rem; margin-left: 2rem; --r: -2.5deg; --z: 4; }
+
+    .v-c .clipping-w { grid-column: 3 / 11; grid-row: 1; --r: .8deg; --z: 2; }
+    .v-c .polaroid-w { grid-column: 9 / 13; grid-row: 1; margin-top: -2.5rem; margin-right: -.5rem; --r: 7deg; --z: 4; align-self: start; }
+    .v-c .page-w { grid-column: 1 / 7; grid-row: 2; margin-top: 1.5rem; --r: 1.5deg; }
+    .v-c .notepad-w { grid-column: 7 / 12; grid-row: 2; margin-top: 3.5rem; --r: -3deg; --z: 3; }
+
+    footer { text-align: center; padding: 1rem 1rem 3rem; font-size: 1.5rem; }
+    footer span { background: var(--kraft); padding: .2rem 1rem; display: inline-block; transform: rotate(1.5deg); }
+
+    @media (max-width: 780px) {
+      .spread { display: flex; flex-direction: column; gap: 1.8rem; margin: 2.5rem 0 4rem; }
+      .spread .piece { margin: 0 !important; }
+      .v-a .polaroid-w, .v-c .polaroid-w { width: 78%; align-self: flex-end; }
+      .v-b .polaroid-w { width: 78%; align-self: flex-start; }
+      .v-c .polaroid-w { order: -0; }
+      .spread .notepad-w { width: 92%; align-self: center; }
+      .page { padding-left: 1.2rem; padding-right: 1.4rem; }
+      .back { font-size: 1.1rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { .piece, .back, .jump a { transition: none; } .piece:hover, .piece:focus-within { transform: rotate(var(--r, 0deg)); } }
+  </style>
+</head>
+<body>
+  <a class="back" href="../../index.html">&larr; back to the gallery</a>
+  <header class="cover">
+    <div class="cover-card">
+      <h1>The Supper Scrapbook</h1>
+      <p>clippings, snapshots &amp; sticky-fingered notes</p>
+    </div>
+  </header>
+  <nav class="jump" id="jump" aria-label="Jump to a page"></nav>
+  <main id="main"></main>
+  <footer><span>pasted in with love &amp; a little flour</span></footer>
+
+  <script src="../../recipes.js"></script>
+  <script>
+    (function () {
+      var DRAWINGS = {
+        "sourdough":
+          '<svg viewBox="0 0 300 220" role="img" aria-label="Drawing of a scored round sourdough loaf">' +
+          '<rect width="300" height="220" fill="#ead7ae"/><ellipse cx="150" cy="188" rx="105" ry="14" fill="#b58b5c" opacity=".5"/>' +
+          '<path d="M45 160c-10-60 30-105 105-105s115 45 105 105c-4 22-40 30-105 30S49 182 45 160z" fill="#c98a45" stroke="#2b2118" stroke-width="3"/>' +
+          '<path d="M80 90c20-18 40-25 60-25" fill="none" stroke="#f3dcae" stroke-width="9" stroke-linecap="round"/>' +
+          '<path d="M115 80c25 10 40 40 38 85M150 75c25 8 50 35 52 75M95 120c10 8 20 30 22 55" fill="none" stroke="#f3dcae" stroke-width="7" stroke-linecap="round"/>' +
+          '<g fill="#fff" opacity=".8"><circle cx="70" cy="140" r="2"/><circle cx="220" cy="130" r="2"/><circle cx="190" cy="165" r="2"/><circle cx="105" cy="160" r="2"/></g>' +
+          '<path d="M230 40l6 12 13 2-10 9 3 13-12-7-12 7 3-13-10-9 13-2z" fill="#e1b84f" stroke="#2b2118" stroke-width="2"/></svg>',
+        "focaccia":
+          '<svg viewBox="0 0 300 220" role="img" aria-label="Drawing of a dimpled focaccia in a pan">' +
+          '<rect width="300" height="220" fill="#d9e0b8"/><path d="M30 70l240-4 12 110-264 6z" fill="#8f949b" stroke="#2b2118" stroke-width="3"/>' +
+          '<path d="M42 78l216-4 10 94-240 6z" fill="#dfa84a" stroke="#2b2118" stroke-width="2"/>' +
+          '<g fill="#b8761f"><circle cx="75" cy="100" r="7"/><circle cx="120" cy="98" r="7"/><circle cx="165" cy="96" r="7"/><circle cx="212" cy="95" r="7"/><circle cx="95" cy="130" r="7"/><circle cx="142" cy="128" r="7"/><circle cx="190" cy="126" r="7"/><circle cx="235" cy="124" r="7"/><circle cx="70" cy="155" r="7"/><circle cx="118" cy="156" r="7"/><circle cx="166" cy="154" r="7"/><circle cx="214" cy="152" r="7"/></g>' +
+          '<g stroke="#6b7a3a" stroke-width="3" stroke-linecap="round"><path d="M100 112l18-9M104 106l8 10M150 140l16-10M156 132l4 14M205 108l14-9M210 102l6 12M85 148l14-6"/></g>' +
+          '<g fill="#fff"><rect x="130" y="110" width="5" height="3"/><rect x="180" y="142" width="5" height="3"/><rect x="226" y="108" width="5" height="3"/><rect x="82" y="116" width="5" height="3"/></g></svg>',
+        "chocolate-chip-cookies":
+          '<svg viewBox="0 0 300 220" role="img" aria-label="Drawing of a chocolate chip cookie">' +
+          '<rect width="300" height="220" fill="#f0d7cf"/><ellipse cx="156" cy="170" rx="100" ry="12" fill="#2b2118" opacity=".18"/>' +
+          '<path d="M150 28c52 0 94 38 94 84s-42 70-94 70-96-24-96-70 44-84 96-84z" fill="#d49a52" stroke="#2b2118" stroke-width="3"/>' +
+          '<path d="M80 80c20-26 52-34 80-30" fill="none" stroke="#efc884" stroke-width="7" stroke-linecap="round"/>' +
+          '<g fill="#4a2a1a" stroke="#2b2118" stroke-width="2"><path d="M110 70l16 4-4 14-14-4z"/><path d="M170 62l17 6-6 14-15-6z"/><path d="M205 102l14 2-2 14-14-3z"/><path d="M92 120l15 3-3 14-14-4z"/><path d="M150 108l16 4-4 15-14-5z"/><path d="M128 146l15 2-3 13-14-3z"/><path d="M186 142l15 4-5 13-13-5z"/><path d="M135 38l10 2-2 10-9-2z"/></g>' +
+          '<g fill="#e1b84f" stroke="#2b2118" stroke-width="2"><path d="M250 30c8 0 14 6 14 14 0 8-6 14-14 14" fill="none"/><path d="M40 170h26" stroke-width="4"/></g></svg>'
+      };
+      var CAPS = { "sourdough": "fresh from the Dutch oven!", "focaccia": "oil. oil. more oil.", "chocolate-chip-cookies": "gone in ten minutes" };
+      var SCRIBBLES = { "sourdough": "tip: be patient with it!", "focaccia": "tip: dimple like you mean it", "chocolate-chip-cookies": "tip: sea salt on top!" };
+      var VARIANTS = ["v-a", "v-b", "v-c"];
+      var main = document.getElementById("main");
+      var jump = document.getElementById("jump");
+
+      function li(arr) { return arr.map(function (x) { return "<li>" + x + "</li>"; }).join(""); }
+
+      RECIPES.forEach(function (r, i) {
+        var v = VARIANTS[i % VARIANTS.length];
+        var id = "page-" + r.slug;
+        var sec = document.createElement("section");
+        sec.className = "spread " + v;
+        sec.id = id;
+        sec.setAttribute("aria-labelledby", id + "-h");
+        sec.innerHTML =
+          '<div class="piece clipping-w piece-wrap"><span class="tape t1" aria-hidden="true"></span><span class="tape t2" aria-hidden="true"></span>' +
+            '<div class="clipping"><p class="kick">page ' + (i + 1) + ' of ' + RECIPES.length + '</p><h2 id="' + id + '-h">' + r.name + '</h2>' +
+            '<p class="tag">' + r.tagline + '</p>' +
+            '<ul class="facts"><li>' + r.time + '</li><li>makes ' + r.yield + '</li><li>' + r.difficulty + '</li></ul></div></div>' +
+          '<figure class="piece polaroid-w polaroid" style="margin-bottom:0"><span class="tape ' + (i % 2 ? "t1" : "t2") + '" aria-hidden="true"></span>' + DRAWINGS[r.slug] +
+            '<figcaption>' + (CAPS[r.slug] || r.name) + '</figcaption></figure>' +
+          '<div class="piece notepad-w"><div class="notepad"><h3>What goes in</h3><ul>' + li(r.ingredients) + '</ul></div></div>' +
+          '<div class="piece page-w piece-wrap"><div class="page' + (i % 2 ? " alt" : "") + '"><h3>How it\'s done</h3><ol>' + li(r.steps) + '</ol>' +
+            '<p class="scribble">' + (SCRIBBLES[r.slug] || "") + '</p></div><span class="tape t3" aria-hidden="true"></span></div>';
+        main.appendChild(sec);
+
+        var a = document.createElement("a");
+        a.href = "#" + id;
+        a.textContent = r.name;
+        a.style.setProperty("--r", (i % 2 ? 2 : -2) + "deg");
+        jump.appendChild(a);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -9,7 +9,7 @@ function renderTile(d) {
 
   const body = document.createElement(built ? "a" : "div");
   body.className = "tile-body";
-  if (built) body.href = `designs/${d.slug}/`;
+  if (built) body.href = `designs/${d.slug}/index.html`;
 
   const tags = [d.mood, d.type, d.layout].filter(Boolean).join(" · ");
   body.innerHTML = `

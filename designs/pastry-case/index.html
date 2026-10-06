@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Little Oven Bakery — The Pastry Case</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Yellowtail&display=swap" rel="stylesheet">
+  <style>
+    :root { --terra: #c8553d; --cream: #fff4e0; --esp: #3a251a; --butter: #f3d28a; --sage: #9db08a;
+      --script: "Yellowtail", "Brush Script MT", "Segoe Script", cursive; --body: "Josefin Sans", "Century Gothic", "Trebuchet MS", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--body); color: var(--esp); background: var(--esp); font-size: 1.02rem; line-height: 1.5;
+      background-image: repeating-linear-gradient(90deg, rgb(255 255 255 / .03) 0 2px, transparent 2px 60px); }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--butter); outline-offset: 3px; }
+
+    .back { position: absolute; top: 12px; left: 12px; z-index: 6; background: var(--cream); color: var(--terra); font-weight: 700; text-transform: uppercase; letter-spacing: .15em; font-size: .72rem; text-decoration: none; padding: .35rem .8rem; border-radius: 99px; border: 2px solid var(--esp); }
+    .back:hover { background: var(--butter); }
+
+    /* awning */
+    .awning { height: 110px; position: relative; background: repeating-linear-gradient(90deg, var(--terra) 0 48px, var(--cream) 48px 96px); box-shadow: 0 8px 14px rgb(0 0 0 / .4); }
+    .awning::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 26px;
+      background: repeating-linear-gradient(90deg, var(--terra) 0 48px, var(--cream) 48px 96px);
+      -webkit-mask: radial-gradient(circle 24px at 24px 0, #000 98%, transparent) 0 0 / 48px 26px repeat-x; mask: radial-gradient(circle 24px at 24px 0, #000 98%, transparent) 0 0 / 48px 26px repeat-x; }
+    .awning::before { content: ""; position: absolute; inset: 0; background: linear-gradient(rgb(0 0 0 / .25), transparent 45%, rgb(0 0 0 / .12)); z-index: 1; }
+
+    /* sign */
+    .front { max-width: 1000px; margin: 0 auto; padding: 0 clamp(.6rem, 3vw, 1.5rem) 3rem; }
+    .sign { margin: 3.2rem auto 2rem; position: relative; text-align: center; background: var(--cream); border: 6px solid var(--butter); outline: 3px solid var(--terra); outline-offset: -14px; border-radius: 10px; padding: 1.6rem 1rem 1.4rem; box-shadow: 0 10px 0 rgb(0 0 0 / .3); }
+    .sign .est { margin: 0; letter-spacing: .5em; font-size: .72rem; text-transform: uppercase; font-weight: 600; color: var(--sage); }
+    .sign h1 { font-family: var(--script); font-weight: 400; font-size: clamp(3rem, 12vw, 6.5rem); line-height: 1; margin: .1rem 0; color: var(--terra); text-shadow: 3px 3px 0 var(--butter); transform: rotate(-2deg); }
+    .sign .sub { margin: 0; text-transform: uppercase; letter-spacing: .3em; font-size: .78rem; font-weight: 700; }
+    .open-sign { position: absolute; right: -4px; top: -2.2rem; width: 96px; text-align: center; transform: rotate(6deg); transform-origin: 50% -2rem; animation: swing 4s ease-in-out infinite; }
+    .open-sign::before { content: ""; position: absolute; left: 50%; top: -1.4rem; height: 2rem; border-left: 2px solid var(--butter); }
+    .open-sign span { display: block; padding: .35rem .2rem; background: var(--sage); color: var(--esp); border: 3px solid var(--esp); border-radius: 6px; font-weight: 700; letter-spacing: .2em; font-size: 1rem; }
+    .open-sign small { display: block; font-size: .56rem; letter-spacing: .1em; background: var(--esp); color: var(--cream); text-transform: uppercase; padding: 0 .2rem; border-radius: 0 0 4px 4px; }
+    .open-sign.closed span { background: var(--terra); color: var(--cream); }
+    @keyframes swing { 50% { transform: rotate(-4deg); } }
+
+    .hint { text-align: center; color: var(--butter); text-transform: uppercase; letter-spacing: .25em; font-size: .72rem; margin: 0 0 1rem; }
+
+    /* case */
+    .case { position: relative; border: 10px solid #6b4426; border-radius: 12px 12px 4px 4px; background: linear-gradient(160deg, rgb(255 255 255 / .22), rgb(255 255 255 / .04) 40%, rgb(255 255 255 / .12)), #5a4638;
+      box-shadow: inset 0 0 40px rgb(0 0 0 / .5), 0 16px 0 -4px #2a170d; padding: 1rem clamp(.5rem, 2vw, 1.4rem) 1.2rem; }
+    .case::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 20%, rgb(255 255 255 / .09) 22% 30%, transparent 32%); }
+    .shelf { position: relative; margin-bottom: 1.4rem; }
+    .row { display: flex; align-items: flex-end; gap: clamp(.6rem, 3vw, 1.6rem); padding: .5rem .8rem 0; min-height: 150px; flex-wrap: wrap; }
+    .plank { height: 18px; border-radius: 3px; background: linear-gradient(#d9a566, #b07a3f 55%, #8a5a2c); box-shadow: 0 6px 8px rgb(0 0 0 / .45); }
+
+    /* card */
+    .card { position: relative; order: 2; flex: 1 1 220px; min-width: 0; text-align: left; font: inherit; color: var(--esp); background: var(--cream); border: 2px solid var(--esp); border-radius: 4px; padding: .75rem .9rem .8rem 1.5rem; cursor: pointer; margin-bottom: .6rem; transform: rotate(var(--cr, -1deg)); transition: transform .25s, box-shadow .25s; box-shadow: 3px 3px 0 var(--terra); align-self: flex-end; }
+    .shelf:nth-child(2) .card { --cr: 1.2deg; } .shelf:nth-child(3) .card { --cr: -.6deg; }
+    .card::before { content: ""; position: absolute; left: .5rem; top: .6rem; width: 11px; height: 11px; border-radius: 50%; background: var(--butter); border: 2px solid var(--esp); }
+    .card:hover { transform: rotate(0) translateY(-4px); box-shadow: 5px 6px 0 var(--terra); }
+    .card .nm { display: block; font-family: var(--script); font-size: 1.9rem; line-height: 1.05; color: var(--terra); }
+    .card .meta { display: block; text-transform: uppercase; letter-spacing: .14em; font-size: .68rem; font-weight: 600; margin-top: .25rem; }
+    .card .pull { display: block; margin-top: .5rem; font-size: .68rem; text-transform: uppercase; letter-spacing: .2em; font-weight: 700; color: var(--sage); border-top: 1px dashed var(--esp); padding-top: .35rem; }
+    .card .pull::after { content: " \25BE"; display: inline-block; transition: transform .3s; }
+    .card[aria-expanded="true"] .pull::after { transform: rotate(180deg); }
+
+    /* pastries (css-drawn) */
+    .goods { order: 1; display: flex; align-items: flex-end; gap: .7rem; padding-bottom: .1rem; }
+    .goods i { display: block; position: relative; }
+    .bread { width: 92px; height: 54px; background: #b9783b; border-radius: 50% 50% 14px 14px / 90% 90% 14px 14px; box-shadow: inset 0 -8px 0 rgb(0 0 0 / .18), inset 0 6px 0 rgb(255 255 255 / .15); }
+    .bread::after { content: ""; position: absolute; left: 22%; top: 18%; width: 56%; height: 14px; border-radius: 50%; border-top: 4px solid var(--butter); transform: rotate(-12deg); }
+    .slab { width: 110px; height: 36px; background: #e2a83f; border-radius: 6px; box-shadow: inset 0 -7px 0 rgb(0 0 0 / .15); }
+    .slab::after { content: ""; position: absolute; inset: 6px 8px 14px; background: radial-gradient(circle, var(--sage) 0 2.5px, transparent 3px) 0 0 / 14px 9px; }
+    .cookie { width: 56px; height: 56px; border-radius: 50%; background: #b57a45; box-shadow: inset 0 -5px 0 rgb(0 0 0 / .18); }
+    .cookie::after { content: ""; position: absolute; left: 14px; top: 12px; width: 9px; height: 9px; border-radius: 3px; background: var(--esp); box-shadow: 20px 6px 0 var(--esp), 6px 22px 0 var(--esp), 24px 26px 0 var(--esp); }
+    .cookie.sm { width: 42px; height: 42px; transform: translateY(0) rotate(20deg); } .cookie.sm::after { left: 9px; top: 9px; width: 7px; height: 7px; box-shadow: 15px 4px 0 var(--esp), 4px 16px 0 var(--esp), 17px 19px 0 var(--esp); }
+    .bread.sm { width: 64px; height: 40px; }
+
+    /* drawer */
+    .drawer { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .5s cubic-bezier(.3, .8, .3, 1); }
+    .drawer.open { grid-template-rows: 1fr; }
+    .drawer > .in { overflow: hidden; min-height: 0; }
+    .pullout { margin: .9rem .4rem 0; background: linear-gradient(#e7bc79, #d19b55); border: 4px solid #6b4426; border-radius: 4px 4px 10px 10px; padding: 1.1rem clamp(.8rem, 3vw, 1.6rem) 1.4rem; box-shadow: inset 0 4px 10px rgb(0 0 0 / .3); position: relative; }
+    .pullout .knob { position: absolute; top: -.1rem; left: 50%; width: 46px; height: 12px; margin-left: -23px; border-radius: 0 0 12px 12px; background: var(--butter); border: 2px solid var(--esp); border-top: 0; }
+    .blurb { font-family: var(--script); font-size: 1.5rem; color: var(--esp); margin: .6rem 0 .8rem; line-height: 1.2; }
+    .stats { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1rem; padding: 0; list-style: none; }
+    .stats li { background: var(--cream); border: 2px solid var(--esp); border-radius: 99px; padding: .15rem .8rem; font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; }
+    .stats b { color: var(--terra); }
+    .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 1.4rem; }
+    .pullout h3 { margin: 0 0 .5rem; text-transform: uppercase; letter-spacing: .25em; font-size: .78rem; border-bottom: 2px solid var(--esp); padding-bottom: .3rem; }
+    .pullout ul { list-style: none; margin: 0; padding: 0; }
+    .pullout ul li { padding: .15rem 0 .15rem 1.2rem; position: relative; }
+    .pullout ul li::before { content: ""; position: absolute; left: .1rem; top: .65rem; width: 7px; height: 7px; border-radius: 50%; background: var(--terra); }
+    .pullout ol { margin: 0; padding: 0; list-style: none; counter-reset: n; }
+    .pullout ol li { counter-increment: n; display: grid; grid-template-columns: 2rem 1fr; gap: .4rem; padding: .3rem 0; }
+    .pullout ol li::before { content: counter(n); font-family: var(--script); font-size: 1.7rem; line-height: 1; color: var(--terra); }
+
+    footer { text-align: center; color: var(--butter); margin-top: 2.2rem; font-family: var(--script); font-size: 1.6rem; }
+    footer small { display: block; font-family: var(--body); font-size: .68rem; text-transform: uppercase; letter-spacing: .3em; color: var(--sage); }
+
+    @media (max-width: 700px) { .two { grid-template-columns: 1fr; } .open-sign { right: 4px; top: -2.6rem; width: 80px; } .row { padding-inline: .3rem; } .awning { height: 80px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <a class="back" href="../../index.html">&larr; Gallery</a>
+  <div class="awning" aria-hidden="true"></div>
+
+  <div class="front">
+    <header class="sign">
+      <div class="open-sign" id="openSign" role="status"><span id="openWord">OPEN</span><small id="openHrs">7am &ndash; 3pm</small></div>
+      <p class="est">Est. at dawn</p>
+      <h1>Little Oven</h1>
+      <p class="sub">Bread &middot; Focaccia &middot; Cookies</p>
+    </header>
+
+    <p class="hint">Tap a card to pull out the drawer</p>
+    <main class="case" id="case"></main>
+
+    <footer>Baked this morning<small>Ask at the counter for the second-day discount</small></footer>
+  </div>
+
+  <script src="../../recipes.js"></script>
+  <script>
+    (function () {
+      var host = document.getElementById("case");
+      function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+      var goods = {
+        "sourdough": '<i class="bread"></i><i class="bread sm"></i>',
+        "focaccia": '<i class="slab"></i><i class="slab"></i>',
+        "chocolate-chip-cookies": '<i class="cookie"></i><i class="cookie sm"></i><i class="cookie"></i>'
+      };
+      var blurbs = { "sourdough": "Pull one out slowly, it sings.", "focaccia": "Dimple it like you mean it.", "chocolate-chip-cookies": "Best eaten warm, over the tray." };
+
+      RECIPES.forEach(function (r, i) {
+        var s = document.createElement("section");
+        s.className = "shelf";
+        s.setAttribute("aria-label", r.name);
+        s.innerHTML =
+          '<div class="row"><button type="button" class="card" id="card-' + i + '" aria-expanded="false" aria-controls="drawer-' + i + '">' +
+            '<span class="nm">' + esc(r.name) + '</span>' +
+            '<span class="meta">' + esc(r.time) + '</span>' +
+            '<span class="meta">Makes ' + esc(r.yield) + '</span>' +
+            '<span class="pull">Open drawer</span></button>' +
+            '<div class="goods" aria-hidden="true">' + (goods[r.slug] || '<i class="cookie"></i>') + '</div></div>' +
+          '<div class="plank"></div>' +
+          '<div class="drawer" id="drawer-' + i + '" role="region" aria-labelledby="card-' + i + '"><div class="in"><div class="pullout"><span class="knob"></span>' +
+            '<p class="blurb">' + esc(r.tagline) + '</p>' +
+            '<ul class="stats"><li>Time <b>' + esc(r.time) + '</b></li><li>Yield <b>' + esc(r.yield) + '</b></li><li>Skill <b>' + esc(r.difficulty) + '</b></li></ul>' +
+            '<div class="two"><div><h3>Ingredients</h3><ul>' + r.ingredients.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + '</ul></div>' +
+            '<div><h3>Method</h3><ol>' + r.steps.map(function (x) { return "<li><span>" + esc(x) + "</span></li>"; }).join("") + '</ol></div></div>' +
+          '</div></div></div>';
+        host.appendChild(s);
+
+        var btn = s.querySelector(".card"), dr = s.querySelector(".drawer"), word = s.querySelector(".pull");
+        // keep closed drawer content out of the tab order / a11y tree
+        dr.querySelector(".in").setAttribute("inert", "");
+        btn.addEventListener("click", function () {
+          var open = btn.getAttribute("aria-expanded") !== "true";
+          btn.setAttribute("aria-expanded", open ? "true" : "false");
+          dr.classList.toggle("open", open);
+          if (open) dr.querySelector(".in").removeAttribute("inert"); else dr.querySelector(".in").setAttribute("inert", "");
+          word.textContent = open ? "Close drawer" : "Open drawer";
+        });
+      });
+
+      // OPEN sign: 7am to 3pm local time
+      function sign() {
+        var h = new Date().getHours(), isOpen = h >= 7 && h < 15;
+        var el = document.getElementById("openSign");
+        el.classList.toggle("closed", !isOpen);
+        document.getElementById("openWord").textContent = isOpen ? "OPEN" : "CLOSED";
+        document.getElementById("openHrs").textContent = isOpen ? "until 3pm" : "back at 7am";
+      }
+      sign(); setInterval(sign, 60000);
+    })();
+  </script>
+</body>
+</html>

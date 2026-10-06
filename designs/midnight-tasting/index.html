@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Menu Dégustation — Midnight Tasting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07151a; --card: #0b1e24; --silver: #c9d1d3; --emerald: #3ea58a; --dim: #8a989c; --hair: rgba(201, 209, 211, .22);
+      --cinzel: "Cinzel", "Trajan Pro", "Times New Roman", serif;
+      --garamond: "EB Garamond", Garamond, "Palatino Linotype", Georgia, serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--silver); font-family: var(--garamond); font-size: 1.15rem; line-height: 1.7; min-height: 100vh;
+      background-image: radial-gradient(ellipse at 50% 0, #0e2a30 0, transparent 60%); background-repeat: no-repeat; }
+    a { color: inherit; }
+    :focus-visible { outline: 1px solid var(--emerald); outline-offset: 5px; }
+    .table { padding: clamp(1rem, 4vw, 3rem) 1rem 4rem; }
+    .back { display: block; width: max-content; margin: 0 auto 1.5rem; font-family: var(--cinzel); font-size: .72rem; letter-spacing: .3em; text-transform: uppercase; text-decoration: none; color: var(--dim); border-bottom: 1px solid transparent; transition: color .3s, border-color .3s; }
+    .back:hover { color: var(--emerald); border-color: var(--emerald); }
+
+    .card { position: relative; max-width: 34rem; margin: 0 auto; padding: clamp(2.5rem, 7vw, 4.5rem) clamp(1.5rem, 7vw, 3.5rem) 3rem; background: linear-gradient(180deg, #0c2128, var(--card)); border: 1px solid var(--hair); box-shadow: 0 30px 80px rgba(0, 0, 0, .55); text-align: center; }
+    .card::before { content: ""; position: absolute; inset: 8px; border: 1px solid var(--hair); pointer-events: none; }
+    .glow { position: absolute; top: -90px; left: 50%; width: 260px; height: 260px; margin-left: -130px; border-radius: 50%; pointer-events: none;
+      background: radial-gradient(circle, rgba(62, 165, 138, .28) 0, rgba(62, 165, 138, .08) 40%, transparent 70%); animation: flicker 4.3s infinite ease-in-out; }
+    @keyframes flicker { 0%, 100% { opacity: .85; transform: scale(1); } 18% { opacity: 1; transform: scale(1.06); } 33% { opacity: .7; transform: scale(.97); } 52% { opacity: .95; transform: scale(1.03); } 76% { opacity: .75; transform: scale(.99); } }
+    .crest { display: block; width: 74px; margin: 0 auto 1rem; color: var(--emerald); position: relative; }
+    .house { font-family: var(--cinzel); font-size: .78rem; letter-spacing: .5em; text-transform: uppercase; color: var(--emerald); margin: 0; padding-left: .5em; }
+    h1 { font-family: var(--cinzel); font-weight: 400; font-size: clamp(1.7rem, 7vw, 2.4rem); letter-spacing: .12em; text-transform: uppercase; margin: .6rem 0 .3rem; color: #e6ecee; }
+    .sub { font-style: italic; color: var(--dim); margin: 0 0 2rem; }
+    .rule { display: flex; align-items: center; gap: .8rem; margin: 2.5rem auto; color: var(--emerald); font-size: .7rem; }
+    .rule::before, .rule::after { content: ""; flex: 1; height: 1px; background: var(--hair); }
+
+    .course { opacity: 0; transform: translateY(16px); transition: opacity 1.2s ease, transform 1.2s ease; }
+    .course.in { opacity: 1; transform: none; }
+    .ord { font-family: var(--cinzel); font-size: .72rem; letter-spacing: .38em; text-transform: uppercase; color: var(--emerald); margin: 0 0 .9rem; padding-left: .38em; }
+    .course h2 { font-family: var(--cinzel); font-weight: 400; font-size: clamp(1.4rem, 6vw, 1.9rem); letter-spacing: .1em; text-transform: uppercase; margin: 0 0 .6rem; color: #eef3f4; line-height: 1.25; }
+    .poem { font-style: italic; font-size: 1.25rem; margin: 0 0 1.2rem; }
+    .facts { font-family: var(--cinzel); font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--dim); margin: 0 0 1.6rem; }
+    .facts span + span::before { content: "\00b7"; margin: 0 .6em; color: var(--emerald); }
+    .label { font-family: var(--cinzel); font-size: .68rem; letter-spacing: .3em; text-transform: uppercase; color: var(--emerald); margin: 1.6rem 0 .4rem; padding-left: .3em; }
+    .composed { margin: 0; font-size: 1.1rem; }
+    .composed .dot { color: var(--emerald); margin: 0 .35em; }
+    .method { list-style: none; margin: 0; padding: 0; counter-reset: m; text-align: left; max-width: 28rem; margin-inline: auto; }
+    .method li { counter-increment: m; padding: .35rem 0 .35rem 2rem; position: relative; font-size: 1.05rem; color: #b5bfc2; border-top: 1px solid rgba(201, 209, 211, .08); }
+    .method li:first-child { border-top: 0; }
+    .method li::before { content: counter(m) "."; position: absolute; left: 0; font-style: italic; color: var(--emerald); width: 1.5rem; text-align: right; }
+    .pair { margin: 1.8rem auto 0; padding-top: 1rem; border-top: 1px solid var(--hair); font-style: italic; }
+    .pair b { font-family: var(--cinzel); font-style: normal; font-weight: 400; font-size: .68rem; letter-spacing: .3em; text-transform: uppercase; color: var(--emerald); display: block; margin-bottom: .2rem; }
+    .fin { font-style: italic; color: var(--dim); font-size: 1rem; margin: 0; }
+    @media (prefers-reduced-motion: reduce) { .glow { animation: none; } .course { opacity: 1; transform: none; transition: none; } .back { transition: none; } }
+  </style>
+</head>
+<body>
+  <div class="table">
+    <a class="back" href="../../index.html">&larr; Return to the gallery</a>
+    <main class="card">
+      <div class="glow" aria-hidden="true"></div>
+      <header>
+        <svg class="crest" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+          <circle cx="40" cy="40" r="36"/><circle cx="40" cy="40" r="31" stroke-opacity=".5"/>
+          <path d="M40 12 L46 34 L68 40 L46 46 L40 68 L34 46 L12 40 L34 34 Z"/>
+          <path d="M40 24 V56 M24 40 H56" stroke-opacity=".5"/><circle cx="40" cy="40" r="3" fill="currentColor"/>
+        </svg>
+        <p class="house">Maison Minuit</p>
+        <h1>Menu Dégustation</h1>
+        <p class="sub">Three courses, composed by the hour of the evening</p>
+      </header>
+      <div id="courses"></div>
+      <div class="rule" aria-hidden="true">&#9670;</div>
+      <p class="fin">With our compliments. Please linger.</p>
+    </main>
+  </div>
+
+  <script src="../../recipes.js"></script>
+  <script>
+    (function () {
+      var ords = ["Course the First", "Course the Second", "Course the Third", "Course the Fourth", "Course the Fifth"];
+      var PAIR = {
+        sourdough: "A cultured salted butter and a pot of smoky Lapsang Souchong, or a dry Fino sherry, chilled.",
+        focaccia: "A crisp Vermentino from the coast, or sparkling water with a twist of lemon peel.",
+        "chocolate-chip-cookies": "A small glass of cold milk, a ruby Port, or a double espresso, no sugar."
+      };
+      var root = document.getElementById("courses");
+      function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+      RECIPES.forEach(function (r, i) {
+        var s = el("section", "course");
+        s.setAttribute("aria-labelledby", "c-" + r.slug);
+        s.append(el("div", "rule")); s.firstChild.setAttribute("aria-hidden", "true"); s.firstChild.textContent = "◆";
+        s.append(el("p", "ord", ords[i] || "Course " + (i + 1)));
+        var h = el("h2", "", r.name); h.id = "c-" + r.slug; s.append(h);
+        s.append(el("p", "poem", r.tagline));
+        var f = el("p", "facts");
+        [r.time, r.yield, r.difficulty].forEach(function (t) { f.append(el("span", "", t)); });
+        s.append(f);
+
+        s.append(el("p", "label", "Composed of"));
+        var c = el("p", "composed");
+        r.ingredients.forEach(function (t, k) {
+          if (k) c.append(el("span", "dot", "·"));
+          c.append(document.createTextNode(t));
+        });
+        c.append(document.createTextNode("."));
+        s.append(c);
+
+        s.append(el("p", "label", "The Method"));
+        var ol = el("ol", "method");
+        r.steps.forEach(function (t) { ol.append(el("li", "", t)); });
+        s.append(ol);
+
+        var p = el("p", "pair");
+        p.append(el("b", "", "Pair with"));
+        p.append(document.createTextNode(PAIR[r.slug] || "A quiet cup of tea."));
+        s.append(p);
+        root.append(s);
+      });
+
+      var items = document.querySelectorAll(".course");
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+        }, { rootMargin: "0px 0px -12% 0px", threshold: 0.05 });
+        items.forEach(function (n) { io.observe(n); });
+      } else {
+        items.forEach(function (n) { n.classList.add("in"); });
+      }
+    })();
+  </script>
+</body>
+</html>

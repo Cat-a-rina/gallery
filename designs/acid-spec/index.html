@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPEC_SHEET.TXT — Three recipes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #000; --lime: #c6ff00; --fg: #fff; --anton: "Anton", Impact, "Arial Narrow Bold", sans-serif; --mono: "JetBrains Mono", "Courier New", monospace; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--mono); font-size: 14px; line-height: 1.5; }
+    a { color: var(--lime); }
+    :focus-visible { outline: 3px solid var(--fg); outline-offset: 2px; }
+    button { font: inherit; color: inherit; background: none; border-radius: 0; cursor: pointer; }
+
+    .top { display: flex; justify-content: space-between; gap: 1rem; padding: .5rem 1rem; border-bottom: 2px solid var(--lime); font-size: 12px; text-transform: uppercase; }
+    .top a { text-decoration: none; padding: 0 .3rem; } .top a:hover { background: var(--lime); color: #000; }
+
+    .hero { min-height: calc(100vh - 140px); display: flex; flex-direction: column; justify-content: space-between; padding: 1rem; border-bottom: 2px solid var(--lime); }
+    .hero h1 { margin: 0; font-family: var(--anton); font-weight: 400; text-transform: uppercase; font-size: clamp(4.5rem, 27vw, 26rem); line-height: .82; letter-spacing: -.01em; }
+    .hero h1 span { display: block; }
+    .hero h1 span:nth-child(2) { color: var(--lime); }
+    .hero h1 span:nth-child(3) { -webkit-text-stroke: 2px var(--fg); color: transparent; font-size: .55em; }
+    .hero p { margin: 1rem 0 0; text-transform: uppercase; font-size: 13px; }
+    .cursor { display: inline-block; width: .6em; height: 1.1em; background: var(--lime); vertical-align: text-bottom; animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .tabs { position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: repeat(3, 1fr); background: #000; border-bottom: 2px solid var(--lime); }
+    .tabs button { border: 0; border-right: 2px solid var(--lime); padding: .8rem .4rem; font-weight: 700; text-transform: uppercase; font-size: clamp(10px, 2.6vw, 15px); letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tabs button:last-child { border-right: 0; }
+    .tabs button:hover { background: var(--lime); color: #000; }
+    .tabs button[aria-selected="true"] { background: var(--fg); color: #000; }
+    .tabs button:focus-visible { outline-offset: -5px; outline-color: #000; background: var(--lime); color: #000; }
+
+    .panel { margin: 1rem; border: 4px solid var(--lime); }
+    .panel[hidden] { display: none; }
+    .panel > header { padding: 1rem; border-bottom: 4px solid var(--lime); }
+    .panel h2 { margin: 0; font-family: var(--anton); font-weight: 400; text-transform: uppercase; font-size: clamp(3rem, 13vw, 11rem); line-height: .88; }
+    .panel header p { margin: .75rem 0 0; font-weight: 700; text-transform: uppercase; }
+    .kv { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; border-bottom: 4px solid var(--lime); }
+    .kv div { padding: .75rem 1rem; border-right: 2px solid var(--lime); }
+    .kv div:last-child { border-right: 0; }
+    .kv dt { font-size: 11px; color: var(--lime); letter-spacing: .1em; }
+    .kv dd { margin: .2rem 0 0; font-family: var(--anton); font-size: clamp(1.4rem, 3.4vw, 2.6rem); text-transform: uppercase; line-height: 1.05; }
+    .kv div:hover, .kv div:hover dt { background: var(--lime); color: #000; }
+    .cols { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+    .cols > section { padding: 1rem; }
+    .cols > section:first-child { border-right: 4px solid var(--lime); }
+    h3 { margin: 0 0 .75rem; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; background: var(--lime); color: #000; display: inline-block; padding: 0 .5rem; }
+    ul.ing, ol.log { list-style: none; margin: 0; padding: 0; }
+    .ing li { border: 2px solid var(--fg); margin-top: -2px; }
+    .ing button { display: flex; gap: .75rem; width: 100%; padding: .5rem .6rem; border: 0; text-align: left; }
+    .ing button b { white-space: pre; color: var(--lime); }
+    .ing button:hover, .log li:hover { background: var(--lime); color: #000; }
+    .ing button:hover b { color: #000; }
+    .ing button[aria-pressed="true"] span { text-decoration: line-through; }
+    .log li { display: grid; grid-template-columns: 4.5rem 1fr; gap: .5rem; padding: .6rem .6rem; border-top: 2px solid var(--fg); }
+    .log li:last-child { border-bottom: 2px solid var(--fg); }
+    .log li b { color: var(--lime); }
+    .log li:hover b { color: #000; }
+    .ascii { margin: 0; padding: 1rem; overflow: hidden; white-space: pre; color: var(--lime); font-size: 12px; line-height: 1.2; border-top: 4px solid var(--lime); }
+    footer { padding: 1rem; font-size: 12px; text-transform: uppercase; }
+
+    @media (max-width: 760px) {
+      .cols { grid-template-columns: 1fr; }
+      .cols > section:first-child { border-right: 0; border-bottom: 4px solid var(--lime); }
+      .kv { grid-template-columns: 1fr; }
+      .kv div { border-right: 0; border-bottom: 2px solid var(--lime); }
+      .kv div:last-child { border-bottom: 0; }
+      .panel { margin: .5rem; }
+      .top { flex-direction: column; gap: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) { .cursor { animation: none; } }
+  </style>
+</head>
+<body>
+  <div class="top"><a href="../../index.html">&lt;- ../gallery</a><span>spec_sheet.txt // rev 03 // 3 records</span></div>
+
+  <header class="hero">
+    <h1><span>Bake</span><span>Spec</span><span>Sheet</span></h1>
+    <p>&gt; 3 recipes loaded. select a record below.<span class="cursor" aria-hidden="true"></span></p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Recipes" id="tabs"></div>
+  <main id="panels"></main>
+  <pre class="ascii" id="ascii" aria-hidden="true"></pre>
+  <footer>EOF // no further data</footer>
+
+  <script src="../../recipes.js"></script>
+  <script>
+    (function () {
+      var pad = function (n) { return String(n).padStart(2, "0"); };
+      var esc = function (s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; };
+      var tabs = document.getElementById("tabs"), main = document.getElementById("panels");
+      var tabEls = [], panEls = [];
+
+      RECIPES.forEach(function (r, i) {
+        var t = document.createElement("button");
+        t.type = "button"; t.id = "tab-" + r.slug; t.setAttribute("role", "tab");
+        t.setAttribute("aria-controls", "pan-" + r.slug);
+        t.textContent = "[ " + r.name.split(" ")[r.name.split(" ").length - 1].toUpperCase() + " ]";
+        t.title = r.name;
+        t.addEventListener("click", function () { select(i, false); });
+        tabs.appendChild(t); tabEls.push(t);
+
+        var p = document.createElement("section");
+        p.className = "panel"; p.id = "pan-" + r.slug; p.setAttribute("role", "tabpanel");
+        p.setAttribute("aria-labelledby", "tab-" + r.slug); p.tabIndex = 0;
+        p.innerHTML =
+          '<header><div>REC_' + pad(i + 1) + ' /</div><h2>' + esc(r.name) + '</h2><p>&gt; ' + esc(r.tagline) + '</p></header>' +
+          '<dl class="kv"><div><dt>TIME</dt><dd>' + esc(r.time) + '</dd></div><div><dt>YIELD</dt><dd>' + esc(r.yield) + '</dd></div><div><dt>LEVEL</dt><dd>' + esc(r.difficulty) + '</dd></div></dl>' +
+          '<div class="cols"><section><h3>INGREDIENTS[' + r.ingredients.length + ']</h3><ul class="ing">' +
+          r.ingredients.map(function (x) { return '<li><button type="button" aria-pressed="false"><b>[ ]</b><span>' + esc(x) + '</span></button></li>'; }).join("") +
+          '</ul></section><section><h3>PROCEDURE.LOG</h3><ol class="log">' +
+          r.steps.map(function (x, k) { return '<li><b>T+' + pad(k + 1) + '</b><span>' + esc(x) + '</span></li>'; }).join("") +
+          '</ol></section></div>';
+        p.querySelectorAll(".ing button").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var on = b.getAttribute("aria-pressed") !== "true";
+            b.setAttribute("aria-pressed", on);
+            b.firstChild.textContent = on ? "[x]" : "[ ]";
+          });
+        });
+        main.appendChild(p); panEls.push(p);
+      });
+
+      function select(i, focus) {
+        tabEls.forEach(function (t, j) {
+          var on = j === i;
+          t.setAttribute("aria-selected", on);
+          t.tabIndex = on ? 0 : -1;
+          panEls[j].hidden = !on;
+        });
+        if (focus) tabEls[i].focus();
+        if (history.replaceState) history.replaceState(null, "", "#" + RECIPES[i].slug);
+      }
+      tabs.addEventListener("keydown", function (e) {
+        var cur = tabEls.indexOf(document.activeElement), n = tabEls.length, k = null;
+        if (cur < 0) return;
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") k = (cur + 1) % n;
+        else if (e.key === "ArrowLeft" || e.key === "ArrowUp") k = (cur - 1 + n) % n;
+        else if (e.key === "Home") k = 0;
+        else if (e.key === "End") k = n - 1;
+        if (k !== null) { e.preventDefault(); select(k, true); }
+      });
+
+      var start = 0, h = location.hash.slice(1);
+      RECIPES.forEach(function (r, i) { if (r.slug === h) start = i; });
+      select(start, false);
+
+      var line = "─".repeat(30);
+      document.getElementById("ascii").textContent =
+        "╔" + "═".repeat(30) + "╗\n" +
+        "║ FLOUR ▒▒ WATER ▒▒ HEAT ▒▒ TIME ║\n" +
+        "╚" + "═".repeat(30) + "╝\n" +
+        "├" + line + "┬" + line + "┤\n" +
+        "└" + line + "┴" + line + "┘";
+    })();
+  </script>
+</body>
+</html>

@@ -12,3 +12,99 @@ const DESIGNS = Array.from({ length: 25 }, (_, i) => ({
   palette: ["#e8e4dc", "#c9c3b6", "#a69f90"], // swatches shown on the tile
   status: "planned",   // "planned" | "built"
 }));
+
+const BUILT = {
+  1: {
+    slug: "polka-pantry", title: "Polka Pantry", mood: "whimsical, silly",
+    type: "Chewy + Nunito", layout: "full-screen scroll, giant icon per bake", emphasis: "the baked good as a character",
+    palette: ["#ffc2d4", "#b8f0d8", "#ffe27a"],
+  },
+  2: {
+    slug: "kitchen-shelf-cookbook", title: "The Kitchen Shelf Cookbook", mood: "nostalgic, homey",
+    type: "IM Fell English + Caveat", layout: "open book spread with bookmark tabs", emphasis: "handwritten, tick-off ingredients",
+    palette: ["#f6ecd6", "#7a2e22", "#6b4a2f"],
+  },
+  3: {
+    slug: "noir-boulangerie", title: "Maison Noir", mood: "elegant, dark, hushed",
+    type: "Cormorant Garamond + Jost", layout: "centered hero, accordion list", emphasis: "restraint and whitespace",
+    palette: ["#0b0a09", "#c9a96a", "#e9e2d3"],
+  },
+  4: {
+    slug: "chalk-menu", title: "Today's Bakes", mood: "friendly, handmade, cafe",
+    type: "Caveat Brush + Patrick Hand", layout: "framed menu board, three columns", emphasis: "menu-style at-a-glance info",
+    palette: ["#26332d", "#f6df8b", "#f4a6b8"],
+  },
+  5: {
+    slug: "bake-poster", title: "BAKE.", mood: "bold, brutalist, minimal",
+    type: "Archivo Black + Space Mono", layout: "rigid rows with giant numerals", emphasis: "typography and structure",
+    palette: ["#f1efe8", "#ff3b1f", "#0d0d0d"],
+  },
+};
+Object.assign(BUILT, {
+  6: {
+    slug: "sprinkle-sundae", title: "Sprinkle Sundae", mood: "whimsical, candy-bright",
+    type: "Bagel Fat One + Quicksand", layout: "horizontal sticker-card carousel", emphasis: "playful characters",
+    palette: ["#19c3c9", "#ff4f9a", "#ffd23f"],
+  },
+  7: {
+    slug: "bubble-bakery", title: "Bubble Bakery", mood: "whimsical, soft pastel",
+    type: "Sniglet + Fredoka", layout: "floating blobs that pop open", emphasis: "touch and play",
+    palette: ["#c9b8ff", "#ffcfb3", "#b6f2dd"],
+  },
+  8: {
+    slug: "recipe-box", title: "The Recipe Box", mood: "nostalgic, typewritten",
+    type: "Special Elite + Homemade Apple", layout: "index cards sliding out of a tin", emphasis: "one card at a time",
+    palette: ["#fbf4e2", "#d9534f", "#8a5a3c"],
+  },
+  9: {
+    slug: "scrapbook-supper", title: "Scrapbook Supper", mood: "nostalgic, collage",
+    type: "Libre Baskerville + Gaegu", layout: "overlapping clippings on gingham", emphasis: "handmade keepsake",
+    palette: ["#c9a27a", "#c8342c", "#e1b84f"],
+  },
+  10: {
+    slug: "velvet-hour", title: "Velvet Hour", mood: "luxurious, deco, dark",
+    type: "Bodoni Moda + Raleway", layout: "sticky split screen, scroll-driven", emphasis: "editorial drama",
+    palette: ["#1c0a14", "#e8d3a8", "#c98b7b"],
+  },
+  11: {
+    slug: "midnight-tasting", title: "Midnight Tasting", mood: "formal, hushed, dark",
+    type: "Cinzel + EB Garamond", layout: "narrow prix-fixe menu card", emphasis: "courses and pairings",
+    palette: ["#07151a", "#c9d1d3", "#3ea58a"],
+  },
+  12: {
+    slug: "kraft-market", title: "Kraft Market", mood: "artisan, farmers-market",
+    type: "Permanent Marker + Kalam", layout: "hanging price tags and stuck-on labels", emphasis: "stamps and packing lists",
+    palette: ["#c8a273", "#c0392b", "#4d7c3a"],
+  },
+  13: {
+    slug: "pastry-case", title: "The Pastry Case", mood: "charming, shop-front",
+    type: "Yellowtail + Josefin Sans", layout: "awning over shelves with pull-out drawers", emphasis: "browsing a display",
+    palette: ["#c8553d", "#fff4e0", "#9db08a"],
+  },
+  14: {
+    slug: "quiet-grid", title: "Quiet Grid", mood: "calm, Swiss, minimal",
+    type: "Work Sans + IBM Plex Mono", layout: "asymmetric 12-col grid, sticky index", emphasis: "whitespace and precision",
+    palette: ["#ffffff", "#111111", "#e10600"],
+  },
+  15: {
+    slug: "acid-spec", title: "Acid Spec", mood: "raw, loud, technical",
+    type: "Anton + JetBrains Mono", layout: "keyboard-driven spec-sheet tabs", emphasis: "data and attitude",
+    palette: ["#000000", "#c6ff00", "#ffffff"],
+  },
+  16: {
+    slug: "shape-shop", title: "Shape Shop", mood: "geometric, Bauhaus",
+    type: "League Spartan + DM Sans", layout: "modular blocks with CSS-shape emblems", emphasis: "form and color",
+    palette: ["#e63329", "#1f4eb4", "#f7c614"],
+  },
+  17: {
+    slug: "disco-diner", title: "Disco Diner", mood: "retro, 1970s groovy",
+    type: "Shrikhand + Karla", layout: "sunburst hero, record-sleeve cards", emphasis: "nostalgia and a palette knob",
+    palette: ["#e8541c", "#f2a900", "#6b7d2a"],
+  },
+  18: {
+    slug: "winter-hearth", title: "Winter Hearth", mood: "cozy, holiday, snowy",
+    type: "Fraunces + Lato", layout: "garland timeline of ornaments and gift tags", emphasis: "seasonal occasions",
+    palette: ["#0f3b2e", "#b3202f", "#d9a441"],
+  },
+});
+DESIGNS.forEach((d) => { if (BUILT[d.id]) Object.assign(d, BUILT[d.id], { status: "built" }); });

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Today's Bakes — Chalkboard Menu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    :root { --chalk: #f2f0e6; --yellow: #f6df8b; --pink: #f4a6b8; --blue: #9ad4e6; --board: #26332d; --display: "Caveat Brush", "Segoe Print", cursive; --body: "Patrick Hand", "Segoe Print", cursive; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; padding: clamp(.75rem, 3vw, 2.5rem); font-family: var(--body); font-size: 1.25rem; color: var(--chalk);
+      background: #d8c6a8; background-image: repeating-linear-gradient(0deg, transparent 0 6px, rgb(0 0 0 / .03) 6px 7px);
+    }
+    .back { position: fixed; top: .75rem; left: 1rem; z-index: 5; font-family: var(--body); color: #3b2c1a; text-decoration: none; background: #f2e6cf; padding: .15rem .8rem; border-radius: 4px; box-shadow: 1px 2px 4px rgb(0 0 0 / .3); }
+
+    /* wooden frame + chalky board */
+    .frame {
+      max-width: 1250px; margin: 2rem auto 0; padding: clamp(10px, 2vw, 22px);
+      background: linear-gradient(135deg, #8a5a2f, #6b4220 50%, #8a5a2f); border-radius: 8px;
+      box-shadow: 0 20px 40px rgb(0 0 0 / .45), inset 0 0 0 3px #4e2f15;
+    }
+    .board {
+      padding: clamp(1.5rem, 4vw, 3.5rem); border-radius: 3px; position: relative;
+      background-color: var(--board);
+      background-image:
+        radial-gradient(ellipse at 20% 15%, rgb(255 255 255 / .09), transparent 45%),
+        radial-gradient(ellipse at 85% 85%, rgb(255 255 255 / .06), transparent 40%),
+        repeating-radial-gradient(circle at 30% 40%, rgb(255 255 255 / .012) 0 2px, transparent 2px 5px);
+      box-shadow: inset 0 0 60px rgb(0 0 0 / .6);
+    }
+    .chalk { text-shadow: 0 0 1px rgb(255 255 255 / .6), 1px 1px 0 rgb(255 255 255 / .1); }
+
+    header { text-align: center; margin-bottom: 2.5rem; }
+    header .small { font-size: 1.1rem; letter-spacing: .25em; color: var(--blue); text-transform: uppercase; margin: 0; }
+    h1 { font-family: var(--display); font-weight: 400; font-size: clamp(3rem, 9vw, 6.5rem); line-height: 1; margin: .25rem 0; color: var(--yellow); transform: rotate(-1.5deg); }
+    .squiggle { width: min(380px, 70%); margin: 0 auto; display: block; }
+    .specials { color: var(--pink); margin: .5rem 0 0; }
+
+    .menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 2.5rem clamp(1.5rem, 4vw, 3.5rem); }
+    .item { border-top: 2px dashed rgb(242 240 230 / .35); padding-top: 1.25rem; }
+    .item:nth-child(3n+1) h2 { color: var(--yellow); } .item:nth-child(3n+2) h2 { color: var(--pink); } .item:nth-child(3n+3) h2 { color: var(--blue); }
+    h2 { font-family: var(--display); font-weight: 400; font-size: 2.4rem; line-height: 1.05; margin: 0 0 .25rem; }
+    .tag { margin: 0 0 1rem; opacity: .85; }
+    .line { display: flex; align-items: baseline; gap: .4rem; }
+    .line .dots { flex: 1; border-bottom: 2px dotted rgb(242 240 230 / .4); transform: translateY(-.3rem); }
+    .stats { margin: 0 0 1rem; display: grid; gap: .1rem; }
+    h3 { font-family: var(--display); font-weight: 400; font-size: 1.6rem; margin: 1.25rem 0 .4rem; display: inline-block; border-bottom: 3px solid currentColor; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    ul li { padding-left: 1.4rem; position: relative; line-height: 1.5; margin-bottom: .2rem; }
+    ul li::before { content: "✻"; position: absolute; left: 0; color: var(--yellow); font-size: .9rem; top: .15rem; }
+    ol { padding-left: 1.6rem; margin: 0; }
+    ol li { margin-bottom: .45rem; line-height: 1.35; padding-left: .3rem; }
+    ol li::marker { font-family: var(--display); color: var(--pink); font-size: 1.3rem; }
+    .box { margin-top: 1.25rem; border: 2px solid var(--chalk); border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; padding: .5rem 1rem; text-align: center; transform: rotate(-1deg); }
+    footer { text-align: center; margin-top: 3rem; color: var(--blue); }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <a class="back" href="../../index.html">&larr; gallery</a>
+  <div class="frame">
+    <div class="board chalk">
+      <header>
+        <p class="small">Fresh from the oven</p>
+        <h1>Today's Bakes</h1>
+        <svg class="squiggle" viewBox="0 0 380 24" aria-hidden="true"><path d="M4 14 Q28 0 52 14 T100 14 T148 14 T196 14 T244 14 T292 14 T340 14 T376 12" fill="none" stroke="#f4a6b8" stroke-width="4" stroke-linecap="round"/></svg>
+        <p class="specials">~ three things, all made by hand ~</p>
+      </header>
+      <main class="menu" id="menu"></main>
+      <footer>Ask us about tomorrow's bake &#10084;</footer>
+    </div>
+  </div>
+
+  <script src="../../recipes.js"></script>
+  <script>
+    const menu = document.getElementById("menu");
+    RECIPES.forEach((r) => {
+      const a = document.createElement("article");
+      a.className = "item";
+      a.innerHTML = `
+        <h2>${r.name}</h2>
+        <p class="tag">${r.tagline}</p>
+        <div class="stats">
+          <div class="line"><span>Time</span><span class="dots"></span><span>${r.time}</span></div>
+          <div class="line"><span>Makes</span><span class="dots"></span><span>${r.yield}</span></div>
+          <div class="line"><span>Skill</span><span class="dots"></span><span>${r.difficulty}</span></div>
+        </div>
+        <h3>What's in it</h3>
+        <ul>${r.ingredients.map((x) => `<li>${x}</li>`).join("")}</ul>
+        <h3>How it's done</h3>
+        <ol>${r.steps.map((x) => `<li>${x}</li>`).join("")}</ol>
+        <div class="box">${r.difficulty === "Easy" ? "good for a weeknight!" : "weekend project"}</div>`;
+      menu.appendChild(a);
+    });
+  </script>
+</body>
+</html>

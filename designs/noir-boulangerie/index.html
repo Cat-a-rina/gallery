@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maison Noir — Boulangerie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #0b0a09; --ink: #e9e2d3; --dim: #8d8576; --gold: #c9a96a; --serif: "Cormorant Garamond", Garamond, Georgia, serif; --sans: "Jost", "Helvetica Neue", sans-serif; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-weight: 300; line-height: 1.7;
+      background-image: radial-gradient(ellipse at 50% -10%, #2a2216 0, transparent 55%);
+      background-repeat: no-repeat;
+    }
+    a { color: inherit; }
+    nav { display: flex; justify-content: space-between; padding: 1.75rem clamp(1.5rem, 5vw, 4rem); font-size: .7rem; letter-spacing: .35em; text-transform: uppercase; color: var(--dim); }
+    nav a { text-decoration: none; transition: color .3s; } nav a:hover { color: var(--gold); }
+
+    .hero { text-align: center; padding: clamp(4rem, 12vw, 9rem) 1.5rem clamp(3rem, 8vw, 6rem); }
+    .mark { color: var(--gold); letter-spacing: .6em; font-size: .7rem; text-transform: uppercase; }
+    .hero h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(3rem, 9vw, 7.5rem); line-height: 1; letter-spacing: .02em; margin: 1.5rem 0; }
+    .hero h1 em { color: var(--gold); font-weight: 300; }
+    .hero p { font-family: var(--serif); font-style: italic; font-size: 1.4rem; color: var(--dim); max-width: 32rem; margin: 0 auto; }
+    .rule { width: 1px; height: 5rem; background: linear-gradient(var(--gold), transparent); margin: 3rem auto 0; }
+
+    main { max-width: 1000px; margin: 0 auto; padding: 0 clamp(1.5rem, 5vw, 3rem) 6rem; }
+    details { border-top: 1px solid #2c2820; }
+    details:last-child { border-bottom: 1px solid #2c2820; }
+    summary {
+      list-style: none; cursor: pointer; display: grid; grid-template-columns: 4rem 1fr auto; align-items: baseline; gap: 1rem;
+      padding: 2.25rem 0; transition: padding .4s;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary:hover { padding-left: 1rem; }
+    summary:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; }
+    .num { font-family: var(--serif); font-style: italic; color: var(--gold); font-size: 1.4rem; }
+    .title { font-family: var(--serif); font-weight: 300; font-size: clamp(2rem, 5vw, 3.6rem); line-height: 1.1; }
+    .time { font-size: .7rem; letter-spacing: .3em; text-transform: uppercase; color: var(--dim); }
+    summary::after { content: "+"; grid-column: 3; grid-row: 1; justify-self: end; font-family: var(--serif); font-size: 2rem; color: var(--gold); transition: transform .4s; display: none; }
+    details[open] .title { color: var(--gold); }
+
+    .body { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(2rem, 6vw, 5rem); padding: 0 0 3.5rem 5rem; animation: rise .7s ease both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+    .lead { grid-column: 1 / -1; font-family: var(--serif); font-style: italic; font-size: 1.5rem; color: var(--dim); margin: 0; }
+    h3 { font-weight: 400; font-size: .7rem; letter-spacing: .35em; text-transform: uppercase; color: var(--gold); margin: 0 0 1.25rem; }
+    ul, ol { margin: 0; padding: 0; list-style: none; }
+    .ingr li { padding: .55rem 0; border-bottom: 1px solid #1f1c17; font-size: .95rem; }
+    .steps { counter-reset: s; }
+    .steps li { counter-increment: s; padding: .55rem 0 .9rem 2.5rem; position: relative; }
+    .steps li::before { content: counter(s, lower-roman); position: absolute; left: 0; font-family: var(--serif); font-style: italic; color: var(--gold); font-size: 1.15rem; }
+    .meta { grid-column: 1 / -1; display: flex; gap: 2.5rem; font-size: .7rem; letter-spacing: .3em; text-transform: uppercase; color: var(--dim); }
+
+    footer { text-align: center; padding: 2rem; font-size: .65rem; letter-spacing: .4em; text-transform: uppercase; color: #5b5547; }
+    @media (max-width: 720px) {
+      summary { grid-template-columns: 2.5rem 1fr; } .time { grid-column: 2; }
+      .body { grid-template-columns: 1fr; padding-left: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <nav><a href="../../index.html">&larr; Gallery</a><span>Paris &middot; Chicago</span></nav>
+
+  <header class="hero">
+    <div class="mark">Maison Noir &middot; Boulangerie</div>
+    <h1>Three quiet<br><em>obsessions</em></h1>
+    <p>Flour, water, fire and time. Nothing more should be said.</p>
+    <div class="rule"></div>
+  </header>
+
+  <main id="list"></main>
+  <footer>Baked slowly &middot; Served warm</footer>
+
+  <script src="../../recipes.js"></script>
+  <script>
+    const roman = ["I", "II", "III", "IV", "V"];
+    const list = document.getElementById("list");
+    RECIPES.forEach((r, i) => {
+      const d = document.createElement("details");
+      if (i === 0) d.open = true;
+      d.innerHTML = `
+        <summary><span class="num">${roman[i]}</span><span class="title">${r.name}</span><span class="time">${r.time.split(" (")[0]}</span></summary>
+        <div class="body">
+          <p class="lead">${r.tagline}</p>
+          <div><h3>Ingredients</h3><ul class="ingr">${r.ingredients.map((x) => `<li>${x}</li>`).join("")}</ul></div>
+          <div><h3>Method</h3><ol class="steps">${r.steps.map((x) => `<li>${x}</li>`).join("")}</ol></div>
+          <div class="meta"><span>Yield &mdash; ${r.yield}</span><span>Level &mdash; ${r.difficulty}</span></div>
+        </div>`;
+      list.appendChild(d);
+    });
+    // keep one recipe open at a time
+    list.addEventListener("toggle", (e) => {
+      if (e.target.open) list.querySelectorAll("details[open]").forEach((o) => { if (o !== e.target) o.open = false; });
+    }, true);
+  </script>
+</body>
+</html>

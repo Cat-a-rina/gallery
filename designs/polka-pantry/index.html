@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Polka Pantry — three silly, delicious bakes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #4a2340;
+      --tomato: #ff5a4f;
+      --display: "Chewy", "Comic Sans MS", cursive;
+      --body: "Nunito", "Trebuchet MS", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-snap-type: y proximity; scroll-behavior: smooth; }
+    body { margin: 0; font-family: var(--body); color: var(--ink); font-size: 1.1rem; line-height: 1.5; }
+
+    .back {
+      position: fixed; top: 1rem; left: 1rem; z-index: 10;
+      background: #fff; color: var(--ink); text-decoration: none; font-weight: 800;
+      padding: .45rem 1rem; border-radius: 999px; border: 3px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink); font-size: .95rem;
+    }
+    .back:hover { transform: rotate(-3deg) scale(1.05); }
+
+    /* each section is its own polka-dot world */
+    .world {
+      --dot: #fff; --bg: #ffc2d4; --card: #fff;
+      min-height: 100vh; scroll-snap-align: start;
+      display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 2rem;
+      padding: 5rem clamp(1.5rem, 6vw, 6rem) 3rem;
+      background-color: var(--bg);
+      background-image: radial-gradient(var(--dot) 22%, transparent 23%), radial-gradient(var(--dot) 22%, transparent 23%);
+      background-size: 56px 56px; background-position: 0 0, 28px 28px;
+      position: relative; overflow: hidden;
+    }
+    .world:nth-of-type(2) { --bg: #b8f0d8; --dot: #fff6a8; }
+    .world:nth-of-type(3) { --bg: #ffe27a; --dot: #ff9bb8; }
+    .world.flip .icon-wrap { order: 2; }
+
+    .intro {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+      min-height: 100vh; padding: 2rem; scroll-snap-align: start;
+      background-color: #ffc2d4; background-image: radial-gradient(#ff8fb1 22%, transparent 23%); background-size: 40px 40px;
+    }
+    .intro h1 { font-family: var(--display); font-weight: 400; font-size: clamp(3.5rem, 13vw, 9rem); line-height: .95; margin: 0; color: var(--tomato); text-shadow: 5px 5px 0 var(--ink); transform: rotate(-3deg); }
+    .intro p { font-weight: 800; font-size: 1.3rem; max-width: 26rem; background: #fff; border: 3px solid var(--ink); border-radius: 1.5rem; padding: 1rem 1.5rem; margin-top: 2.5rem; box-shadow: 5px 5px 0 var(--ink); }
+    .scroll-hint { margin-top: 2rem; font-family: var(--display); font-size: 1.6rem; animation: bob 1.2s ease-in-out infinite; }
+
+    .icon-wrap { display: grid; place-items: center; }
+    .icon { width: min(80%, 440px); filter: drop-shadow(8px 10px 0 rgb(74 35 64 / .25)); animation: wiggle 4s ease-in-out infinite; }
+    .world:hover .icon { animation-duration: 1s; }
+
+    .card {
+      background: var(--card); border: 4px solid var(--ink); border-radius: 2rem 3rem 2rem 3rem;
+      padding: clamp(1.25rem, 3vw, 2.25rem); box-shadow: 8px 8px 0 var(--ink); max-width: 38rem;
+    }
+    .card h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1; margin: 0 0 .5rem; color: var(--tomato); }
+    .tagline { font-weight: 700; margin: 0 0 1rem; }
+    .meta { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; list-style: none; margin: 0 0 1.25rem; }
+    .meta li { background: var(--ink); color: #fff; font-weight: 800; font-size: .8rem; padding: .25rem .8rem; border-radius: 999px; }
+    h3 { font-family: var(--display); font-weight: 400; font-size: 1.5rem; margin: 1.25rem 0 .5rem; }
+    .stickers { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; list-style: none; margin: 0; }
+    .stickers li { background: #fff6a8; border: 2px dashed var(--ink); border-radius: 999px; padding: .15rem .8rem; font-weight: 700; font-size: .95rem; }
+    .stickers li:nth-child(3n+1) { background: #ffc2d4; transform: rotate(-2deg); }
+    .stickers li:nth-child(3n+2) { background: #b8f0d8; transform: rotate(1.5deg); }
+    ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; }
+    ol.steps li { counter-increment: s; position: relative; padding-left: 3rem; margin-bottom: .75rem; }
+    ol.steps li::before {
+      content: counter(s); position: absolute; left: 0; top: -.1rem; width: 2.2rem; height: 2.2rem; border-radius: 50%;
+      background: var(--tomato); color: #fff; font-family: var(--display); font-size: 1.3rem; display: grid; place-items: center;
+      border: 3px solid var(--ink);
+    }
+
+    @keyframes wiggle { 0%, 100% { transform: rotate(-4deg) translateY(0); } 50% { transform: rotate(4deg) translateY(-14px); } }
+    @keyframes bob { 50% { transform: translateY(10px); } }
+
+    @media (max-width: 800px) {
+      .world { grid-template-columns: 1fr; padding-top: 4.5rem; }
+      .world.flip .icon-wrap { order: 0; }
+      .icon { width: min(60%, 260px); }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <a class="back" href="../../index.html">&larr; Gallery</a>
+
+  <header class="intro">
+    <h1>Polka<br>Pantry!</h1>
+    <p>Three bakes so good they might do a little dance. Scroll to meet them!</p>
+    <span class="scroll-hint" aria-hidden="true">scroll ↓</span>
+  </header>
+  <main id="worlds"></main>
+
+  <script src="../../recipes.js"></script>
+  <script>
+    // Big, goofy inline-SVG icons, one per bake.
+    const ICONS = {
+      "sourdough": `<svg class="icon" viewBox="0 0 300 220" role="img" aria-label="A round loaf of sourdough with a happy face">
+        <ellipse cx="150" cy="195" rx="115" ry="14" fill="#4a2340" opacity=".2"/>
+        <path d="M30 140 C30 60 90 25 150 25 C210 25 270 60 270 140 C270 185 230 195 150 195 C70 195 30 185 30 140Z" fill="#e9a65b" stroke="#4a2340" stroke-width="7"/>
+        <path d="M60 120 C60 80 100 50 150 50 C200 50 240 80 240 120" fill="none" stroke="#f6cf94" stroke-width="10" stroke-linecap="round" opacity=".7"/>
+        <path d="M95 62 L120 98 M140 52 L160 96 M186 62 L172 98" stroke="#fff3d6" stroke-width="9" stroke-linecap="round"/>
+        <circle cx="112" cy="140" r="9" fill="#4a2340"/><circle cx="188" cy="140" r="9" fill="#4a2340"/>
+        <circle cx="115" cy="137" r="3" fill="#fff"/><circle cx="191" cy="137" r="3" fill="#fff"/>
+        <path d="M130 160 Q150 182 170 160" fill="none" stroke="#4a2340" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="90" cy="158" r="10" fill="#ff8fb1" opacity=".8"/><circle cx="210" cy="158" r="10" fill="#ff8fb1" opacity=".8"/>
+      </svg>`,
+      "focaccia": `<svg class="icon" viewBox="0 0 300 240" role="img" aria-label="A wedge of dimpled focaccia with a sleepy face">
+        <ellipse cx="150" cy="215" rx="120" ry="12" fill="#4a2340" opacity=".2"/>
+        <path d="M30 70 L250 40 L275 175 L45 205Z" fill="#f4c25a" stroke="#4a2340" stroke-width="7" stroke-linejoin="round"/>
+        <path d="M45 205 L45 225 L275 195 L275 175" fill="#d99a2b" stroke="#4a2340" stroke-width="7" stroke-linejoin="round"/>
+        <g fill="#c78414" opacity=".6"><circle cx="75" cy="95" r="9"/><circle cx="140" cy="82" r="9"/><circle cx="205" cy="70" r="9"/><circle cx="100" cy="150" r="9"/><circle cx="215" cy="135" r="9"/><circle cx="165" cy="170" r="9"/></g>
+        <g stroke="#2f7d4f" stroke-width="5" stroke-linecap="round"><path d="M120 110 l22 -14 M128 118 l24 -6 M120 110 l16 16"/><path d="M180 105 l22 -14 M188 113 l24 -6 M180 105 l16 16"/></g>
+        <circle cx="105" cy="115" r="5" fill="#4a2340"/>
+        <path d="M95 132 Q105 142 115 132" fill="none" stroke="#4a2340" stroke-width="5" stroke-linecap="round" transform="translate(0 -6)"/>
+        <path d="M148 150 q10 8 20 0 M200 142 q10 8 20 0" fill="none" stroke="#4a2340" stroke-width="5" stroke-linecap="round"/>
+        <path d="M165 175 Q180 188 195 175" fill="none" stroke="#4a2340" stroke-width="5" stroke-linecap="round"/>
+        <g fill="#fff"><circle cx="60" cy="130" r="3"/><circle cx="235" cy="95" r="3"/><circle cx="130" cy="185" r="3"/></g>
+      </svg>`,
+      "chocolate-chip-cookies": `<svg class="icon" viewBox="0 0 300 300" role="img" aria-label="A giant chocolate chip cookie with a big grin">
+        <ellipse cx="150" cy="278" rx="105" ry="13" fill="#4a2340" opacity=".2"/>
+        <path d="M150 20 C175 14 190 30 215 34 C245 40 260 62 266 90 C276 115 282 135 272 165 C268 195 250 215 230 235 C205 262 175 272 150 270 C120 272 92 262 70 240 C45 215 30 190 28 160 C20 130 28 105 38 82 C50 52 75 36 105 32 C125 28 135 24 150 20Z" fill="#d79a52" stroke="#4a2340" stroke-width="7"/>
+        <g fill="#5a2d1c" stroke="#4a2340" stroke-width="3"><path d="M72 80 l24 -8 6 22 -22 10z"/><path d="M200 62 l26 6 -6 24 -24 -8z"/><path d="M232 150 l22 10 -14 20 -18 -14z"/><path d="M60 170 l24 -6 4 24 -24 6z"/><path d="M185 232 l24 -4 2 22 -22 6z"/><path d="M118 238 l20 -6 8 18 -22 8z"/><path d="M140 48 l18 4 -4 18 -18 -4z"/></g>
+        <circle cx="112" cy="135" r="12" fill="#fff" stroke="#4a2340" stroke-width="5"/><circle cx="188" cy="135" r="12" fill="#fff" stroke="#4a2340" stroke-width="5"/>
+        <circle cx="115" cy="137" r="5" fill="#4a2340"/><circle cx="191" cy="137" r="5" fill="#4a2340"/>
+        <path d="M105 175 Q150 225 195 175Z" fill="#fff" stroke="#4a2340" stroke-width="6" stroke-linejoin="round"/>
+        <path d="M125 190 Q150 210 175 190" fill="#ff8fb1"/>
+        <circle cx="80" cy="150" r="10" fill="#ff8fb1" opacity=".7"/><circle cx="220" cy="150" r="10" fill="#ff8fb1" opacity=".7"/>
+      </svg>`,
+    };
+
+    const worlds = document.getElementById("worlds");
+    RECIPES.forEach((r, i) => {
+      const s = document.createElement("section");
+      s.className = "world" + (i % 2 ? " flip" : "");
+      s.innerHTML = `
+        <div class="icon-wrap">${ICONS[r.slug]}</div>
+        <article class="card">
+          <h2>${r.name}</h2>
+          <p class="tagline">${r.tagline}</p>
+          <ul class="meta"><li>⏰ ${r.time}</li><li>🍽 ${r.yield}</li><li>⭐ ${r.difficulty}</li></ul>
+          <h3>Grab these!</h3>
+          <ul class="stickers">${r.ingredients.map((x) => `<li>${x}</li>`).join("")}</ul>
+          <h3>Then do this!</h3>
+          <ol class="steps">${r.steps.map((x) => `<li>${x}</li>`).join("")}</ol>
+        </article>`;
+      worlds.appendChild(s);
+    });
+  </script>
+</body>
+</html>

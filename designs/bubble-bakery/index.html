@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bubble Bakery — pop a bubble, get a bake</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --lav: #c9b8ff; --peach: #ffcfb3; --mint: #b6f2dd; --cream: #fffaf0; --plum: #432a5e;
+      --display: "Sniglet", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+      --body: "Fredoka", "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      font-family: var(--body); color: var(--plum); font-size: 1.08rem; line-height: 1.5; min-height: 100vh; overflow-x: hidden;
+      background: radial-gradient(circle at 15% 10%, #e6dcff 0, transparent 40%), radial-gradient(circle at 90% 30%, #d6f8ec 0, transparent 40%), radial-gradient(circle at 40% 100%, #ffe6d6 0, transparent 45%), var(--cream);
+    }
+    :focus-visible { outline: 4px solid var(--plum); outline-offset: 4px; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 1.25rem clamp(1rem, 4vw, 2rem) 4rem; }
+
+    .back { display: inline-block; text-decoration: none; color: var(--plum); font-weight: 600; background: #fff; padding: .4rem 1.1rem; border-radius: 999px; box-shadow: 0 6px 0 var(--lav); transition: transform .2s; }
+    .back:hover { transform: translateY(-3px); }
+    h1 { font-family: var(--display); font-weight: 800; font-size: clamp(2.6rem, 9vw, 5.5rem); line-height: 1; margin: 1.5rem 0 .3rem; letter-spacing: -.01em; }
+    h1 span { display: inline-block; animation: bounce 3s ease-in-out infinite; }
+    h1 span:nth-child(2n) { animation-delay: .4s; color: #8d6bff; }
+    h1 span:nth-child(3n) { animation-delay: .8s; color: #ff9e6e; }
+    .sub { margin: 0; font-size: 1.2rem; max-width: 30rem; }
+
+    .bubbles { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 2rem; margin: 2rem 0 .5rem; min-height: 280px; }
+    .bubble {
+      --bg: var(--lav); --d: 9s; --delay: 0s;
+      width: clamp(150px, 29vw, 300px); aspect-ratio: 1; border: 0; padding: 1rem; cursor: pointer; color: var(--plum);
+      background: radial-gradient(circle at 30% 25%, rgb(255 255 255 / .75) 0 9%, transparent 10%), var(--bg);
+      border-radius: 60% 40% 55% 45% / 50% 55% 45% 50%;
+      box-shadow: inset -10px -14px 0 rgb(67 42 94 / .08), 0 14px 0 rgb(67 42 94 / .08);
+      animation: morph var(--d) ease-in-out var(--delay) infinite, float 6s ease-in-out var(--delay) infinite;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .2rem;
+      font-family: var(--display); font-weight: 800; font-size: clamp(1rem, 2.6vw, 1.45rem); line-height: 1.1; text-align: center;
+      transition: transform .3s cubic-bezier(.3, 1.8, .5, 1), box-shadow .3s;
+    }
+    .bubble:nth-child(2) { --bg: var(--peach); --d: 11s; --delay: -2s; margin-top: 2rem; }
+    .bubble:nth-child(3) { --bg: var(--mint); --d: 13s; --delay: -5s; }
+    .bubble svg { width: 58%; height: auto; }
+    .bubble:hover { transform: scale(1.07); }
+    .bubble[aria-expanded="true"] { transform: scale(1.1); box-shadow: inset -10px -14px 0 rgb(67 42 94 / .08), 0 0 0 8px #fff, 0 0 0 12px var(--plum); }
+    .bubble.pop { animation: morph var(--d) ease-in-out var(--delay) infinite, popit .5s ease-out; }
+    .bubble small { font-family: var(--body); font-weight: 500; font-size: .8rem; opacity: .75; }
+
+    .panel-area { position: relative; display: grid; grid-template-columns: minmax(150px, 230px) 1fr; gap: 1.5rem; align-items: start; margin-top: 1.5rem; }
+    .mascot { position: sticky; top: 1rem; text-align: center; }
+    .say {
+      position: relative; background: var(--plum); color: var(--cream); border-radius: 26px 26px 26px 6px; padding: .8rem 1rem; font-weight: 500; font-size: 1rem; margin-bottom: 1rem; min-height: 4.5rem;
+    }
+    .say::after { content: ""; position: absolute; left: 36px; bottom: -14px; border: 12px solid transparent; border-top-color: var(--plum); border-bottom: 0; }
+    .mascot svg { width: 150px; max-width: 70%; animation: float 5s ease-in-out infinite; }
+    .mascot .eyes { animation: blink 5s infinite; transform-origin: center; transform-box: fill-box; }
+
+    .panel {
+      --bg: var(--lav); position: relative; background: var(--bg); border-radius: 44px 44px 44px 44px / 48px 48px 44px 44px; padding: clamp(1.4rem, 4vw, 2.6rem);
+      box-shadow: 0 10px 0 rgb(67 42 94 / .12); animation: popin .55s cubic-bezier(.3, 1.6, .5, 1);
+    }
+    .panel::before { content: ""; position: absolute; top: -20px; left: var(--tail, 50%); width: 40px; height: 40px; background: var(--bg); border-radius: 4px 40px 0 40px; transform: translateX(-50%) rotate(45deg) skew(10deg, 10deg); transition: left .4s cubic-bezier(.3, 1.4, .5, 1); }
+    .panel[hidden] { display: none; }
+    .panel h2 { font-family: var(--display); font-weight: 800; font-size: clamp(1.9rem, 5vw, 3rem); margin: 0 0 .2rem; line-height: 1.05; }
+    .panel .tag { margin: 0 0 1rem; font-size: 1.15rem; font-weight: 500; }
+    .meta { display: flex; flex-wrap: wrap; gap: .5rem; list-style: none; padding: 0; margin: 0 0 1.4rem; }
+    .meta li { background: var(--cream); border-radius: 999px; padding: .25rem 1rem; font-weight: 500; font-size: .95rem; }
+    .meta b { font-weight: 600; }
+    .cols { display: grid; grid-template-columns: 1fr 1.4fr; gap: 1.5rem; }
+    .panel h3 { font-family: var(--display); font-size: 1.4rem; margin: 0 0 .6rem; }
+    ul.ing { list-style: none; padding: 0; margin: 0; display: grid; gap: .45rem; }
+    ul.ing li { background: var(--cream); border-radius: 18px 24px 20px 26px; padding: .45rem .9rem; font-size: .98rem; transition: transform .25s cubic-bezier(.3, 1.8, .5, 1); }
+    ul.ing li:hover { transform: translateX(6px) rotate(-1deg); }
+    ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; display: grid; gap: .7rem; }
+    ol.steps li { counter-increment: s; position: relative; background: #fff; border-radius: 28px; padding: .7rem 1rem .7rem 3.4rem; box-shadow: 0 4px 0 rgb(67 42 94 / .1); }
+    ol.steps li:nth-child(even) { margin-left: 1.2rem; }
+    ol.steps li::before { content: counter(s); position: absolute; left: .55rem; top: .55rem; width: 2.2rem; height: 2.2rem; border-radius: 55% 45% 50% 50%; background: var(--plum); color: var(--cream); display: grid; place-items: center; font-family: var(--display); font-weight: 800; }
+
+    @keyframes morph {
+      0%, 100% { border-radius: 60% 40% 55% 45% / 50% 55% 45% 50%; }
+      33% { border-radius: 42% 58% 48% 52% / 58% 42% 58% 42%; }
+      66% { border-radius: 52% 48% 62% 38% / 44% 60% 40% 56%; }
+    }
+    @keyframes float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -16px; } }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes popin { from { transform: scale(.85) translateY(-20px); opacity: 0; } to { transform: none; opacity: 1; } }
+    @keyframes popit { 0% { scale: .8; } 60% { scale: 1.12; } 100% { scale: 1; } }
+    @keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+    @media (max-width: 760px) {
+      .panel-area { grid-template-columns: 1fr; }
+      .mascot { position: static; display: grid; grid-template-columns: 110px 1fr; gap: .8rem; align-items: end; text-align: left; }
+      .mascot .say { order: 2; margin: 0; } .mascot .say::after { left: -14px; bottom: 14px; border: 12px solid transparent; border-right-color: var(--plum); border-left: 0; }
+      .mascot svg { order: 1; width: 100px; }
+      .cols { grid-template-columns: 1fr; }
+      .bubble:nth-child(2) { margin-top: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="../../index.html">&larr; back to the gallery</a>
+    <h1 aria-label="Bubble Bakery" id="title"></h1>
+    <p class="sub">Three floaty bakes. Poke one and it pops open with the whole recipe!</p>
+
+    <div class="bubbles" id="bubbles" role="group" aria-label="Choose a bake"></div>
+
+    <div class="panel-area">
+      <aside class="mascot" aria-live="polite">
+        <div class="say" id="say"></div>
+        <svg viewBox="0 0 160 170" role="img" aria-label="Pip, a cheeky little cloud-shaped baker wearing a tiny hat">
+          <ellipse cx="80" cy="162" rx="46" ry="6" fill="#432a5e" opacity=".15"/>
+          <path d="M40 150c-24 0-30-34-12-48-10-26 14-50 40-40 14-20 50-14 56 14 24 4 26 40 6 52-4 14-20 22-34 20-16 6-40 8-56 2z" fill="#fff" stroke="#432a5e" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M52 52q4-30 28-30t28 30z" fill="#fffaf0" stroke="#432a5e" stroke-width="4" stroke-linejoin="round"/>
+          <rect x="48" y="50" width="64" height="12" rx="6" fill="#c9b8ff" stroke="#432a5e" stroke-width="4"/>
+          <g class="eyes"><ellipse cx="62" cy="92" rx="6" ry="8" fill="#432a5e"/><ellipse cx="102" cy="92" rx="6" ry="8" fill="#432a5e"/><circle cx="64" cy="89" r="2" fill="#fff"/><circle cx="104" cy="89" r="2" fill="#fff"/></g>
+          <path d="M66 110q16 16 32 0" fill="#ffcfb3" stroke="#432a5e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <ellipse cx="46" cy="106" rx="9" ry="6" fill="#ffcfb3"/><ellipse cx="118" cy="106" rx="9" ry="6" fill="#ffcfb3"/>
+          <path d="M126 124q14-4 20-18" fill="none" stroke="#432a5e" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+      </aside>
+      <section class="panel" id="panel" role="region" aria-live="polite" aria-label="Recipe"></section>
+    </div>
+  </div>
+
+  <script src="../../recipes.js"></script>
+  <script>
+    (function () {
+      var P = "#432a5e";
+      var doodles = {
+        sourdough: '<svg viewBox="0 0 100 80" aria-hidden="true"><path d="M10 50C10 22 30 10 50 10s40 12 40 40c0 14-14 22-40 22S10 64 10 50z" fill="#fffaf0" stroke="' + P + '" stroke-width="4" stroke-linejoin="round"/><path d="M32 24l8 16M50 20v18M68 24l-8 16" stroke="' + P + '" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="38" cy="56" r="2.5" fill="' + P + '"/><circle cx="62" cy="56" r="2.5" fill="' + P + '"/></svg>',
+        focaccia: '<svg viewBox="0 0 100 80" aria-hidden="true"><rect x="8" y="16" width="84" height="52" rx="12" fill="#fffaf0" stroke="' + P + '" stroke-width="4"/><g fill="#ffcfb3" stroke="' + P + '" stroke-width="2.5"><circle cx="28" cy="34" r="5"/><circle cx="50" cy="30" r="5"/><circle cx="72" cy="36" r="5"/><circle cx="38" cy="54" r="5"/><circle cx="62" cy="54" r="5"/></g><path d="M80 12l-6 12M80 12l6 10M80 12l-1 14" stroke="#3a8a5a" stroke-width="3" stroke-linecap="round"/></svg>',
+        "chocolate-chip-cookies": '<svg viewBox="0 0 100 80" aria-hidden="true"><circle cx="50" cy="42" r="34" fill="#fffaf0" stroke="' + P + '" stroke-width="4"/><g fill="' + P + '"><ellipse cx="36" cy="30" rx="5" ry="4"/><ellipse cx="62" cy="28" rx="5" ry="4"/><ellipse cx="70" cy="52" rx="5" ry="4"/><ellipse cx="42" cy="58" rx="5" ry="4"/><ellipse cx="52" cy="42" rx="4" ry="3.5"/></g></svg>'
+      };
+      var says = {
+        sourdough: "Ooh, the slow one! It naps for a whole day. Be nice to your starter, it has feelings.",
+        focaccia: "Dimple time! Poke it like you mean it. Honestly, the oil does all the work.",
+        "chocolate-chip-cookies": "Chill the dough? Rude. Fine. But no sneaking a spoonful. (Okay, maybe one.)"
+      };
+      var tint = ["#c9b8ff", "#ffcfb3", "#b6f2dd"];
+
+      function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+      document.getElementById("title").innerHTML = "Bubble Bakery".split("").map(function (ch) {
+        return ch === " " ? " " : '<span aria-hidden="true">' + ch + "</span>";
+      }).join("");
+
+      var wrap = document.getElementById("bubbles"), panel = document.getElementById("panel"), say = document.getElementById("say");
+      wrap.innerHTML = RECIPES.map(function (r, i) {
+        return '<button type="button" class="bubble" id="b' + i + '" aria-expanded="false" aria-controls="panel" data-i="' + i + '">' +
+          (doodles[r.slug] || doodles.sourdough) + "<span>" + esc(r.name) + "</span><small>" + esc(r.difficulty) + " &middot; tap to pop</small></button>";
+      }).join("");
+      var btns = Array.prototype.slice.call(wrap.children);
+
+      function open(i, user) {
+        var r = RECIPES[i];
+        btns.forEach(function (b, n) {
+          b.setAttribute("aria-expanded", n === i ? "true" : "false");
+          b.classList.remove("pop");
+        });
+        if (user) { void btns[i].offsetWidth; btns[i].classList.add("pop"); }
+        panel.style.setProperty("--bg", tint[i % tint.length]);
+        panel.setAttribute("aria-labelledby", "b" + i);
+        panel.innerHTML = "<h2>" + esc(r.name) + "</h2><p class=\"tag\">" + esc(r.tagline) + "</p>" +
+          '<ul class="meta"><li><b>Time:</b> ' + esc(r.time) + "</li><li><b>Makes:</b> " + esc(r.yield) + "</li><li><b>Difficulty:</b> " + esc(r.difficulty) + "</li></ul>" +
+          '<div class="cols"><div><h3>What goes in</h3><ul class="ing">' + r.ingredients.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>" +
+          '<div><h3>What to do</h3><ol class="steps">' + r.steps.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol></div></div>";
+        // replay pop-in animation
+        panel.style.animation = "none"; void panel.offsetWidth; panel.style.animation = "";
+        say.textContent = says[r.slug] || ("Let's bake " + r.name + "!");
+        placeTail(i);
+      }
+
+      function placeTail(i) {
+        var b = btns[i].getBoundingClientRect(), p = panel.getBoundingClientRect();
+        var x = b.left + b.width / 2 - p.left;
+        x = Math.max(40, Math.min(p.width - 40, x));
+        panel.style.setProperty("--tail", x + "px");
+      }
+
+      var active = 0;
+      wrap.addEventListener("click", function (e) {
+        var b = e.target.closest(".bubble");
+        if (!b) return;
+        var i = +b.dataset.i;
+        if (i === active && b.getAttribute("aria-expanded") === "true") return; // always one open
+        active = i; open(i, true);
+      });
+      window.addEventListener("resize", function () { placeTail(active); });
+      open(0, false);
+    })();
+  </script>
+</body>
+</html>

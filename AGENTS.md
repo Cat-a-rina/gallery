@@ -1,6 +1,6 @@
 # Gallery: 25 homepage explorations
 
-A gallery site holding 25 homepage designs for the same three baking recipes: country sourdough, olive oil focaccia and chocolate chip cookies. The goal is to explore a wide range of moods, typography, layouts and content emphasis, taking cues from traditional websites and hosted web platforms. At least 20 of the 25 must be genuinely unique, so avoid generic, default-looking output.
+A gallery site holding 25 homepage designs for the same three baking recipes: country sourdough, olive oil focaccia and chocolate chip cookies. The goal is to explore a wide range of moods, typography, layouts and content emphasis, taking cues from traditional websites and hosted web platforms. At least 20 of the 25 must be genuinely unique, so avoid generic, default-looking output. This is meant to be a baking ideas page, designed to provide the user with instructions or possible avenues for dinner/dessert/snack time. These pages will range from creative, bright, wide, to deep rich colors, minimalistic, simple. They must each try to be distinct.
 
 ## Constraints
 - Pure HTML, CSS and some JS. No frameworks, no build step, no npm dependencies.
